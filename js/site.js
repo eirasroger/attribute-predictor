@@ -12,9 +12,8 @@
   var SUP = { '-': '⁻', '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴',
               '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹' };
 
-  /* Three significant digits, keeping trailing zeros so the readout does not
-     change width while it scrubs. Falls back to exponent form at the extremes
-     the indicators actually reach. */
+  /* Three significant digits, trailing zeros kept so the readout holds its
+     width while scrubbing. Exponent form at the extremes. */
   function fmt(v) {
     if (!isFinite(v)) return '–';
     if (v === 0) return '0';
@@ -48,8 +47,8 @@
     bad:  'Worse than typical'
   };
 
-  /* The honest part: if the prediction's own error range straddles a
-     threshold, the model cannot settle the claim, so the wording softens. */
+  /* If the error range straddles a threshold the claim cannot be settled,
+     so the wording softens. */
   function verdict(v, d) {
     var here = classify(v, d);
     var soft = classify(v / FOLD_ERROR, d) !== classify(v * FOLD_ERROR, d);
@@ -72,15 +71,13 @@
 
   /* --- shared maths ------------------------------------------------------ */
 
-  /* Position on a log₁₀ scale running one decade either side of the category
-     median, as a 0–1 fraction. The radar radius and the bar both use it. */
+  /* 0–1 position on a log₁₀ scale, one decade either side of the median. */
   function logPos(value, median) {
     var l = Math.log10(value / median);
     return (Math.max(-1, Math.min(1, l)) + 1) / 2;
   }
 
-  /* Indicators span orders of magnitude, so cross-fade in log space —
-     linear interpolation would swing wildly and read as a glitch. */
+  /* Indicators span orders of magnitude, so interpolate in log space. */
   function lerpLog(a, b, t) { return Math.exp(Math.log(a) + (Math.log(b) - Math.log(a)) * t); }
 
   function lerpValues(a, b, t) {
@@ -93,7 +90,6 @@
 
   function smoothstep(t) { return t * t * (3 - 2 * t); }
 
-  /* slow in, slow out, with a long tail: the "expensive" easing */
   function easeInOut(t) {
     return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
   }
@@ -113,16 +109,13 @@
     }).join(',') + ')';
   }
 
-  /* Every surface that represents a build reads --pc (mark) and --pi (text),
-     so identity stays consistent across the hero loop, both acts and the
-     stage chart without each one hardcoding a colour. */
+  /* --pc is the mark colour, --pi the AA-contrast text tint. */
   function setProduct(node, variant) {
     node.style.setProperty('--pc', variant.color);
     node.style.setProperty('--pi', variant.ink);
   }
 
-  /* Staging: hold, move, hold. The hold zones give each build a moment to be
-     read; too wide and the stage feels unresponsive to the scroll. */
+  /* hold, move, hold — each build gets a moment before the next */
   function staged(t) {
     if (t <= 0.18) return 0;
     if (t >= 0.82) return 1;
@@ -131,10 +124,9 @@
 
   /* --- generic pinned scrubber ------------------------------------------- */
 
-  /* Drives one sticky stage from scroll position, and decides at runtime
-     whether pinning is viable at all: the stage must fit the viewport or the
-     content would be clipped. Breakpoints cannot express that — it depends on
-     width, height and rendered font together. */
+  /* Drives a sticky stage from scroll position. Pinning is decided at runtime,
+     not by breakpoint: whether the stage fits depends on width, height and
+     rendered font together. */
   function makeScrubber(sectionId, trackId, stageId, innerSel, paint) {
     var section = document.getElementById(sectionId);
     var track   = document.getElementById(trackId);
@@ -175,7 +167,7 @@
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onResize);
 
-    /* Populate first — an empty stage would always look like it fits. */
+    /* populate before measuring — an empty stage always "fits" */
     render();
     checkFit();
     render();
@@ -216,14 +208,18 @@
         var v = lerpLog(a.values.ghg, b.values.ghg, t);
         num.textContent = fmt(v);
         fill.style.width = logPos(v, GHG.median) * 100 + '%';
-        paintChip(chip, v, GHG);
 
         stageEl.style.setProperty('--pc', hexLerp(a.color, b.color, t));
         stageEl.style.setProperty('--pi', hexLerp(a.ink, b.ink, t));
 
         var idx = t < 0.5 ? seg : seg + 1;
         if (idx !== shown) { shown = idx; name.textContent = VARIANTS[idx].name; }
-        name.style.opacity = 1 - 0.8 * Math.sin(Math.PI * t);
+
+        /* verdict comes from a build, not a half-way value — see paintReadouts */
+        paintChip(chip, VARIANTS[idx].values.ghg, GHG);
+        var dip = 1 - 0.8 * Math.sin(Math.PI * t);
+        name.style.opacity = dip;
+        stageEl.style.setProperty('--verdict-fade', dip);
       });
   }
 
@@ -403,12 +399,16 @@
     });
   }
 
-  function paintReadouts(rows, values) {
+  /* `settled` is the build the verdicts describe, when that differs from the
+     values on screen. Numbers interpolate during a scrub; verdicts must not, or
+     a chip walks through every state the interpolation crosses. */
+  function paintReadouts(rows, values, settled) {
+    var vd = settled || values;
     rows.forEach(function (row) {
       var d = CATEGORY.dist[row.key];
       var v = values[row.key];
       row.val.textContent = fmt(v);
-      paintChip(row.chip, v, d);
+      paintChip(row.chip, vd[row.key], d);
       row.ratio.textContent = fmtRatio(v / d.median);
     });
   }
@@ -438,9 +438,9 @@
     if (!svg) return;
 
     var radar  = buildRadar(svg);
-    var rows   = buildReadouts(document.getElementById('readouts'));
+    var rowsEl = document.getElementById('readouts');
+    var rows   = buildReadouts(rowsEl);
     var matsEl = document.getElementById('materials');
-    var sumEl  = document.getElementById('materials-sum');
     var nameEl = document.getElementById('variant-name');
     var noteEl = document.getElementById('variant-note');
     var dotsEl = document.getElementById('stage-dots');
@@ -462,14 +462,14 @@
         stageEl.style.setProperty('--pc', color);
         stageEl.style.setProperty('--pi', hexLerp(a.ink, b.ink, t));
 
-        paintRadar(radar, values, color);
-        paintReadouts(rows, values);
-
         /* the material list cannot morph — it swaps, under a fade */
         var idx = t < 0.5 ? seg : seg + 1;
+
+        paintRadar(radar, values, color);
+        paintReadouts(rows, values, VARIANTS[idx].values);
         if (idx !== shown) {
           shown = idx;
-          paintMaterials(matsEl, sumEl, VARIANTS[idx]);
+          paintMaterials(matsEl, null, VARIANTS[idx]);
           nameEl.textContent = VARIANTS[idx].name;
           noteEl.textContent = VARIANTS[idx].note;
           dots.forEach(function (d, i) { d.classList.toggle('on', i === idx); });
@@ -479,6 +479,8 @@
         matsEl.style.opacity = dip;
         nameEl.style.opacity = dip;
         noteEl.style.opacity = dip;
+        /* verdicts swap at the half-way point, so they ride the same dip */
+        rowsEl.style.setProperty('--verdict-fade', dip);
       });
   }
 
@@ -525,13 +527,60 @@
       return s;
     });
 
+    /* Strip length is the reading, on the same 0.1×–10× median axis as the
+       radar and the big number. Linear would collapse the first two builds. */
+    function reach(v) {
+      return (logPos(v.values.ghg, CATEGORY.dist.ghg.median) * 100).toFixed(1) + '%';
+    }
+
     var host = document.getElementById('hero-demo');
     var i = 0;
 
+    /* one <img> per build, keyed by variant id; only opacity moves */
+    var render = document.getElementById('hero-render');
+    var shots = {}, showing = null;
+    if (render) {
+      VARIANTS.forEach(function (v) {
+        shots[v.id] = document.getElementById('hr-' + v.id);
+      });
+    }
+
+    /* Only the incoming shot animates; the outgoing one holds full opacity
+       until covered. Fading both would let the ground show through the pair at
+       the midpoint. Safe because all three share an alpha channel. */
+    function paintRender(v) {
+      if (!render) return;
+      setProduct(render, v);
+
+      var el = shots[v.id];
+      if (!el || el === showing) return;
+
+      VARIANTS.forEach(function (o) {
+        var s = shots[o.id];
+        if (!s || s === el || s === showing) return;
+        s.style.transition = 'none';
+        s.style.opacity = '0';
+        s.style.zIndex = '1';
+      });
+
+      if (showing) showing.style.zIndex = '1';
+
+      el.style.transition = 'none';
+      el.style.opacity = '0';
+      el.style.zIndex = '2';
+      void el.offsetWidth;              /* flush, so the fade starts from zero */
+      el.style.transition = '';
+      el.style.opacity = '1';
+
+      showing = el;
+    }
+
     function show(idx) {
       var v = VARIANTS[idx];
+      comp.style.width = reach(v);
       v.materials.forEach(function (m, k) { segs[k].style.width = m.pct + '%'; });
       setProduct(host, v);
+      paintRender(v);
       name.textContent = v.name;
       val.textContent = fmt(v.values.ghg);
     }
@@ -556,8 +605,10 @@
       var next = (i + 1) % VARIANTS.length;
       var v = VARIANTS[next];
       /* widths and colour ride CSS transitions; only the number needs a tween */
+      comp.style.width = reach(v);
       v.materials.forEach(function (m, k) { segs[k].style.width = m.pct + '%'; });
       setProduct(host, v);
+      paintRender(v);
       name.textContent = v.name;
       tweenTo(next);
       i = next;
@@ -566,7 +617,7 @@
     function play()  { if (!timer) timer = setInterval(advance, HOLD + TWEEN); }
     function pause() { clearInterval(timer); timer = null; cancelAnimationFrame(raf); }
 
-    /* off-screen or backgrounded, it stops — a loop nobody can see is waste */
+    /* off-screen or backgrounded, it stops */
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(function (entries) {
         entries[0].isIntersecting ? play() : pause();
@@ -581,8 +632,8 @@
 
   /* --- hero headline ------------------------------------------------------ */
 
-  /* Wraps each word so it can rise into place independently. Rebuilding the
-     DOM here is safe only because the headline is static markup. */
+  /* Wraps each word so it can rise independently. Safe to rebuild the DOM
+     here only because the headline is static markup. */
   function splitHeadline() {
     var head = document.querySelector('[data-split]');
     if (!head || reduced) return;
@@ -612,17 +663,9 @@
 
   /* --- one indicator, stage by stage ------------------------------------- */
 
-  /* Horizontal diverging bars on a shared zero baseline: stage D is negative,
-     so polarity is carried by geometry. Each bar wears a whisker for that
-     stage's own error range, and the build's own colour.
-
-     The domain is FIXED across all three builds. An auto-scaled domain would
-     keep A1–A3 at roughly the same length whichever build is showing, which
-     hides the very thing the animation exists to show. Fixed, the bars really
-     do explode when aluminium arrives. */
-
-  /* Short hold, long tween: the chart is moving roughly two thirds of the time,
-     so a reader arriving at any moment sees motion rather than a still frame. */
+  /* Diverging bars on a shared zero baseline — stage D is negative, so
+     polarity is geometry. The domain is FIXED across all three builds: an
+     auto-scaled one would keep A1–A3 the same length whichever build shows. */
   var SC_HOLD = 850, SC_TWEEN = 1500, SC_KICK = 500, SC_RESUME = 4000;
 
   function scGeom(w) {
@@ -678,7 +721,6 @@
 
     var svg      = document.getElementById('sc-svg');
     var totEl    = document.getElementById('sc-total');
-    var totRange = document.getElementById('sc-total-range');
     var tbody    = document.querySelector('#sc-table tbody');
     var switcher = fig.querySelector('.sc-switch');
 
@@ -700,9 +742,7 @@
       b.textContent = v.name;
       setProduct(b, v);
       b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
-      /* Hovering a build takes the loop straight to it and holds; leaving hands
-         control back. Clicking (or focusing by keyboard) is the sticky version,
-         which is what touch and keyboard get. */
+      /* hover nudges and releases; focus/click is the sticky version */
       b.addEventListener('pointerenter', function () { nudge(i); });
       b.addEventListener('pointerleave', release);
       b.addEventListener('focus', function () { nudge(i); });
@@ -814,8 +854,6 @@
 
     function paintTotal(v) {
       totEl.textContent = fmt(v);
-      totRange.textContent =
-        'kg CO₂-eq/kg · likely ' + fmt(v / TOTAL_FOLD) + ' to ' + fmt(v * TOTAL_FOLD);
     }
 
     function paintTable(vi) {
@@ -829,9 +867,9 @@
           '<td>' + fmt(r.lo) + ' to ' + fmt(r.hi) + '</td>';
         tbody.appendChild(tr);
       });
+      /* the total states no range on screen, so the table must not either */
       var tr = document.createElement('tr');
-      tr.innerHTML = '<td>Total</td><td>' + fmt(tv) + '</td><td>' +
-        fmt(tv / TOTAL_FOLD) + ' to ' + fmt(tv * TOTAL_FOLD) + '</td>';
+      tr.innerHTML = '<td>Total</td><td>' + fmt(tv) + '</td><td>—</td>';
       tbody.appendChild(tr);
     }
 
@@ -864,8 +902,7 @@
         var k = Math.min(1, (now - t0) / SC_TWEEN);
         var e = easeInOut(k);
 
-        /* bars are on a linear axis, so they interpolate linearly; the total
-           is strictly positive and jumps an order of magnitude, so it rides
+        /* bars are on a linear axis; the total spans a decade, so it rides
            log space to keep an even visual rate */
         paint(A.map(function (r, i) {
           return {
@@ -887,9 +924,7 @@
 
     function advance() { transition((cur + 1) % VARIANTS.length); }
 
-    /* The loop is the default state. It never stops for good: every way of
-       interrupting it schedules its own restart, so the chart cannot be found
-       sitting still. */
+    /* the loop is the default state — every interruption schedules a restart */
     function play() {
       if (timer || kick || reduced || !visible || document.hidden) return;
       kick = setTimeout(function () {
@@ -903,8 +938,6 @@
       clearInterval(timer); timer = null;
     }
 
-    /* Hovering, focusing or clicking a build takes the chart there and holds it
-       for a few seconds, then the loop resumes on its own. */
     function nudge(vi) {
       pause();
       clearTimeout(resume);
@@ -965,8 +998,7 @@
   function initTopbar() {
     var bar = document.getElementById('topbar');
     if (!bar) return;
-    /* timed to arrive while the hero mark is still on its way out, so the two
-       read as one handover rather than two separate events */
+    /* arrives while the hero mark is still leaving, so the two read as one */
     function check() {
       bar.classList.toggle('visible', window.scrollY > window.innerHeight * 0.45);
     }

@@ -22,10 +22,14 @@
 
   <!-- 1 ▸ hero ------------------------------------------------------------ -->
   <section class="hero" id="hero">
-    <div class="hero-inner" id="hero-inner">
-      <img class="hero-mark hero-fade" src="assets/logo.png"
+    <!-- masthead: the mark and the name, centred over the whole opening -->
+    <div class="hero-mast hero-fade">
+      <img class="hero-mark" src="assets/logo.png"
            alt="Attribute Predictor" width="84" height="84">
-      <p class="eyebrow hero-fade">Attribute Predictor</p>
+      <p class="eyebrow">Attribute Predictor</p>
+    </div>
+
+    <div class="hero-inner" id="hero-inner">
       <h1 class="display" id="hero-head" data-split>
         Replace the guess<br>with an <span class="accent">estimate</span>.
       </h1>
@@ -34,9 +38,39 @@
         is likely to perform environmentally, so early design work and existing
         buildings have something to quantify.
       </p>
+    </div>
+
+    <!-- Render and readout are one band: the render shows which surface changed
+         and the strip under it says what that cost. They share a column so the
+         two read together. On a narrow screen the render drops out and this
+         collapses back to the strip alone, directly under the copy. -->
+    <div class="hero-side hero-fade hero-fade-3" id="hero-side">
+
+      <!-- The same partition, rendered once per build. All three share a camera
+           and differ only across the dividing face, so the swap is a cross-fade
+           on one surface and the room never moves. Decorative: the loop's
+           meaning is carried by .hero-demo below. -->
+      <div class="hero-render" id="hero-render" aria-hidden="true">
+        <div class="hr-frame">
+        <img class="hr-shot is-on" id="hr-timber"
+             src="assets/partition-timber.webp" alt="" width="1170" height="743">
+        <img class="hr-shot" id="hr-gypsum"
+             src="assets/partition-gypsum.webp" alt="" width="1170" height="743">
+        <img class="hr-shot" id="hr-aluminium"
+             src="assets/partition-aluminium.webp" alt="" width="1170" height="743">
+
+        <!-- Traces the dividing face in the build's own colour, so the render
+             joins the same colour system as the strip, radar and stage chart.
+             Coordinates are the face quad measured in the cropped frame. -->
+          <svg class="hr-trace" viewBox="0 0 1170 743" preserveAspectRatio="none"
+               focusable="false">
+            <polygon points="232,264 665,141 666,363 233,527"/>
+          </svg>
+        </div>
+      </div>
 
       <!-- self-playing loop: composition changes, the number follows -->
-      <div class="hero-demo hero-fade hero-fade-3" id="hero-demo">
+      <div class="hero-demo" id="hero-demo">
         <p class="sr-only">
           An illustrative loop showing estimated greenhouse gas emissions for
           three builds of an indoor partition: timber frame 0.310, gypsum
@@ -44,7 +78,7 @@
           kilogram.
         </p>
         <div aria-hidden="true">
-          <div class="hd-comp" id="hd-comp"></div>
+          <div class="hd-comp"><div class="hd-fill" id="hd-comp"></div></div>
           <div class="hd-row">
             <span class="hd-name" id="hd-name"></span>
             <span class="hd-read">
@@ -52,10 +86,12 @@
               <span class="hd-unit">kg CO₂-eq/kg</span>
             </span>
           </div>
-          <p class="hd-cap">Greenhouse gas, per kilogram. Illustrative.</p>
+          <p class="hd-cap">Greenhouse gas emissions. Illustrative only.</p>
         </div>
       </div>
+
     </div>
+
     <div class="scroll-cue" aria-hidden="true"><span></span></div>
   </section>
 
@@ -68,7 +104,7 @@
   </section>
 
   <!-- 3 ▸ positioning, stated early ---------------------------------------- -->
-  <section class="prose">
+  <section class="prose prose-full">
     <h2 class="section-head reveal">Where it fits.</h2>
     <p class="reveal">
       Two moments in a project share the same problem: a decision worth
@@ -144,24 +180,23 @@
     <div class="bv-static" id="bv-static"></div>
   </section>
 
-  <!-- 5 ▸ transition ------------------------------------------------------- -->
-  <section class="statement">
-    <p class="reveal">
-      Carbon is one of five.<br>
-      <span class="dim">A composition that wins on one can lose on another.</span>
-    </p>
-  </section>
-
-  <!-- 6 ▸ act two: the full stage ------------------------------------------ -->
+  <!-- 5 + 6 ▸ act two: the full stage --------------------------------------- -->
   <section class="sim" id="sim" aria-labelledby="sim-heading">
 
-    <div class="sim-intro">
-      <h2 id="sim-heading" class="section-head reveal">
-        Every indicator,<br><span class="dim">every time you change a material.</span>
-      </h2>
-      <p class="section-sub reveal">
-        The same three builds, read against the whole category.
+    <!-- the turn and the heading it sets up, side by side -->
+    <div class="sim-head">
+      <p class="sim-claim reveal">
+        Carbon is one of five.<br>
+        <span class="dim">A composition that wins on one can lose on another.</span>
       </p>
+      <div class="sim-intro">
+        <h2 id="sim-heading" class="section-head reveal">
+          Every indicator,<br><span class="dim">every time you change a material.</span>
+        </h2>
+        <p class="section-sub reveal">
+          The same three builds, read against the whole category.
+        </p>
+      </div>
     </div>
 
     <div class="sim-track" id="sim-track">
@@ -186,11 +221,9 @@
             <div class="panel panel-inputs">
               <h3 class="panel-title">Material composition</h3>
               <ul class="materials" id="materials"></ul>
-              <p class="materials-sum"><span id="materials-sum">100</span> % by mass</p>
             </div>
 
             <div class="panel panel-radar">
-              <h3 class="panel-title">All five indicators, versus category</h3>
               <div class="radar-holder">
                 <svg id="radar" viewBox="0 0 420 380" role="img"
                      aria-labelledby="radar-title"></svg>
@@ -231,7 +264,9 @@
 
   </section>
 
-  <!-- 7 ▸ contextualisation ------------------------------------------------ -->
+  <!-- 7 + 8 ▸ context, and the confidence attached to it --------------------- -->
+  <div class="duo">
+
   <section class="prose">
     <h2 class="section-head reveal">Measured against its own kind.</h2>
     <p class="reveal">
@@ -242,25 +277,26 @@
     </p>
   </section>
 
-  <!-- 8 ▸ honest verdicts -------------------------------------------------- -->
-  <section class="prose prose-wide">
-    <h2 class="section-head reveal">It says how sure it is.</h2>
+  <section class="prose">
+    <h2 class="section-head reveal">Every estimate carries a range.</h2>
     <p class="reveal">
-      A verdict reads better, typical or worse than typical. Every estimate also
-      carries its own error range, and when that range crosses the threshold the
-      wording softens to <em>likely</em> and the colour eases off.
+      A verdict reads better, typical or worse than typical. When the range
+      crosses the threshold the wording softens to <em>likely</em> and the
+      colour eases off.
     </p>
+    <!-- every verdict the model can return, best to worst; the softened
+         "likely" form of each sits next to the call it hedges -->
     <div class="verdict-demo reveal" aria-hidden="true">
-      <div class="vd">
-        <span class="chip chip-good">Better than typical</span>
-        <span class="vd-cap">The error range sits clear of the threshold.</span>
-      </div>
-      <div class="vd">
-        <span class="chip chip-good chip-soft">Likely better than typical</span>
-        <span class="vd-cap">The range crosses it. The call is still open.</span>
-      </div>
+      <div class="vd"><span class="chip chip-good">Better than typical</span></div>
+      <div class="vd"><span class="chip chip-good chip-soft">Likely better than typical</span></div>
+      <div class="vd"><span class="chip">Typical for the category</span></div>
+      <div class="vd"><span class="chip chip-soft">Likely typical for the category</span></div>
+      <div class="vd"><span class="chip chip-bad chip-soft">Likely worse than typical</span></div>
+      <div class="vd"><span class="chip chip-bad">Worse than typical</span></div>
     </div>
   </section>
+
+  </div>
 
   <!-- 9 ▸ one indicator, stage by stage ------------------------------------ -->
   <section class="prose prose-wide" aria-labelledby="stages-heading">
@@ -275,9 +311,6 @@
       <figcaption class="sc-head">
         <div>
           <h3 class="sc-title">Estimated greenhouse gas by life-cycle stage</h3>
-          <p class="sc-sub">
-            kg CO₂-eq per kilogram of product, indoor partition
-          </p>
         </div>
         <div class="sc-switch" role="group" aria-label="Choose a composition">
           <!-- buttons injected -->
@@ -287,7 +320,7 @@
       <div class="sc-total">
         <span class="sc-total-label">Total</span>
         <span class="sc-total-val" id="sc-total">0.280</span>
-        <span class="sc-total-range" id="sc-total-range"></span>
+        <span class="sc-total-unit">kg CO₂-eq/kg</span>
       </div>
 
       <div class="sc-plot">
@@ -325,7 +358,9 @@
     </p>
   </section>
 
-  <!-- 10 ▸ accuracy -------------------------------------------------------- -->
+  <!-- 10 + 11 ▸ how accurate, and where it runs ----------------------------- -->
+  <div class="duo">
+
   <section class="prose">
     <h2 class="section-head reveal">Accuracy, stated as a factor.</h2>
     <p class="reveal">
@@ -338,29 +373,22 @@
         <span class="fig-cap">Median fold error, across targets</span>
       </div>
       <div class="fig">
-        <span class="fig-n">2–6<span class="fig-x">×</span></span>
-        <span class="fig-cap">p90 fold error</span>
-      </div>
-      <div class="fig">
         <span class="fig-n">~8 500</span>
         <span class="fig-cap">Labelled products behind it</span>
       </div>
     </div>
   </section>
 
-  <!-- 11 ▸ the app --------------------------------------------------------- -->
   <section class="prose">
     <h2 class="section-head reveal">It runs on your machine.</h2>
     <p class="reveal">
-      A Windows desktop application. Changing a material updates all twenty-five
-      estimates in about five milliseconds, fast enough to keep pace with the
-      conversation you are having about the design.
-    </p>
-    <p class="reveal">
-      Inference is entirely offline. No account, no upload, no telemetry. The
-      compositions you are still arguing about stay on the laptop.
+      A Windows desktop application. Change a material and all twenty-five
+      estimates land instantly — fast enough to keep pace with the conversation
+      you are having about the design.
     </p>
   </section>
+
+  </div>
 
   <!-- 12 ▸ close ----------------------------------------------------------- -->
   <section class="statement statement-close">
@@ -368,6 +396,8 @@
       Predicts. Estimates.<br>
       <span class="dim">And tells you how far to trust it.</span>
     </p>
+    <img class="close-mark reveal" src="assets/logo.png" alt=""
+         width="420" height="420">
   </section>
 
 </main>
