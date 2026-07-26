@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Attribute Predictor: early environmental estimates from material composition</title>
+<meta name="description" content="Estimates how a construction product is likely to perform environmentally, from its material composition. Built for early design and for existing products with no declaration. Complements an EPD and a full LCA.">
+<meta name="color-scheme" content="dark">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/logo.png">
+<link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+
+<header class="topbar" id="topbar">
+  <img class="topbar-mark" src="assets/logo.png" alt="" width="22" height="22">
+  <span class="wordmark">Attribute Predictor</span>
+  <span class="topbar-tag">Windows desktop app</span>
+</header>
+
+<main>
+
+  <!-- 1 ▸ hero ------------------------------------------------------------ -->
+  <section class="hero" id="hero">
+    <div class="hero-inner" id="hero-inner">
+      <img class="hero-mark hero-fade" src="assets/logo.png"
+           alt="Attribute Predictor" width="84" height="84">
+      <p class="eyebrow hero-fade">Attribute Predictor</p>
+      <h1 class="display" id="hero-head" data-split>
+        Replace the guess<br>with an <span class="accent">estimate</span>.
+      </h1>
+      <p class="lede hero-fade hero-fade-2">
+        Give it a material composition. It estimates how a construction product
+        is likely to perform environmentally, so early design work and existing
+        buildings have something to quantify.
+      </p>
+
+      <!-- self-playing loop: composition changes, the number follows -->
+      <div class="hero-demo hero-fade hero-fade-3" id="hero-demo">
+        <p class="sr-only">
+          An illustrative loop showing estimated greenhouse gas emissions for
+          three builds of an indoor partition: timber frame 0.310, gypsum
+          plasterboard 0.740, and aluminium-framed glazed 3.40 kg CO₂-eq per
+          kilogram.
+        </p>
+        <div aria-hidden="true">
+          <div class="hd-comp" id="hd-comp"></div>
+          <div class="hd-row">
+            <span class="hd-name" id="hd-name"></span>
+            <span class="hd-read">
+              <span class="hd-val" id="hd-val"></span>
+              <span class="hd-unit">kg CO₂-eq/kg</span>
+            </span>
+          </div>
+          <p class="hd-cap">Greenhouse gas, per kilogram. Illustrative.</p>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-cue" aria-hidden="true"><span></span></div>
+  </section>
+
+  <!-- 2 ▸ the gap ---------------------------------------------------------- -->
+  <section class="statement">
+    <p class="reveal">
+      A declaration describes a product that exists.<br>
+      <span class="dim">Many of the decisions that shape it happen first.</span>
+    </p>
+  </section>
+
+  <!-- 3 ▸ positioning, stated early ---------------------------------------- -->
+  <section class="prose">
+    <h2 class="section-head reveal">Where it fits.</h2>
+    <p class="reveal">
+      Two moments in a project share the same problem: a decision worth
+      quantifying, and nothing yet to quantify it with.
+    </p>
+
+    <ul class="fits reveal">
+      <li>
+        <h3>Early design</h3>
+        <p>
+          Compare compositions in minutes, while everything is still open.
+          Iterate on the option, not on the paperwork.
+        </p>
+      </li>
+      <li>
+        <h3>Renovation and existing stock</h3>
+        <p>
+          The partition already in the building has no declaration and never
+          will. Until now that was a blank. Now it is a range.
+        </p>
+      </li>
+    </ul>
+
+    <p class="reveal callout">
+      A full LCA does the accounting once the design settles and verified data
+      exists. Attribute Predictor covers the stretch before that, where the
+      decisions are still being made.
+    </p>
+  </section>
+
+  <!-- 4 ▸ act one: one indicator, one number ------------------------------- -->
+  <section class="bigviz" id="bigviz" aria-labelledby="bigviz-heading">
+
+    <div class="bigviz-intro">
+      <h2 id="bigviz-heading" class="section-head reveal">
+        One partition.<br><span class="dim">Three ways to build it.</span>
+      </h2>
+      <p class="section-sub reveal">
+        Same category, same job, same functional unit. Change the composition
+        and the estimate follows.
+      </p>
+    </div>
+
+    <div class="bigviz-track" id="bigviz-track">
+      <div class="bigviz-stage" id="bigviz-stage">
+        <div class="bv-inner">
+          <p class="bv-eyebrow">Estimated greenhouse gas, per kilogram</p>
+
+          <p class="bv-number">
+            <span id="bv-num">0.280</span><span class="bv-unit">kg CO₂-eq/kg</span>
+          </p>
+
+          <div class="bv-scale" aria-hidden="true">
+            <div class="bv-band" id="bv-band"></div>
+            <div class="bv-fill" id="bv-fill"></div>
+            <div class="bv-edge" id="bv-edge-lo"></div>
+            <div class="bv-edge" id="bv-edge-hi"></div>
+            <div class="bv-median" id="bv-median"></div>
+          </div>
+          <div class="bv-ticks" aria-hidden="true">
+            <span>0.1× median</span><span>median</span><span>10×</span>
+          </div>
+
+          <div class="bv-foot">
+            <span class="bv-name" id="bv-name">Timber frame</span>
+            <span class="chip" id="bv-chip"></span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="bv-static" id="bv-static"></div>
+  </section>
+
+  <!-- 5 ▸ transition ------------------------------------------------------- -->
+  <section class="statement">
+    <p class="reveal">
+      Carbon is one of five.<br>
+      <span class="dim">A composition that wins on one can lose on another.</span>
+    </p>
+  </section>
+
+  <!-- 6 ▸ act two: the full stage ------------------------------------------ -->
+  <section class="sim" id="sim" aria-labelledby="sim-heading">
+
+    <div class="sim-intro">
+      <h2 id="sim-heading" class="section-head reveal">
+        Every indicator,<br><span class="dim">every time you change a material.</span>
+      </h2>
+      <p class="section-sub reveal">
+        The same three builds, read against the whole category.
+      </p>
+    </div>
+
+    <div class="sim-track" id="sim-track">
+      <div class="sim-stage" id="sim-stage">
+        <div class="stage-inner">
+
+          <div class="stage-head">
+            <div class="stage-cat">
+              <span class="label">Category</span>
+              <span class="value" id="cat-name">Indoor partition</span>
+            </div>
+            <div class="stage-variant">
+              <span class="label">Composition</span>
+              <span class="value" id="variant-name">Timber frame</span>
+              <span class="variant-note" id="variant-note"></span>
+            </div>
+            <ol class="stage-dots" id="stage-dots" aria-hidden="true"></ol>
+          </div>
+
+          <div class="stage-body">
+
+            <div class="panel panel-inputs">
+              <h3 class="panel-title">Material composition</h3>
+              <ul class="materials" id="materials"></ul>
+              <p class="materials-sum"><span id="materials-sum">100</span> % by mass</p>
+            </div>
+
+            <div class="panel panel-radar">
+              <h3 class="panel-title">All five indicators, versus category</h3>
+              <div class="radar-holder">
+                <svg id="radar" viewBox="0 0 420 380" role="img"
+                     aria-labelledby="radar-title"></svg>
+                <p id="radar-title" class="sr-only">
+                  Radar chart of five environmental indicators plotted as a
+                  ratio to the category median.
+                </p>
+              </div>
+              <ul class="radar-key">
+                <li><span class="key-swatch key-median"></span>Category median</li>
+                <li><span class="key-swatch key-value"></span>Product impact</li>
+              </ul>
+            </div>
+
+            <div class="panel panel-readouts">
+              <h3 class="panel-title">Estimated, per kilogram</h3>
+              <ul class="readouts" id="readouts"></ul>
+            </div>
+
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+
+    <noscript>
+      <p class="sim-noscript">
+        These comparisons are drawn in the browser and need JavaScript. The
+        desktop application itself does not.
+      </p>
+    </noscript>
+
+    <!-- unpinned equivalent: reduced motion, or a viewport too short to pin -->
+    <div class="sim-static" id="sim-static">
+      <div class="static-grid" id="static-grid"></div>
+    </div>
+
+  </section>
+
+  <!-- 7 ▸ contextualisation ------------------------------------------------ -->
+  <section class="prose">
+    <h2 class="section-head reveal">Measured against its own kind.</h2>
+    <p class="reveal">
+      A raw value per kilogram tells you very little. Heavy materials score well
+      simply by being heavy. So every result is placed against the real spread
+      for that category: the median, and the band the middle half of products
+      fall inside.
+    </p>
+  </section>
+
+  <!-- 8 ▸ honest verdicts -------------------------------------------------- -->
+  <section class="prose prose-wide">
+    <h2 class="section-head reveal">It says how sure it is.</h2>
+    <p class="reveal">
+      A verdict reads better, typical or worse than typical. Every estimate also
+      carries its own error range, and when that range crosses the threshold the
+      wording softens to <em>likely</em> and the colour eases off.
+    </p>
+    <div class="verdict-demo reveal" aria-hidden="true">
+      <div class="vd">
+        <span class="chip chip-good">Better than typical</span>
+        <span class="vd-cap">The error range sits clear of the threshold.</span>
+      </div>
+      <div class="vd">
+        <span class="chip chip-good chip-soft">Likely better than typical</span>
+        <span class="vd-cap">The range crosses it. The call is still open.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 ▸ one indicator, stage by stage ------------------------------------ -->
+  <section class="prose prose-wide" aria-labelledby="stages-heading">
+    <h2 id="stages-heading" class="section-head reveal">Then open one up.</h2>
+    <p class="reveal">
+      A total tells you the size of the number. The stages tell you where it
+      comes from. Every indicator is estimated stage by stage, and each stage
+      carries its own certainty.
+    </p>
+
+    <figure class="stagechart reveal" id="stagechart">
+      <figcaption class="sc-head">
+        <div>
+          <h3 class="sc-title">Estimated greenhouse gas by life-cycle stage</h3>
+          <p class="sc-sub">
+            kg CO₂-eq per kilogram of product, indoor partition
+          </p>
+        </div>
+        <div class="sc-switch" role="group" aria-label="Choose a composition">
+          <!-- buttons injected -->
+        </div>
+      </figcaption>
+
+      <div class="sc-total">
+        <span class="sc-total-label">Total</span>
+        <span class="sc-total-val" id="sc-total">0.280</span>
+        <span class="sc-total-range" id="sc-total-range"></span>
+      </div>
+
+      <div class="sc-plot">
+        <svg id="sc-svg" role="img" aria-labelledby="sc-desc"></svg>
+        <p id="sc-desc" class="sr-only">
+          Horizontal bar chart of estimated greenhouse gas by life-cycle stage,
+          with whiskers showing each stage's error range. The same values are
+          listed in the table that follows.
+        </p>
+      </div>
+
+      <!-- Accessible twin of the chart; the chart itself carries the visuals.
+           The wrapper takes .sr-only, not the table: a table cannot shrink
+           below its min-content width, so hiding it directly overflows. -->
+      <div class="sr-only">
+        <table id="sc-table">
+          <caption>
+            Estimated greenhouse gas by life-cycle stage, kg CO₂-eq per kilogram
+          </caption>
+          <thead>
+            <tr><th scope="col">Stage</th><th scope="col">Estimate</th>
+                <th scope="col">Range</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+    </figure>
+
+    <p class="reveal">
+      A1 to A3, C3, C4 and D follow from the materials themselves, so they can
+      be estimated with an uncertainty the model knows and states. A4 to A5 and
+      C1 to C2 are set by transport distance and site process, which belong to
+      the project. Those stay outside the model, and outside the claim.
+    </p>
+  </section>
+
+  <!-- 10 ▸ accuracy -------------------------------------------------------- -->
+  <section class="prose">
+    <h2 class="section-head reveal">Accuracy, stated as a factor.</h2>
+    <p class="reveal">
+      These indicators span six orders of magnitude, so accuracy is reported as
+      fold error: how close the estimate lands, as a multiple.
+    </p>
+    <div class="figures reveal">
+      <div class="fig">
+        <span class="fig-n">1.07–1.39<span class="fig-x">×</span></span>
+        <span class="fig-cap">Median fold error, across targets</span>
+      </div>
+      <div class="fig">
+        <span class="fig-n">2–6<span class="fig-x">×</span></span>
+        <span class="fig-cap">p90 fold error</span>
+      </div>
+      <div class="fig">
+        <span class="fig-n">~8 500</span>
+        <span class="fig-cap">Labelled products behind it</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 ▸ the app --------------------------------------------------------- -->
+  <section class="prose">
+    <h2 class="section-head reveal">It runs on your machine.</h2>
+    <p class="reveal">
+      A Windows desktop application. Changing a material updates all twenty-five
+      estimates in about five milliseconds, fast enough to keep pace with the
+      conversation you are having about the design.
+    </p>
+    <p class="reveal">
+      Inference is entirely offline. No account, no upload, no telemetry. The
+      compositions you are still arguing about stay on the laptop.
+    </p>
+  </section>
+
+  <!-- 12 ▸ close ----------------------------------------------------------- -->
+  <section class="statement statement-close">
+    <p class="reveal">
+      Predicts. Estimates.<br>
+      <span class="dim">And tells you how far to trust it.</span>
+    </p>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <p class="footer-mark">
+      <img src="assets/logo.png" alt="" width="26" height="26">
+      <span>Attribute Predictor<span class="tm">™</span></span>
+    </p>
+    <p class="footer-contact">
+      Roger Vergés ·
+      <a href="mailto:roger.verges.eiras@gmail.com">roger.verges.eiras@gmail.com</a>
+    </p>
+    <p class="footer-note">
+      Figures on this page are an illustrative interface demonstration, not
+      model output. Attribute Predictor produces estimates for early decision
+      support. It is not an Environmental Product Declaration and does not
+      replace a verified LCA.
+    </p>
+    <p class="footer-legal">
+      © 2026 Roger Vergés. All rights reserved.
+    </p>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/site.js"></script>
+</body>
+</html>

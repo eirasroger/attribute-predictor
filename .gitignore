@@ -1,3 +1,8 @@
+
+# Local-only working notes for Claude — never published with the site
+docs/
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
