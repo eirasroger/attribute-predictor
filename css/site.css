@@ -1128,15 +1128,26 @@ a:hover { text-decoration: underline; }
   transition: width 0.7s var(--ease);
 }
 
-/* Pinned: enough width for a panel beside the section, and enough height to be
-   worth pinning. Duplicated in js/assembly.js. */
-@media (min-width: 68rem) and (min-height: 38rem) {
-  .as-track { height: 240svh; margin-top: 0; }
-  .as-stage {
-    position: sticky; top: 0; height: 100svh;
-    align-items: center;
+/* Pinned. Both layouts pin: the wall has to arrive closed, settle in the
+   middle of the screen, and come apart as you keep scrolling. Only where the
+   panel goes differs, and js/assembly.js moves it between the two. The queries
+   are duplicated there; change one, change both. */
+@media (min-height: 34rem) {
+  .as-track { height: 215svh; margin-top: 0; }
+  .as-stage { position: sticky; top: 0; height: 100svh; align-items: center; }
+  #as-svg { height: min(56svh, 400px); width: auto; }
+
+  /* narrow: the panel is moved out of the track, so it follows the pin */
+  .assembly > .as-panel {
+    margin: 2.5rem auto 0;
+    max-width: min(24rem, calc(100% - var(--pad) * 2));
   }
-  /* width: auto so the group is only as wide as the section — the panel is
+}
+
+/* Wide enough for the panel to sit beside a centred figure. */
+@media (min-width: 68rem) and (min-height: 38rem) {
+  .as-track { height: 240svh; }
+  /* width: auto so the group is only as wide as the figure — the panel is
      taken out of flow, and JS slides the group to recentre the pair */
   .as-group { display: block; position: relative; width: auto; }
   #as-svg { height: min(68svh, 520px); width: auto; }

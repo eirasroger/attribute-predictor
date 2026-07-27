@@ -80,9 +80,18 @@
     var LAYERS = window.ASSEMBLY.layers, N = LAYERS.length;
     var DEFAULT = 2;                                   /* thermal insulation */
 
-    /* Pinning needs room to the side for the panel and height to pin in. The
-       query is duplicated in site.css; change one, change both. */
-    var pinned = window.matchMedia('(min-width: 68rem) and (min-height: 38rem)');
+    /* Both layouts pin; `wide` only decides where the panel goes. Queries are
+       duplicated in site.css; change one, change both. */
+    var tall = window.matchMedia('(min-height: 34rem)');
+    var wide = window.matchMedia('(min-width: 68rem) and (min-height: 38rem)');
+
+    /* Beside the figure when there is room, otherwise after the whole pinned
+       track, so it does not scroll up over the pinned figure. CSS cannot move
+       a node between those two places. */
+    function place() {
+      var home = wide.matches ? group : track.parentNode;
+      if (panel.parentNode !== home) home.appendChild(panel);
+    }
 
     /* --- geometry ---------------------------------------------------------
        Isometric boards, outside face on top. Every layer is one rectangular
@@ -347,21 +356,22 @@
     }
 
     function scrolled() {
-      side = pinned.matches;
+      side = wide.matches;
       var vh = window.innerHeight || 800;
 
-      if (reduced) {
+      /* too short to pin, or motion is off: show it all at once */
+      if (reduced || !tall.matches) {
         open = 1; hi = 1;
         panel.style.opacity = ''; group.style.transform = '';
         draw();
         return;
       }
 
-      if (pinned.matches) {
-        var r = track.getBoundingClientRect();
-        var run = track.offsetHeight - vh;
-        var t = run > 0 ? clamp(-r.top / run) : 1;
+      var r = track.getBoundingClientRect();
+      var run = track.offsetHeight - vh;
+      var t = run > 0 ? clamp(-r.top / run) : 1;
 
+      if (wide.matches) {
         open = ease(clamp((t - 0.12) / 0.46));
         hi   = ease(clamp((t - 0.45) / 0.27));
         var pin = ease(clamp((t - 0.66) / 0.20));
@@ -372,15 +382,11 @@
         return;
       }
 
-      /* Not pinned: the wall still has to come apart, it just scrubs off the
-         figure's own travel up the viewport. Pinning a phone fights the
-         address bar and buys nothing here. The panel stays visible throughout,
-         because a panel whose opacity depends on a scroll sum is a panel that
-         can be blank at rest. */
-      var sr = svg.getBoundingClientRect();
-      var u = clamp((vh - sr.top) / (vh * 0.75));
-      open = ease(clamp(u / 0.72));
-      hi   = ease(clamp((u - 0.50) / 0.35));
+      /* Narrow: same pin, same sequence, but the panel is below the track and
+         scrolls in after it. It keeps full opacity — one whose opacity is a
+         function of a scroll sum can sit blank at rest on a moving toolbar. */
+      open = ease(clamp((t - 0.15) / 0.50));
+      hi   = ease(clamp((t - 0.58) / 0.26));
       panel.style.opacity = '';
       group.style.transform = '';
       draw();
@@ -405,7 +411,10 @@
     }
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', onScroll);
-    if (pinned.addEventListener) pinned.addEventListener('change', scrolled);
+    [tall, wide].forEach(function (q) {
+      if (q.addEventListener) q.addEventListener('change', function () { place(); scrolled(); });
+    });
+    place();
     scrolled();
   }
 
