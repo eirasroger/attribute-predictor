@@ -293,10 +293,12 @@ a:hover { text-decoration: underline; }
 
 /* --- hero loop ------------------------------------------------------------ */
 
-/* Narrow screens: the render is gone and .hero-side holds only this, so the
-   strip keeps the spacing it had when it sat directly under the copy. */
+/* Narrow screens: the strip sits directly under the render it reads, so it
+   takes the close spacing rather than the gap it needed when it followed the
+   copy. It keeps its own measure while the render bleeds, which is what marks
+   one as the picture and the other as the reading of it. */
 .hero-demo {
-  margin: 3.2rem 0 0;
+  margin: 1.5rem 0 0;
   max-width: 30rem;
 }
 
@@ -347,15 +349,19 @@ a:hover { text-decoration: underline; }
 
 /* --- hero render ---------------------------------------------------------- */
 
-/* The render only appears where there is a column to put it in. Stacked under
-   the copy on a narrow screen it adds roughly 250px to a hero that already
-   fills the viewport, and the whole opening stops fitting on one screen. It is
-   decorative — the strip above carries the loop's meaning — so a narrow screen
-   loses nothing it needs. */
-.hero-render { display: none; }
+/* On one column the render goes full-bleed. It costs the hero its one-screen
+   fit either way, so the choice is between a render inset in the text column
+   and a render the width of the device — and the second is the only one at
+   which the dividing face still reads. The negative margin cancels the hero's
+   own padding exactly rather than going through 100vw, which would count a
+   desktop scrollbar and push the page sideways. */
+.hero-render {
+  margin: 1.2rem calc(var(--pad) * -1) 0;
+}
 
+/* Two columns: back inside the grid cell, which is already the right width. */
 @media (min-width: 64rem) {
-  .hero-render { display: block; }
+  .hero-render { margin: 0; }
 }
 
 /* Aspect is fixed by the crop, so the frame reserves its box before the images
@@ -379,7 +385,8 @@ a:hover { text-decoration: underline; }
    are opaque, so it only shows in the empty ground around the geometry — which
    is what stops the model reading as a cutout laid on top of the page. Colour
    rides --pc, and background-color transitions where the gradient it replaced
-   could not. */
+   could not.
+
    The insets and the blur radius are paired deliberately: a mask clips to the
    element box, so any part of the blur that reaches an edge is cut off square
    and shows as a hard line under the model. The pool has to stop roughly three
@@ -433,6 +440,46 @@ a:hover { text-decoration: underline; }
   /* A custom property cannot itself transition, but the stroke that reads it
      can: it is the used value that animates. */
   .hr-trace polygon { transition: stroke 1.15s var(--ease); }
+}
+
+/* One column: the opening now carries a render as well as the copy, so it no
+   longer holds one screen. Squeezing it until it did would cost the headline
+   its scale and the render the size at which the dividing face reads, and both
+   of those are the point of the section. It runs about a screen and a fifth
+   instead, with the spacing pulled in everywhere so the render lands whole
+   above the fold and the strip that reads it sits at the edge of it.
+   Declared after the render's own rules so the overrides below actually win. */
+@media (max-width: 63.99rem) {
+  .hero { padding-top: 5.2rem; padding-bottom: 2.4rem; }
+  .hero-mast { margin-bottom: 1rem; }
+  .lede { margin-top: 1.2rem; }
+
+  /* The cue is anchored to the bottom of the hero, which on one column is both
+     below the fold and directly behind the readout strip — so it is never seen
+     where it would mean something and only ever seen drawn through the number.
+     The render being cut by the fold already says there is more below. */
+  .scroll-cue { display: none; }
+
+  /* The crop. Eleven per cent off the frame, split top and bottom, drops floor
+     and ceiling that carry nothing and lets the partition fill the band. The
+     dividing face spans 19%–71% of the frame height, so it clears both cuts
+     with room. Going further does buy height, but the next stop down starts
+     cutting the ceiling edge, and once the room's own geometry is clipped the
+     picture stops reading as a room with a wall in it — which is the whole
+     reason it is here.
+
+     It clips the frame rather than restyling the images on purpose: the trace
+     SVG is stretched over the same box with preserveAspectRatio="none", so
+     anything that moved the picture without moving the polygon would leave the
+     outline hanging off the surface it is supposed to be drawing. */
+  .hero-render {
+    position: relative; overflow: hidden;
+    aspect-ratio: 1170 / 660;
+  }
+  .hr-frame {
+    position: absolute; left: 0; right: 0;
+    top: 50%; transform: translateY(-50%);
+  }
 }
 
 
@@ -765,8 +812,10 @@ a:hover { text-decoration: underline; }
 }
 
 /* radar */
+/* Sized by class, not by id: the same chart is drawn into the pinned stage and
+   into each static card, and both need the same treatment. */
 .radar-holder { display: flex; justify-content: center; }
-#radar { width: 100%; max-width: 26rem; height: auto; }
+.radar-svg { width: 100%; max-width: 26rem; height: auto; }
 .radar-key {
   list-style: none; margin: 0.6rem 0 0; padding: 0;
   display: flex; flex-wrap: wrap; gap: 0.5rem 1.2rem;
@@ -851,6 +900,21 @@ a:hover { text-decoration: underline; }
   margin: 0 0 1.4rem; font-size: 0.82rem; color: var(--ink-faint);
 }
 .static-card .panel-title { margin-top: 1.6rem; }
+
+/* The radar, carried into the card. This layout is the one a phone actually
+   gets, so the chart is drawn at the size it needs rather than at whatever a
+   one-screen stage has left over: the axis labels are 11px inside a 420-wide
+   viewBox, so anything under ~250px renders them below 7px and the five spokes
+   stop being identifiable. The card scrolls, so it can simply have the room. */
+.static-card .radar-holder { margin: 0 0 0.4rem; }
+.static-card .radar-svg { max-width: 20rem; }
+
+/* One legend for the whole grid rather than three identical ones under three
+   charts. The rings it names are the same in every card. */
+.static-key {
+  justify-content: center;
+  margin: 0 auto 2.2rem; max-width: 84rem;
+}
 
 /* --- verdict demo --------------------------------------------------------- */
 
@@ -1025,7 +1089,7 @@ a:hover { text-decoration: underline; }
   .sim-stage  { padding: 4rem var(--pad) 1.5rem; }
   .stage-body { grid-template-columns: 1fr 1fr; gap: 1.5rem 2rem; }
   .panel-radar { grid-column: 1 / -1; order: -1; }
-  #radar { max-width: 17rem; }
+  .stage-body .radar-svg { max-width: 17rem; }
   .radar-key { justify-content: center; }
   .stage-head { gap: 1.5rem; padding-bottom: 1rem; margin-bottom: 1.4rem; }
   .demo-flag { margin-top: 1.4rem; }
@@ -1039,15 +1103,13 @@ a:hover { text-decoration: underline; }
   .sim-stage    { padding: 2.9rem var(--pad) 0.9rem; }
   .stage-body  { grid-template-columns: 1fr; gap: 0.9rem; }
 
-  /* The radar stays on a phone. It is the only view that shows the shape of a
-     build rather than its size, which is the comparison this section exists to
-     make. It keeps the 17rem cap set above; the legend is what goes instead,
-     because each readout underneath already states its own ratio to the median
-     in words, and the ~30px it costs is what keeps the chart large enough for
-     the axis labels to survive. If a screen is still too short for all of it,
-     checkFit() in site.js unpins the stage and the static fallback takes over,
-     exactly as it did before. */
-  .radar-key    { display: none; }
+  /* Only the legend inside the pinned stage goes. That stage has one screen to
+     fill and every 30px it saves keeps the chart large enough for the axis
+     labels to survive; each readout underneath already states its own ratio to
+     the median in words. The static cards scroll, so their legend stays —
+     which matters more there, since that is the layout a phone actually gets.
+     Scoped to .stage-body for exactly that reason. */
+  .stage-body .radar-key { display: none; }
   .variant-note { display: none; }
   .panel-title  { margin-bottom: 0.5rem; }
 

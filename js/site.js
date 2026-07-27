@@ -493,8 +493,15 @@
       var card = document.createElement('div');
       card.className = 'static-card';
       setProduct(card, variant);
+      /* The radar is aria-hidden: the readouts directly under it state every
+         one of the five values and its ratio to the median in words, so three
+         more descriptions would only repeat what follows them. */
       card.innerHTML =
         '<h3></h3><p class="sc-note"></p>' +
+        '<div class="radar-holder">' +
+          '<svg class="radar-svg" viewBox="0 0 420 380"' +
+          ' aria-hidden="true" focusable="false"></svg>' +
+        '</div>' +
         '<h4 class="panel-title">Material composition</h4>' +
         '<ul class="materials"></ul>' +
         '<h4 class="panel-title">Estimated, per kilogram</h4>' +
@@ -503,6 +510,10 @@
       card.querySelector('.sc-note').textContent = variant.note;
       grid.appendChild(card);
 
+      /* built after the card is in the document — buildRadar measures nothing,
+         but paintRadar's colour comes from the variant, not from --pc */
+      paintRadar(buildRadar(card.querySelector('.radar-svg')),
+                 variant.values, variant.color);
       paintMaterials(card.querySelector('.materials'), null, variant);
       paintReadouts(buildReadouts(card.querySelector('.readouts')), variant.values);
     });

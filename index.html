@@ -225,8 +225,8 @@
 
             <div class="panel panel-radar">
               <div class="radar-holder">
-                <svg id="radar" viewBox="0 0 420 380" role="img"
-                     aria-labelledby="radar-title"></svg>
+                <svg id="radar" class="radar-svg" viewBox="0 0 420 380"
+                     role="img" aria-labelledby="radar-title"></svg>
                 <p id="radar-title" class="sr-only">
                   Radar chart of five environmental indicators plotted as a
                   ratio to the category median.
@@ -259,6 +259,11 @@
 
     <!-- unpinned equivalent: reduced motion, or a viewport too short to pin -->
     <div class="sim-static" id="sim-static">
+      <!-- one legend for all three cards; the rings mean the same in each -->
+      <ul class="radar-key static-key" aria-hidden="true">
+        <li><span class="key-swatch key-median"></span>Category median</li>
+        <li><span class="key-swatch key-value"></span>Product impact</li>
+      </ul>
       <div class="static-grid" id="static-grid"></div>
     </div>
 
