@@ -215,7 +215,7 @@
         z += hs[k] + (k > 0 ? GAP * g[k - 1] : 0);
       }
 
-      var order = [], anchor = null;
+      var order = [], anchor = null, lowest = 0;
       slabs.forEach(function (sl, i) {
         var on = i === sel;
         var s = on ? 1 + (GROW - 1) * hi : 1;
@@ -243,8 +243,9 @@
 
         if (on) {
           var a = p(lo, hy * 0.72, zb + t / 2);
-          anchor = { x: a[0], y: a[1], bottom: p(hx, hy, zb)[1] };
+          anchor = { x: a[0], y: a[1] };
         }
+        lowest = Math.max(lowest, p(hx, hy, zb)[1]);
         order.push({ i: i, on: on, z: zb });
       });
 
@@ -256,18 +257,19 @@
           callText.setAttribute('x', ex - 12);
           callText.setAttribute('y', anchor.y.toFixed(1));
           callText.setAttribute('text-anchor', 'end');
+          callDot.setAttribute('cx', anchor.x.toFixed(1));
+          callDot.setAttribute('cy', anchor.y.toFixed(1));
+          callDot.setAttribute('r', 2.6);
         } else {
-          /* narrow screens have no room beside the stack, so the leader turns
-             down and the name sits under it */
-          var by = anchor.bottom + 34;
-          callLine.setAttribute('d', 'M' + anchor.x.toFixed(1) + ' ' + anchor.y.toFixed(1) +
-                                     'V' + by.toFixed(1) + 'H' + (CENTRE_X - 8).toFixed(1));
+          /* Narrow screens have no room beside the figure. A leader would have
+             to run down through the boards below the selected one, so the name
+             simply sits under the whole stack. */
+          callLine.setAttribute('d', '');
+          callDot.setAttribute('r', 0);
           callText.setAttribute('x', CENTRE_X);
-          callText.setAttribute('y', by.toFixed(1));
-          callText.setAttribute('text-anchor', 'start');
+          callText.setAttribute('y', (lowest + 34).toFixed(1));
+          callText.setAttribute('text-anchor', 'middle');
         }
-        callDot.setAttribute('cx', anchor.x.toFixed(1));
-        callDot.setAttribute('cy', anchor.y.toFixed(1));
         callG.setAttribute('opacity', hi.toFixed(3));
       }
 
@@ -346,23 +348,42 @@
 
     function scrolled() {
       side = pinned.matches;
-      if (!pinned.matches || reduced) {
+      var vh = window.innerHeight || 800;
+
+      if (reduced) {
         open = 1; hi = 1;
         panel.style.opacity = ''; group.style.transform = '';
         draw();
         return;
       }
-      var r = track.getBoundingClientRect();
-      var run = track.offsetHeight - (window.innerHeight || 800);
-      var t = run > 0 ? clamp(-r.top / run) : 1;
 
-      open = ease(clamp((t - 0.12) / 0.46));
-      hi   = ease(clamp((t - 0.45) / 0.27));
-      var pin = ease(clamp((t - 0.66) / 0.20));
-      panel.style.opacity = pin.toFixed(3);
+      if (pinned.matches) {
+        var r = track.getBoundingClientRect();
+        var run = track.offsetHeight - vh;
+        var t = run > 0 ? clamp(-r.top / run) : 1;
+
+        open = ease(clamp((t - 0.12) / 0.46));
+        hi   = ease(clamp((t - 0.45) / 0.27));
+        var pin = ease(clamp((t - 0.66) / 0.20));
+        panel.style.opacity = pin.toFixed(3);
+        draw();
+        group.style.transform =
+          'translateX(' + (shiftFor(pin) + calloutShift(hi)).toFixed(1) + 'px)';
+        return;
+      }
+
+      /* Not pinned: the wall still has to come apart, it just scrubs off the
+         figure's own travel up the viewport. Pinning a phone fights the
+         address bar and buys nothing here. The panel stays visible throughout,
+         because a panel whose opacity depends on a scroll sum is a panel that
+         can be blank at rest. */
+      var sr = svg.getBoundingClientRect();
+      var u = clamp((vh - sr.top) / (vh * 0.75));
+      open = ease(clamp(u / 0.72));
+      hi   = ease(clamp((u - 0.50) / 0.35));
+      panel.style.opacity = '';
+      group.style.transform = '';
       draw();
-      group.style.transform =
-        'translateX(' + (shiftFor(pin) + calloutShift(hi)).toFixed(1) + 'px)';
     }
 
     slabs.forEach(function (o, i) {
