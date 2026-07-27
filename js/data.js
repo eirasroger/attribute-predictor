@@ -5,23 +5,35 @@
    file is a prediction; do not present it as one.
    --------------------------------------------------------------------------- */
 
+/* User-facing strings are { en, ca } pairs; units are not, SI is SI.
+   Axis labels are drawn into a fixed radar — keep them to two short lines. */
 const INDICATORS = [
-  { key: 'ghg',  short: 'Greenhouse gas emissions',
-    axis: 'Greenhouse\ngas',        unit: 'kg CO₂-eq/kg' },
-  { key: 'fw',   short: 'Water depletion potential',
-    axis: 'Water\ndepletion',       unit: 'm³/kg' },
-  { key: 'ep',   short: 'Eutrophication potential',
-    axis: 'Eutrophi-\ncation',      unit: 'kg PO₄-eq/kg' },
-  { key: 'ap',   short: 'Acidification potential',
-    axis: 'Acidifi-\ncation',       unit: 'kg SO₂-eq/kg' },
-  { key: 'adpf', short: 'Abiotic depletion, fossil',
-    axis: 'Abiotic\ndepletion',     unit: 'MJ/kg' }
+  { key: 'ghg',
+    short: { en: 'Greenhouse gas emissions',   ca: 'Emissions de GEH' },
+    axis:  { en: 'Greenhouse\ngas',            ca: 'Gasos\nd\'hivernacle' },
+    unit: 'kg CO₂-eq/kg' },
+  { key: 'fw',
+    short: { en: 'Water depletion potential',  ca: 'Potencial d\'esgotament d\'aigua' },
+    axis:  { en: 'Water\ndepletion',           ca: 'Esgotament\nd\'aigua' },
+    unit: 'm³/kg' },
+  { key: 'ep',
+    short: { en: 'Eutrophication potential',   ca: 'Potencial d\'eutrofització' },
+    axis:  { en: 'Eutrophi-\ncation',          ca: 'Eutrofit-\nzació' },
+    unit: 'kg PO₄-eq/kg' },
+  { key: 'ap',
+    short: { en: 'Acidification potential',    ca: 'Potencial d\'acidificació' },
+    axis:  { en: 'Acidifi-\ncation',           ca: 'Acidifi-\ncació' },
+    unit: 'kg SO₂-eq/kg' },
+  { key: 'adpf',
+    short: { en: 'Abiotic depletion, fossil',  ca: 'Esgotament abiòtic, fòssil' },
+    axis:  { en: 'Abiotic\ndepletion',         ca: 'Esgotament\nabiòtic' },
+    unit: 'MJ/kg' }
 ];
 
 /* The category distribution every result is read against. Median plus the
    p25–p75 band of real products in the same category. */
 const CATEGORY = {
-  name: 'Indoor partition',
+  name: { en: 'Indoor partition', ca: 'Envà interior' },
   n: 214,
   dist: {
     ghg:  { p25: 0.48,    median: 0.95,    p75: 2.1 },
@@ -41,45 +53,49 @@ const CATEGORY = {
 const VARIANTS = [
   {
     id: 'timber',
-    name: 'Timber frame',
+    name: { en: 'Timber frame', ca: 'Estructura de fusta' },
     color: '#3ecf8e', ink: '#3ecf8e',
-    note: 'Softwood studs, wood fibre board, cellulose fill.',
+    note: { en: 'Softwood studs, wood fibre board, cellulose fill.',
+            ca: 'Muntants de fusta tova, tauler de fibra de fusta, reblert de cel·lulosa.' },
     materials: [
-      { name: 'Softwood timber',      pct: 46 },
-      { name: 'Wood fibre board',     pct: 28 },
-      { name: 'Cellulose insulation', pct: 18 },
-      { name: 'Water-based adhesive', pct: 5  },
-      { name: 'Steel fasteners',      pct: 3  }
+      { name: { en: 'Softwood timber',      ca: 'Fusta tova' },                 pct: 46 },
+      { name: { en: 'Wood fibre board',     ca: 'Tauler de fibra de fusta' },   pct: 28 },
+      { name: { en: 'Cellulose insulation', ca: 'Aïllament de cel·lulosa' },    pct: 18 },
+      { name: { en: 'Water-based adhesive', ca: 'Adhesiu de base aquosa' },     pct: 5  },
+      { name: { en: 'Steel fasteners',      ca: 'Fixacions d\'acer' },          pct: 3  }
     ],
     values: { ghg: 0.31, fw: 0.018, ep: 0.0024, ap: 0.0032, adpf: 4.1 },
     stages: { a1a3: 0.58, c3: 0.03, c4: 0.02, d: -0.32 }
   },
   {
     id: 'gypsum',
-    name: 'Gypsum plasterboard',
+    name: { en: 'Gypsum plasterboard', ca: 'Cartró guix' },
     color: '#c98f35', ink: '#dda94f',
-    note: 'Boarded steel stud, mineral wool cavity.',
+    note: { en: 'Boarded steel stud, mineral wool cavity.',
+            ca: 'Muntants d\'acer amb plaques, cambra amb llana mineral.' },
     materials: [
-      { name: 'Gypsum plasterboard',   pct: 62 },
-      { name: 'Steel stud framing',    pct: 21 },
-      { name: 'Mineral wool',          pct: 12 },
-      { name: 'Paper facing',          pct: 4  },
-      { name: 'Steel screws',          pct: 1  }
+      { name: { en: 'Gypsum plasterboard', ca: 'Placa de cartró guix' },        pct: 62 },
+      { name: { en: 'Steel stud framing',  ca: 'Estructura de muntants d\'acer' }, pct: 21 },
+      { name: { en: 'Mineral wool',        ca: 'Llana mineral' },               pct: 12 },
+      { name: { en: 'Paper facing',        ca: 'Revestiment de paper' },        pct: 4  },
+      { name: { en: 'Steel screws',        ca: 'Cargols d\'acer' },             pct: 1  }
     ],
     values: { ghg: 0.74, fw: 0.0072, ep: 0.00065, ap: 0.0056, adpf: 14.5 },
     stages: { a1a3: 0.92, c3: 0.03, c4: 0.05, d: -0.26 }
   },
   {
     id: 'aluminium',
-    name: 'Aluminium-framed glazed',
+    name: { en: 'Aluminium-framed glazed', ca: 'Vidre amb marc d\'alumini' },
     color: '#5b8dd9', ink: '#79a6e4',
-    note: 'Extruded profile, float glass, thermal break.',
+    note: { en: 'Extruded profile, float glass, thermal break.',
+            ca: 'Perfil extrudit, vidre float, trencament de pont tèrmic.' },
     materials: [
-      { name: 'Float glass',            pct: 44 },
-      { name: 'Aluminium profile',      pct: 38 },
-      { name: 'EPDM gasket',            pct: 8  },
-      { name: 'Polyamide thermal break', pct: 6 },
-      { name: 'Steel fixings',          pct: 4  }
+      { name: { en: 'Float glass',       ca: 'Vidre float' },        pct: 44 },
+      { name: { en: 'Aluminium profile', ca: 'Perfil d\'alumini' },  pct: 38 },
+      { name: { en: 'EPDM gasket',       ca: 'Junta d\'EPDM' },      pct: 8  },
+      { name: { en: 'Polyamide thermal break',
+                ca: 'Trencament tèrmic de poliamida' },              pct: 6  },
+      { name: { en: 'Steel fixings',     ca: 'Fixacions d\'acer' },  pct: 4  }
     ],
     values: { ghg: 3.40, fw: 0.082, ep: 0.0011, ap: 0.019, adpf: 44 },
     stages: { a1a3: 4.55, c3: 0.05, c4: 0.04, d: -1.24 }
@@ -90,12 +106,16 @@ const VARIANTS = [
 const FOLD_ERROR = 1.35;
 
 /* Each stage is its own model with its own fold error. Not additive — the
-   total is predicted separately. */
+   total is predicted separately. `label` is the EN 15804 module code. */
 const STAGES = [
-  { key: 'a1a3', label: 'A1–A3', desc: 'Product stage',    fold: 1.18 },
-  { key: 'c3',   label: 'C3',    desc: 'Waste processing', fold: 1.62 },
-  { key: 'c4',   label: 'C4',    desc: 'Disposal',         fold: 1.90 },
-  { key: 'd',    label: 'D',     desc: 'Avoided burden',   fold: 2.35 }
+  { key: 'a1a3', label: 'A1–A3', fold: 1.18,
+    desc: { en: 'Product stage',    ca: 'Etapa de producte'      } },
+  { key: 'c3',   label: 'C3',    fold: 1.62,
+    desc: { en: 'Waste processing', ca: 'Tractament de residus'  } },
+  { key: 'c4',   label: 'C4',    fold: 1.90,
+    desc: { en: 'Disposal',         ca: 'Disposició final'       } },
+  { key: 'd',    label: 'D',     fold: 2.35,
+    desc: { en: 'Avoided burden',   ca: 'Càrregues evitades'     } }
 ];
 
 const TOTAL_FOLD = 1.24;

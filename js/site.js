@@ -7,6 +7,13 @@
 
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  /* tx() resolves an { en, ca } pair, str() a dictionary key, dec() the decimal
+     separator. Short names: `t` and `num` are taken by locals in this file. */
+  var I18N = window.I18N || {};
+  var tx  = I18N.t   || function (p) { return p && p.en != null ? p.en : p; };
+  var str = I18N.s   || function () { return ''; };
+  var dec = I18N.num || function (x) { return String(x); };
+
   /* --- formatting -------------------------------------------------------- */
 
   var SUP = { '-': '⁻', '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴',
@@ -23,14 +30,14 @@
       var exp = String(Number(e[1])).split('').map(function (c) {
         return SUP[c] || c;
       }).join('');
-      return e[0] + ' × 10' + exp;
+      return dec(e[0]) + ' × 10' + exp;
     }
     var decimals = Math.max(0, 2 - Math.floor(Math.log10(a)));
-    return v.toFixed(Math.min(decimals, 8));
+    return dec(v.toFixed(Math.min(decimals, 8)));
   }
 
   function fmtRatio(r) {
-    return (r >= 10 ? r.toFixed(0) : r.toFixed(2)) + '× median';
+    return dec(r >= 10 ? r.toFixed(0) : r.toFixed(2)) + '× ' + str('scale.median');
   }
 
   /* --- verdicts ---------------------------------------------------------- */
@@ -41,20 +48,16 @@
     return 'mid';
   }
 
-  var VERDICT_TEXT = {
-    good: 'Better than typical',
-    mid:  'Typical for the category',
-    bad:  'Worse than typical'
-  };
-
-  /* If the error range straddles a threshold the claim cannot be settled,
-     so the wording softens. */
+  /* If the error range straddles a threshold the claim cannot be settled, so
+     the wording softens. Each softened form is its own key, not a prefix. */
   function verdict(v, d) {
     var here = classify(v, d);
     var soft = classify(v / FOLD_ERROR, d) !== classify(v * FOLD_ERROR, d);
-    var text = VERDICT_TEXT[here];
-    if (soft) text = 'Likely ' + text.charAt(0).toLowerCase() + text.slice(1);
-    return { kind: here, soft: soft, text: text };
+    return {
+      kind: here,
+      soft: soft,
+      text: str('verdict.' + here + (soft ? '.soft' : ''))
+    };
   }
 
   function chipClass(v) {
@@ -213,7 +216,7 @@
         stageEl.style.setProperty('--pi', hexLerp(a.ink, b.ink, t));
 
         var idx = t < 0.5 ? seg : seg + 1;
-        if (idx !== shown) { shown = idx; name.textContent = VARIANTS[idx].name; }
+        if (idx !== shown) { shown = idx; name.textContent = tx(VARIANTS[idx].name); }
 
         /* verdict comes from a build, not a half-way value — see paintReadouts */
         paintChip(chip, VARIANTS[idx].values.ghg, GHG);
@@ -240,10 +243,12 @@
         '<div class="bv-scale"><div class="bv-band"></div>' +
         '<div class="bv-fill"></div><div class="bv-edge lo"></div>' +
         '<div class="bv-edge hi"></div><div class="bv-median"></div></div>' +
-        '<div class="bv-ticks"><span>0.1× median</span><span>median</span>' +
-        '<span>10×</span></div><span class="chip"></span>';
+        /* built after i18n's sweep, so these ask for their own strings */
+        '<div class="bv-ticks"><span>' + str('scale.low') + '</span>' +
+        '<span>' + str('scale.median') + '</span>' +
+        '<span>' + str('scale.high') + '</span></div><span class="chip"></span>';
 
-      row.querySelector('.bvs-name').textContent = variant.name;
+      row.querySelector('.bvs-name').textContent = tx(variant.name);
       row.querySelector('.bvs-val').textContent = fmt(v);
 
       var p25 = logPos(GHG.p25, GHG.median) * 100;
@@ -343,7 +348,7 @@
 
     INDICATORS.forEach(function (ind, i) {
       var p = point(i, R_MAX + 30);
-      var lines = ind.axis.split('\n');
+      var lines = tx(ind.axis).split('\n');
       var t = el('text', {
         x: p[0].toFixed(1), y: (p[1] - (lines.length - 1) * 6).toFixed(1),
         fill: '#6f9187', 'font-size': 11,
@@ -383,7 +388,7 @@
       var li = document.createElement('li');
       li.innerHTML =
         '<div class="r-top">' +
-          '<span class="r-name">' + ind.short + '</span>' +
+          '<span class="r-name">' + tx(ind.short) + '</span>' +
           '<span><span class="r-val"></span>' +
           '<span class="r-unit">' + ind.unit + '</span></span>' +
         '</div>' +
@@ -425,7 +430,7 @@
         '<span class="m-name"></span>' +
         '<span class="m-pct">' + m.pct + ' %</span>' +
         '<span class="m-bar"><i style="width:' + m.pct + '%"></i></span>';
-      li.querySelector('.m-name').textContent = m.name;
+      li.querySelector('.m-name').textContent = tx(m.name);
       ul.appendChild(li);
     });
     if (sumEl) sumEl.textContent = sum;
@@ -445,7 +450,7 @@
     var noteEl = document.getElementById('variant-note');
     var dotsEl = document.getElementById('stage-dots');
 
-    document.getElementById('cat-name').textContent = CATEGORY.name;
+    document.getElementById('cat-name').textContent = tx(CATEGORY.name);
 
     VARIANTS.forEach(function () { dotsEl.appendChild(document.createElement('li')); });
     var dots = Array.prototype.slice.call(dotsEl.children);
@@ -470,8 +475,8 @@
         if (idx !== shown) {
           shown = idx;
           paintMaterials(matsEl, null, VARIANTS[idx]);
-          nameEl.textContent = VARIANTS[idx].name;
-          noteEl.textContent = VARIANTS[idx].note;
+          nameEl.textContent = tx(VARIANTS[idx].name);
+          noteEl.textContent = tx(VARIANTS[idx].note);
           dots.forEach(function (d, i) { d.classList.toggle('on', i === idx); });
         }
 
@@ -493,25 +498,21 @@
       var card = document.createElement('div');
       card.className = 'static-card';
       setProduct(card, variant);
-      /* The radar is aria-hidden: the readouts directly under it state every
-         one of the five values and its ratio to the median in words, so three
-         more descriptions would only repeat what follows them. */
+      /* radar is aria-hidden — the readouts below state every value in words */
       card.innerHTML =
         '<h3></h3><p class="sc-note"></p>' +
         '<div class="radar-holder">' +
           '<svg class="radar-svg" viewBox="0 0 420 380"' +
           ' aria-hidden="true" focusable="false"></svg>' +
         '</div>' +
-        '<h4 class="panel-title">Material composition</h4>' +
+        '<h4 class="panel-title">' + str('sim.materials') + '</h4>' +
         '<ul class="materials"></ul>' +
-        '<h4 class="panel-title">Estimated, per kilogram</h4>' +
+        '<h4 class="panel-title">' + str('sim.readouts') + '</h4>' +
         '<ul class="readouts"></ul>';
-      card.querySelector('h3').textContent = variant.name;
-      card.querySelector('.sc-note').textContent = variant.note;
+      card.querySelector('h3').textContent = tx(variant.name);
+      card.querySelector('.sc-note').textContent = tx(variant.note);
       grid.appendChild(card);
 
-      /* built after the card is in the document — buildRadar measures nothing,
-         but paintRadar's colour comes from the variant, not from --pc */
       paintRadar(buildRadar(card.querySelector('.radar-svg')),
                  variant.values, variant.color);
       paintMaterials(card.querySelector('.materials'), null, variant);
@@ -592,7 +593,7 @@
       v.materials.forEach(function (m, k) { segs[k].style.width = m.pct + '%'; });
       setProduct(host, v);
       paintRender(v);
-      name.textContent = v.name;
+      name.textContent = tx(v.name);
       val.textContent = fmt(v.values.ghg);
     }
 
@@ -620,7 +621,7 @@
       v.materials.forEach(function (m, k) { segs[k].style.width = m.pct + '%'; });
       setProduct(host, v);
       paintRender(v);
-      name.textContent = v.name;
+      name.textContent = tx(v.name);
       tweenTo(next);
       i = next;
     }
@@ -750,7 +751,7 @@
     VARIANTS.forEach(function (v, i) {
       var b = document.createElement('button');
       b.type = 'button';
-      b.textContent = v.name;
+      b.textContent = tx(v.name);
       setProduct(b, v);
       b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
       /* hover nudges and releases; focus/click is the sticky version */
@@ -814,7 +815,7 @@
             x: geo.labelW - 16, y: cy + 12, fill: '#6f9187',
             'font-size': geo.fDesc, 'text-anchor': 'end'
           });
-          desc.textContent = s.desc;
+          desc.textContent = tx(s.desc);
           svg.appendChild(desc);
         }
 
@@ -873,14 +874,14 @@
       rows.forEach(function (r) {
         var tr = document.createElement('tr');
         tr.innerHTML =
-          '<td>' + r.stage.label + ' · ' + r.stage.desc + '</td>' +
+          '<td>' + r.stage.label + ' · ' + tx(r.stage.desc) + '</td>' +
           '<td>' + fmt(r.v) + '</td>' +
           '<td>' + fmt(r.lo) + ' to ' + fmt(r.hi) + '</td>';
         tbody.appendChild(tr);
       });
       /* the total states no range on screen, so the table must not either */
       var tr = document.createElement('tr');
-      tr.innerHTML = '<td>Total</td><td>' + fmt(tv) + '</td><td>—</td>';
+      tr.innerHTML = '<td>' + str('stages.total') + '</td><td>' + fmt(tv) + '</td><td>—</td>';
       tbody.appendChild(tr);
     }
 
@@ -1017,6 +1018,62 @@
     check();
   }
 
+  /* --- nav ---------------------------------------------------------------- */
+
+  /* Two disclosures, one implementation. State lives on the DOM: aria-expanded
+     is what the CSS reads, so there is no second copy of "is it open". */
+  function initNav() {
+    var groups = [
+      { btn: document.getElementById('nav-toggle'), box: document.querySelector('.nav')  },
+      { btn: document.getElementById('lang-btn'),   box: document.getElementById('lang') }
+    ].filter(function (g) { return g.btn && g.box; });
+
+    if (!groups.length) return;
+
+    var bar = document.getElementById('topbar');
+
+    function setOpen(g, open) {
+      g.btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      g.box.setAttribute('data-open', open ? 'true' : 'false');
+      /* the bar needs a ground behind an open panel; set here, not with :has() */
+      if (bar && g.box.classList.contains('nav')) {
+        bar.classList.toggle('nav-open', open);
+      }
+    }
+    function closeAll(except) {
+      groups.forEach(function (g) { if (g !== except) setOpen(g, false); });
+    }
+
+    groups.forEach(function (g) {
+      setOpen(g, false);
+      g.btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var open = g.btn.getAttribute('aria-expanded') !== 'true';
+        closeAll(g);
+        setOpen(g, open);
+      });
+      /* a click inside must not count as a click outside */
+      g.box.addEventListener('click', function (e) { e.stopPropagation(); });
+    });
+
+    document.addEventListener('click', function () { closeAll(); });
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      groups.forEach(function (g) {
+        if (g.btn.getAttribute('aria-expanded') === 'true') {
+          setOpen(g, false);
+          g.btn.focus();
+        }
+      });
+    });
+
+    /* the panel and the drop are different things either side of 44rem */
+    var narrow = window.matchMedia('(max-width: 44rem)');
+    var onChange = function () { closeAll(); };
+    if (narrow.addEventListener) narrow.addEventListener('change', onChange);
+    else if (narrow.addListener) narrow.addListener(onChange);
+  }
+
   /* --- go ---------------------------------------------------------------- */
 
   function init() {
@@ -1025,6 +1082,7 @@
     initStageChart();
     initReveals();
     initTopbar();
+    initNav();
 
     /* Both pinned and unpinned layouts are populated; CSS picks which shows,
        so a window that becomes too short already has its fallback rendered. */

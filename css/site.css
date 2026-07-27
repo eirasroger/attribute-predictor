@@ -60,25 +60,165 @@ a:hover { text-decoration: underline; }
 
 /* --- top bar -------------------------------------------------------------- */
 
+/* Always present; only its ground fades in on scroll. */
 .topbar {
   position: fixed; inset: 0 0 auto 0; z-index: 40;
   display: flex; align-items: center; gap: 0.9rem;
   padding: 1rem var(--pad);
   font-size: 0.8rem; letter-spacing: 0.02em;
-  background: color-mix(in srgb, var(--ground) 78%, transparent);
-  backdrop-filter: blur(18px);
+  background-color: transparent;
   border-bottom: 1px solid transparent;
+  transition: background-color 0.6s var(--ease), border-color 0.6s var(--ease),
+              backdrop-filter 0.6s var(--ease);
+}
+.topbar.visible,
+.topbar.nav-open {
+  background-color: color-mix(in srgb, var(--ground) 78%, transparent);
+  backdrop-filter: blur(18px);
+  border-bottom-color: var(--line);
+}
+
+/* Only the identity fades in — the hero mark hands over to it. */
+.topbar-id {
+  display: flex; align-items: center; gap: 0.9rem;
   opacity: 0; transform: translateY(-100%);
-  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease),
-              border-color 0.6s var(--ease);
+  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
 }
-.topbar.visible {
-  opacity: 1; transform: none; border-bottom-color: var(--line);
-}
+.topbar.visible .topbar-id { opacity: 1; transform: none; }
+
 .topbar-mark { width: 1.35rem; height: auto; display: block; }
 .wordmark { font-weight: 600; letter-spacing: -0.01em; margin-right: 0.2rem; }
 .topbar-tag { color: var(--ink-faint); }
-@media (max-width: 30rem) { .topbar-tag { display: none; } }
+@media (max-width: 44rem) { .topbar-tag { display: none; } }
+
+/* --- nav ------------------------------------------------------------------ */
+
+.nav { margin-left: auto; }
+
+.nav-items {
+  display: flex; align-items: center;
+  gap: clamp(1.1rem, 2.4vw, 2rem);
+}
+
+.nav-link {
+  color: var(--ink-dim); text-decoration: none;
+  letter-spacing: 0.01em; white-space: nowrap;
+  transition: color 0.3s var(--ease);
+}
+/* Placeholders have no href; drop this rule when they get one. */
+.nav-link:not([href]) { cursor: default; }
+.nav-link[href]:hover, .nav-link[href]:focus-visible { color: var(--ink); }
+
+/* the hamburger — narrow screens only, see the media query at the end */
+.nav-toggle {
+  display: none;
+  padding: 0.35rem; margin: -0.35rem;
+  border: 0; background: none; color: var(--ink-dim); cursor: pointer;
+}
+.nav-bars { display: block; width: 1.1rem; }
+.nav-bars i {
+  display: block; height: 1.5px; background: currentColor;
+  transition: transform 0.32s var(--ease), opacity 0.32s var(--ease);
+}
+.nav-bars i + i { margin-top: 4px; }
+[aria-expanded="true"] .nav-bars i:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+[aria-expanded="true"] .nav-bars i:nth-child(2) { opacity: 0; }
+[aria-expanded="true"] .nav-bars i:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
+
+/* --- language menu -------------------------------------------------------- */
+
+.lang { position: relative; }
+
+.lang-btn {
+  display: flex; align-items: center; gap: 0.4rem;
+  padding: 0.25rem 0.1rem; border: 0; background: none;
+  color: var(--ink-dim); cursor: pointer;
+  font: inherit; letter-spacing: 0.06em;
+  transition: color 0.3s var(--ease);
+}
+.lang-btn:hover, .lang-btn[aria-expanded="true"] { color: var(--ink); }
+.globe { width: 1rem; height: 1rem; display: block; }
+.lang-code { font-weight: 500; }
+.caret {
+  width: 0.5rem; height: auto; display: block;
+  transition: transform 0.3s var(--ease);
+}
+.lang-btn[aria-expanded="true"] .caret { transform: rotate(180deg); }
+
+/* Hidden by attribute, so aria-expanded is the only state. */
+.lang-list {
+  position: absolute; top: calc(100% + 0.6rem); right: 0; z-index: 5;
+  list-style: none; margin: 0; padding: 0.35rem;
+  min-width: 9.5rem;
+  background: color-mix(in srgb, var(--ground) 94%, var(--ink));
+  border: 1px solid var(--line);
+  backdrop-filter: blur(18px);
+}
+.lang[data-open="false"] .lang-list { display: none; }
+
+.lang-opt {
+  display: flex; align-items: center; gap: 0.6rem;
+  width: 100%; padding: 0.5rem 0.6rem;
+  border: 0; background: none; cursor: pointer;
+  font: inherit; color: var(--ink-dim); text-align: left;
+  white-space: nowrap;
+  transition: color 0.25s var(--ease), background-color 0.25s var(--ease);
+}
+.lang-opt img {
+  /* sources are 960px and 512px square; the fixed box is what evens them */
+  width: 1.15rem; height: 1.15rem; display: block; border-radius: 50%;
+  filter: grayscale(1); opacity: 0.5;
+  transition: filter 0.25s var(--ease), opacity 0.25s var(--ease);
+}
+.lang-opt:hover, .lang-opt:focus-visible {
+  color: var(--ink);
+  background-color: color-mix(in srgb, var(--ink) 7%, transparent);
+}
+.lang-opt:hover img, .lang-opt:focus-visible img { filter: none; opacity: 1; }
+
+/* Colour is the state — legible at 18px without telling two flags apart. */
+.lang-opt[aria-current="true"] { color: var(--accent); }
+.lang-opt[aria-current="true"] img { filter: none; opacity: 1; }
+
+.nav-toggle:focus-visible,
+.lang-btn:focus-visible,
+.lang-opt:focus-visible,
+.nav-link[href]:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 3px;
+}
+
+/* Narrow: everything folds into one panel, languages included. */
+@media (max-width: 44rem) {
+  .nav-toggle { display: block; }
+
+  .nav-items {
+    position: absolute; top: 100%; right: 0; left: 0;
+    flex-direction: column; align-items: stretch;
+    gap: 0;
+    padding: 0.5rem var(--pad) 1.1rem;
+    background-color: color-mix(in srgb, var(--ground) 94%, var(--ink));
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(18px);
+  }
+  .nav[data-open="false"] .nav-items { display: none; }
+
+  .nav-link { padding: 0.75rem 0; font-size: 0.95rem; }
+  .lang-btn { display: none; }
+
+  .lang { border-top: 1px solid var(--line); margin-top: 0.4rem; padding-top: 0.6rem; }
+  /* both selectors: the [data-open] rule above outranks a bare .lang-list */
+  .lang-list,
+  .lang[data-open="false"] .lang-list {
+    position: static; display: block;
+    min-width: 0; padding: 0;
+    background: none; border: 0; backdrop-filter: none;
+  }
+  .lang-opt { padding: 0.6rem 0; font-size: 0.95rem; }
+  .lang-opt:hover, .lang-opt:focus-visible { background-color: transparent; }
+}
+
+/* Holds paint until i18n.js has swapped the strings. See index.html <head>. */
+.i18n-pending body { visibility: hidden; }
 
 /* --- shared type ---------------------------------------------------------- */
 
@@ -293,10 +433,7 @@ a:hover { text-decoration: underline; }
 
 /* --- hero loop ------------------------------------------------------------ */
 
-/* Narrow screens: the strip sits directly under the render it reads, so it
-   takes the close spacing rather than the gap it needed when it followed the
-   copy. It keeps its own measure while the render bleeds, which is what marks
-   one as the picture and the other as the reading of it. */
+/* Sits directly under the render it reads; keeps its measure while that bleeds. */
 .hero-demo {
   margin: 1.5rem 0 0;
   max-width: 30rem;
@@ -349,17 +486,12 @@ a:hover { text-decoration: underline; }
 
 /* --- hero render ---------------------------------------------------------- */
 
-/* On one column the render goes full-bleed. It costs the hero its one-screen
-   fit either way, so the choice is between a render inset in the text column
-   and a render the width of the device — and the second is the only one at
-   which the dividing face still reads. The negative margin cancels the hero's
-   own padding exactly rather than going through 100vw, which would count a
-   desktop scrollbar and push the page sideways. */
+/* One column: full-bleed. The margin cancels the hero's padding rather than
+   using 100vw, which would count a desktop scrollbar. */
 .hero-render {
   margin: 1.2rem calc(var(--pad) * -1) 0;
 }
 
-/* Two columns: back inside the grid cell, which is already the right width. */
 @media (min-width: 64rem) {
   .hero-render { margin: 0; }
 }
@@ -381,17 +513,10 @@ a:hover { text-decoration: underline; }
     linear-gradient(to right, transparent, #000 15%, #000 85%, transparent);
 }
 
-/* A soft pool of the build's colour behind the model, blurred wide. The shots
-   are opaque, so it only shows in the empty ground around the geometry — which
-   is what stops the model reading as a cutout laid on top of the page. Colour
-   rides --pc, and background-color transitions where the gradient it replaced
-   could not.
-
-   The insets and the blur radius are paired deliberately: a mask clips to the
-   element box, so any part of the blur that reaches an edge is cut off square
-   and shows as a hard line under the model. The pool has to stop roughly three
-   blur radii short of the top and bottom. Left and right can bleed, since the
-   mask is already fading there. */
+/* A pool of the build's colour behind the model, showing only in the empty
+   ground around it. Insets and blur radius are paired: the mask clips to the
+   box, so the pool must stop ~3 blur radii short of top and bottom or the blur
+   cuts off square. Left and right can bleed — the mask fades there already. */
 .hr-frame::before {
   content: '';
   position: absolute; z-index: 0;
@@ -442,36 +567,19 @@ a:hover { text-decoration: underline; }
   .hr-trace polygon { transition: stroke 1.15s var(--ease); }
 }
 
-/* One column: the opening now carries a render as well as the copy, so it no
-   longer holds one screen. Squeezing it until it did would cost the headline
-   its scale and the render the size at which the dividing face reads, and both
-   of those are the point of the section. It runs about a screen and a fifth
-   instead, with the spacing pulled in everywhere so the render lands whole
-   above the fold and the strip that reads it sits at the edge of it.
-   Declared after the render's own rules so the overrides below actually win. */
+/* One column: the hero runs ~1.2 screens rather than shrink the headline or
+   the render. Declared after the render's own rules so these win. */
 @media (max-width: 63.99rem) {
   .hero { padding-top: 5.2rem; padding-bottom: 2.4rem; }
   .hero-mast { margin-bottom: 1rem; }
   .lede { margin-top: 1.2rem; }
 
-  /* The cue is anchored to the bottom of the hero, which on one column is both
-     below the fold and directly behind the readout strip — so it is never seen
-     where it would mean something and only ever seen drawn through the number.
-     The render being cut by the fold already says there is more below. */
+  /* anchored to the hero's bottom, which here is behind the readout strip */
   .scroll-cue { display: none; }
 
-  /* The crop. Eleven per cent off the frame, split top and bottom, drops floor
-     and ceiling that carry nothing and lets the partition fill the band. The
-     dividing face spans 19%–71% of the frame height, so it clears both cuts
-     with room. Going further does buy height, but the next stop down starts
-     cutting the ceiling edge, and once the room's own geometry is clipped the
-     picture stops reading as a room with a wall in it — which is the whole
-     reason it is here.
-
-     It clips the frame rather than restyling the images on purpose: the trace
-     SVG is stretched over the same box with preserveAspectRatio="none", so
-     anything that moved the picture without moving the polygon would leave the
-     outline hanging off the surface it is supposed to be drawing. */
+  /* 11% crop, split top and bottom. The face spans 19%–71% so it clears both
+     cuts; cropping harder clips the ceiling edge. Clips the frame rather than
+     the images so the trace SVG stays registered to the picture. */
   .hero-render {
     position: relative; overflow: hidden;
     aspect-ratio: 1170 / 660;
@@ -811,9 +919,7 @@ a:hover { text-decoration: underline; }
   transition: width 0.75s var(--ease);
 }
 
-/* radar */
-/* Sized by class, not by id: the same chart is drawn into the pinned stage and
-   into each static card, and both need the same treatment. */
+/* radar — by class, not id: drawn into both the pinned stage and each card */
 .radar-holder { display: flex; justify-content: center; }
 .radar-svg { width: 100%; max-width: 26rem; height: auto; }
 .radar-key {
@@ -901,16 +1007,12 @@ a:hover { text-decoration: underline; }
 }
 .static-card .panel-title { margin-top: 1.6rem; }
 
-/* The radar, carried into the card. This layout is the one a phone actually
-   gets, so the chart is drawn at the size it needs rather than at whatever a
-   one-screen stage has left over: the axis labels are 11px inside a 420-wide
-   viewBox, so anything under ~250px renders them below 7px and the five spokes
-   stop being identifiable. The card scrolls, so it can simply have the room. */
+/* Axis labels are 11px in a 420-wide viewBox, so under ~250px they drop below
+   7px and stop being readable. The cards scroll, so they can have the room. */
 .static-card .radar-holder { margin: 0 0 0.4rem; }
 .static-card .radar-svg { max-width: 20rem; }
 
-/* One legend for the whole grid rather than three identical ones under three
-   charts. The rings it names are the same in every card. */
+/* one legend for the grid — the rings mean the same in every card */
 .static-key {
   justify-content: center;
   margin: 0 auto 2.2rem; max-width: 84rem;
@@ -1103,12 +1205,7 @@ a:hover { text-decoration: underline; }
   .sim-stage    { padding: 2.9rem var(--pad) 0.9rem; }
   .stage-body  { grid-template-columns: 1fr; gap: 0.9rem; }
 
-  /* Only the legend inside the pinned stage goes. That stage has one screen to
-     fill and every 30px it saves keeps the chart large enough for the axis
-     labels to survive; each readout underneath already states its own ratio to
-     the median in words. The static cards scroll, so their legend stays —
-     which matters more there, since that is the layout a phone actually gets.
-     Scoped to .stage-body for exactly that reason. */
+  /* only the pinned stage's legend: it has one screen, the cards scroll */
   .stage-body .radar-key { display: none; }
   .variant-note { display: none; }
   .panel-title  { margin-bottom: 0.5rem; }
@@ -1158,15 +1255,9 @@ a:hover { text-decoration: underline; }
   .hd-comp i     { transition: none; }
   .hero-inner    { animation: none; opacity: 1; filter: none; transform: none; }
   .hero-mark     { position: static; animation: none; opacity: 1; }
-  .topbar     { opacity: 1; transform: none; border-bottom-color: var(--line); }
+  .topbar-id  { opacity: 1; transform: none; }
+  .topbar     { border-bottom-color: var(--line); }
   .reveal     { opacity: 1; transform: none; animation: none; }
   * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
 }
 
-/* --- no JS ---------------------------------------------------------------- */
-
-.sim-noscript {
-  max-width: calc(var(--measure) + var(--pad) * 2);
-  padding: 0 var(--pad) 8rem;
-  color: var(--ink-dim);
-}
