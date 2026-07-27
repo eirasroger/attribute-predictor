@@ -219,7 +219,8 @@
         <h3 data-i18n="fits.existing.head">Renovation and existing stock</h3>
         <p data-i18n="fits.existing.body">
           The partition already in the building has no declaration and never
-          will. Until now that was a blank. Now it is a range.
+          will. That used to mean no number at all. Now you can estimate one,
+          and see how far to trust it.
         </p>
       </li>
     </ul>
@@ -230,6 +231,36 @@
       decisions are still being made.
     </p>
   </section>
+
+  <!-- 4 ▸ layer by layer. Driven by js/assembly.js, which shares nothing with
+       the rest of the page except INDICATORS. ------------------------------ -->
+  <section class="assembly" aria-labelledby="assembly-heading">
+    <div class="assembly-intro">
+      <h2 id="assembly-heading" class="section-head reveal" data-i18n="assembly.head">
+        Layer by layer.
+      </h2>
+      <p class="reveal" data-i18n="assembly.lede">
+        Nobody specifies a wall in one go. The cladding is chosen, then the
+        insulation behind it, then the membrane, then the board that closes the
+        room. Each of those is a product with a composition of its own, and any
+        one of them can be estimated on its own.
+      </p>
+    </div>
+
+    <!-- the track is the scroll distance; the stage pins inside it -->
+    <div class="as-track" id="as-track">
+      <div class="as-stage">
+        <!-- the group is centred on the section alone, then slides left by half
+             the panel so the pair ends up centred -->
+        <div class="as-group" id="as-group">
+          <!-- aria-hidden: the panel carries the same content as text -->
+          <svg id="as-svg" aria-hidden="true" focusable="false"></svg>
+          <div class="as-panel" id="as-panel"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
 
   <!-- 4 ▸ act one: one indicator, one number ------------------------------- -->
   <section class="bigviz" id="bigviz" aria-labelledby="bigviz-heading">
@@ -517,5 +548,7 @@
 <script src="js/i18n.js"></script>
 <script src="js/data.js"></script>
 <script src="js/site.js"></script>
+<!-- independent of the three above; only reads INDICATORS from data.js -->
+<script src="js/assembly.js"></script>
 </body>
 </html>

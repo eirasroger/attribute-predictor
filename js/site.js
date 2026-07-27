@@ -989,7 +989,6 @@
     }
   }
 
-  /* --- reveals ----------------------------------------------------------- */
 
   function initReveals() {
     var native = window.CSS && CSS.supports &&

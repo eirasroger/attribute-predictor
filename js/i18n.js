@@ -134,6 +134,30 @@
           'on encara s\'estan prenent les decisions.'
     },
 
+    /* layer by layer -------------------------------------------------------- */
+    'assembly.head': {
+      en: 'Layer by layer.',
+      ca: 'Capa a capa.'
+    },
+    'assembly.lede': {
+      en: 'Nobody specifies a wall in one go. The cladding is chosen, then the ' +
+          'insulation behind it, then the membrane, then the board that closes ' +
+          'the room. Each of those is a product with a composition of its own, ' +
+          'and any one of them can be estimated on its own.',
+      ca: 'Ningú no especifica un mur d’una sola vegada. Primer el revestiment, ' +
+          'després l’aïllament que hi ha al darrere, després la membrana, ' +
+          'després la placa que tanca l’estància. Cadascun és un producte amb ' +
+          'una composició pròpia, i qualsevol d’ells es pot estimar per separat.'
+    },
+    'assembly.composition': {
+      en: 'Material composition',
+      ca: 'Composició de materials'
+    },
+    'assembly.impact': {
+      en: 'Environmental impact',
+      ca: 'Impacte ambiental'
+    },
+
     /* act one --------------------------------------------------------------- */
     'bigviz.head': {
       en: 'One partition.<br><span class="dim">Three ways to build it.</span>',
@@ -394,6 +418,16 @@
     }
     if (typeof STAGES !== 'undefined') {
       STAGES.forEach(function (st) { check(st.desc, 'STAGES.' + st.key + '.desc'); });
+    }
+    /* js/assembly.js publishes this before DOMContentLoaded, so it is here */
+    if (window.ASSEMBLY) {
+      check(window.ASSEMBLY.name, 'ASSEMBLY.name');
+      window.ASSEMBLY.layers.forEach(function (l) {
+        check(l.name, 'ASSEMBLY.' + l.id + '.name');
+        l.materials.forEach(function (m, i) {
+          check(m.name, 'ASSEMBLY.' + l.id + '.materials[' + i + ']');
+        });
+      });
     }
 
     if (missing.length) {

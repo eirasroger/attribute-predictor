@@ -1055,6 +1055,109 @@ a:hover { text-decoration: underline; }
   padding-left: 1.3rem;
 }
 
+/* --- layer by layer ------------------------------------------------------- */
+
+/* The panel's <p> rules are scoped to .assembly: a bare class would lose to
+   `.prose p` (0,1,1) if this section is ever moved inside .prose. */
+
+.assembly { padding: 0 0 4rem; }
+.assembly-intro {
+  max-width: calc(var(--measure) + var(--pad) * 2);
+  padding: 0 var(--pad);
+}
+.assembly-intro p { margin: 0; color: var(--ink-dim); }
+
+/* Unpinned by default: the track is only as tall as its content, and the
+   figure and panel stack. The pinned layout is opted into at the bottom, and
+   the same query lives in js/assembly.js. */
+.as-track { margin-top: 2.5rem; }
+.as-stage { display: flex; justify-content: center; padding: 0 var(--pad); }
+.as-group {
+  display: flex; flex-direction: column; align-items: center; gap: 2rem;
+  width: 100%;
+}
+
+/* a definite dimension in each layout: `width: auto` on an SVG inside a
+   shrink-to-fit box resolves to zero */
+/* overflow visible: the callout leader runs outside the viewBox so the box
+   stays tight around the stack and the figure centres on itself.
+   A definite dimension is required in each layout — `width: auto` on an SVG
+   inside a shrink-to-fit box resolves to zero. */
+#as-svg { display: block; width: min(100%, 17rem); height: auto; overflow: visible; }
+.as-layer { cursor: pointer; }
+.as-layer:focus { outline: none; }
+.as-layer:focus-visible rect:last-of-type { stroke: var(--accent); stroke-width: 3; }
+
+.as-panel {
+  width: 100%; max-width: 24rem;
+  border: 1px solid var(--line); background: var(--ground-up);
+  padding: clamp(1.25rem, 2.5vw, 1.8rem);
+}
+
+.assembly .as-title {
+  margin: 0; font-size: 1.35rem; line-height: 1.15;
+  letter-spacing: -0.02em; font-weight: 600;
+}
+.assembly .as-sub {
+  margin: 1.4rem 0 0.6rem; padding-top: 1rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.68rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--ink-faint);
+}
+
+.as-rows { list-style: none; margin: 0; padding: 0; }
+.as-rows li { padding: 0.42rem 0; border-bottom: 1px solid var(--line); }
+.as-rows li:last-child { border-bottom: 0; }
+.as-plain li { border-bottom: 0; padding: 0.3rem 0; }
+.as-row {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline; gap: 0.8rem; font-size: 0.9rem;
+}
+.as-row b { font-weight: 400; color: var(--ink); }
+/* indicator rows stay on one line: the name and the value+unit never wrap,
+   and the panel is wide enough to hold the longest of them */
+.as-val {
+  font-variant-numeric: tabular-nums; color: var(--ink-dim); font-size: 0.85rem;
+  white-space: nowrap;
+}
+.as-plain .as-row b { white-space: nowrap; }
+.as-unit { color: var(--ink-faint); font-size: 0.74rem; margin-left: 0.3rem; }
+.as-bar { height: 2px; background: var(--line); margin-top: 0.4rem; }
+.as-bar i {
+  display: block; height: 100%; width: 0; background: var(--accent);
+  transition: width 0.7s var(--ease);
+}
+
+/* Pinned: enough width for a panel beside the section, and enough height to be
+   worth pinning. Duplicated in js/assembly.js. */
+@media (min-width: 68rem) and (min-height: 38rem) {
+  .as-track { height: 240svh; margin-top: 0; }
+  .as-stage {
+    position: sticky; top: 0; height: 100svh;
+    align-items: center;
+  }
+  /* width: auto so the group is only as wide as the section — the panel is
+     taken out of flow, and JS slides the group to recentre the pair */
+  .as-group { display: block; position: relative; width: auto; }
+  #as-svg { height: min(68svh, 520px); width: auto; }
+  .as-panel {
+    position: absolute; left: 100%; top: 50%;
+    margin-left: clamp(1.5rem, 3vw, 2.75rem);
+    transform: translateY(-50%);
+    /* 25rem, not 24: the longest Catalan indicator row lands at exactly the
+       inner width at 24rem, and nowrap would clip it on any copy edit */
+    width: 25rem; max-width: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .as-track { height: auto; }
+  .as-stage { position: static; height: auto; }
+  .as-group { display: flex; }
+  .as-panel { position: static; transform: none; margin-left: 0; }
+  .as-bar i { transition: none; }
+}
+
 /* --- one indicator, stage by stage ---------------------------------------- */
 
 .prose-wide { max-width: calc(58rem + var(--pad) * 2); }
