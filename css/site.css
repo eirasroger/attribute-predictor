@@ -1171,8 +1171,16 @@ a:hover { text-decoration: underline; }
 
 /* --- one indicator, stage by stage ---------------------------------------- */
 
-.prose-wide { max-width: calc(58rem + var(--pad) * 2); }
-.prose-wide > p { max-width: var(--measure); }
+/* Centred on the page, unlike the other prose blocks: this one carries a
+   full-width chart, and left-aligning it strands the chart against a wide
+   empty right-hand side. The heading and lead-in keep their measure and are
+   centred with it, so the whole composition sits on one axis. */
+.prose-wide {
+  max-width: calc(58rem + var(--pad) * 2);
+  margin-inline: auto;
+}
+.prose-wide > h2,
+.prose-wide > p { max-width: var(--measure); margin-inline: auto; }
 
 /* Full-bleed prose: the heading and lead-in keep a readable measure, but the
    list below spreads across the whole width instead of stacking in a column. */
