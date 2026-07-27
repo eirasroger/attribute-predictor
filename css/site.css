@@ -6,9 +6,7 @@
 :root {
   --ground:      #0f1412;
   --ground-up:   #151c19;
-  /* Ink steps are contrast-checked against --ground: 16.3:1 / 8.5:1 / 5.4:1.
-     --ink-faint carries the illustrative-demo disclaimer, so it has to clear
-     AA for body text, not merely look recessive. */
+  /* contrast-checked on --ground: 16.3:1 / 8.5:1 / 5.4:1 */
   --ink:         #e8f2ee;
   --ink-dim:     #9ab5ab;
   --ink-faint:   #6f9187;
@@ -16,8 +14,7 @@
   --accent:      #3ecf8e;
   --accent-dim:  #2a9d6a;
 
-  /* Verdict ramp. Same three steps as the three builds in js/data.js, so the
-     two systems agree. All AA on --ground; CVD-validated as a set. */
+  /* Verdict ramp. Re-run docs/cvd.py before changing any of these. */
   --good:        #3ecf8e;
   --mid:         #dda94f;
   --bad:         #d4757f;
@@ -78,7 +75,6 @@ a:hover { text-decoration: underline; }
   border-bottom-color: var(--line);
 }
 
-/* Only the identity fades in — the hero mark hands over to it. */
 .topbar-id {
   display: flex; align-items: center; gap: 0.9rem;
   opacity: 0; transform: translateY(-100%);
@@ -109,7 +105,6 @@ a:hover { text-decoration: underline; }
 .nav-link:not([href]) { cursor: default; }
 .nav-link[href]:hover, .nav-link[href]:focus-visible { color: var(--ink); }
 
-/* the hamburger — narrow screens only, see the media query at the end */
 .nav-toggle {
   display: none;
   padding: 0.35rem; margin: -0.35rem;
@@ -145,7 +140,6 @@ a:hover { text-decoration: underline; }
 }
 .lang-btn[aria-expanded="true"] .caret { transform: rotate(180deg); }
 
-/* Hidden by attribute, so aria-expanded is the only state. */
 .lang-list {
   position: absolute; top: calc(100% + 0.6rem); right: 0; z-index: 5;
   list-style: none; margin: 0; padding: 0.35rem;
@@ -165,7 +159,7 @@ a:hover { text-decoration: underline; }
   transition: color 0.25s var(--ease), background-color 0.25s var(--ease);
 }
 .lang-opt img {
-  /* sources are 960px and 512px square; the fixed box is what evens them */
+  /* the fixed box is what evens two differently sized flags */
   width: 1.15rem; height: 1.15rem; display: block; border-radius: 50%;
   filter: grayscale(1); opacity: 0.5;
   transition: filter 0.25s var(--ease), opacity 0.25s var(--ease);
@@ -176,7 +170,6 @@ a:hover { text-decoration: underline; }
 }
 .lang-opt:hover img, .lang-opt:focus-visible img { filter: none; opacity: 1; }
 
-/* Colour is the state — legible at 18px without telling two flags apart. */
 .lang-opt[aria-current="true"] { color: var(--accent); }
 .lang-opt[aria-current="true"] img { filter: none; opacity: 1; }
 
@@ -187,7 +180,6 @@ a:hover { text-decoration: underline; }
   outline: 2px solid var(--accent); outline-offset: 3px;
 }
 
-/* Narrow: everything folds into one panel, languages included. */
 @media (max-width: 44rem) {
   .nav-toggle { display: block; }
 
@@ -217,12 +209,11 @@ a:hover { text-decoration: underline; }
   .lang-opt:hover, .lang-opt:focus-visible { background-color: transparent; }
 }
 
-/* Holds paint until i18n.js has swapped the strings. See index.html <head>. */
+/* holds paint until i18n.js has swapped the strings */
 .i18n-pending body { visibility: hidden; }
 
 /* --- shared type ---------------------------------------------------------- */
 
-/* sized so "Replace the guess" holds one line at the top of the clamp */
 .display {
   margin: 0;
   font-size: clamp(2.6rem, 7.6vw, 6.6rem);
@@ -265,11 +256,6 @@ a:hover { text-decoration: underline; }
 }
 .hero-inner { max-width: 68rem; }
 
-/* Two columns once there is room for both. .hero-inner must stay a plain grid
-   item: a transform or filter on it would make it the containing block for the
-   sticky mark inside and break the hand-off to the topbar. The scroll cue is
-   absolutely positioned and stays out of the grid — giving it a grid-column
-   would re-anchor its containing block and move it off the hero's bottom. */
 @media (min-width: 64rem) {
   .hero {
     display: grid;
@@ -278,23 +264,15 @@ a:hover { text-decoration: underline; }
     align-items: center;
     column-gap: clamp(2rem, 5vw, 5rem);
     row-gap: 1.6rem;
-    /* the masthead takes a band of its own, so the outer padding gives some
-       of it back — the whole opening still has to hold one screen */
     padding-top: 4.6rem; padding-bottom: 3.4rem;
   }
   .hero-mast { grid-column: 1 / -1; margin-bottom: 0; }
   .hero-inner { max-width: 46rem; }
 
-  /* The headline is sized off the viewport, but in two columns it no longer
-     owns the viewport. Left at its full-width scale it wraps to three lines,
-     and the hero outgrows the 100svh it is supposed to fit inside. */
   .hero .display { font-size: clamp(2.6rem, 4.6vw, 4.7rem); }
   .hero .lede { margin-top: 2rem; }
 }
 
-/* The one word that carries the claim. It arrives oblique and settles upright,
-   then leans again on hover. A skew rather than font-style: font-style is a
-   discrete property and will not tween, so a real italic can only ever snap. */
 .display .accent {
   color: var(--accent);
   display: inline-block;
@@ -303,8 +281,7 @@ a:hover { text-decoration: underline; }
 @media (prefers-reduced-motion: no-preference) {
   .display .accent {
     transition: transform 0.75s var(--ease);
-    /* `backwards`, not `both`: the animation must release its hold on transform
-       when it ends, or the hover state can never take effect */
+    /* `backwards`, not `both`: `both` keeps its hold and :hover never applies */
     animation: accent-settle 1.5s var(--ease) backwards;
     animation-delay: 1.05s;
   }
@@ -315,19 +292,12 @@ a:hover { text-decoration: underline; }
   to   { transform: skewX(0deg); }
 }
 
-/* Masthead. The mark and the name are the page's first statement, so they sit
-   centred over the whole opening rather than stacked into the left column. */
 .hero-mast { text-align: center; margin: 0 0 2.4rem; }
 .hero-mast .eyebrow {
   margin: 0;
   font-size: 0.84rem; letter-spacing: 0.3em;
 }
 
-/* Sticky so the mark holds the top bar line while everything else leaves,
-   which is what makes the handover to the topbar visible rather than something
-   that happens off-screen. Centred, it can no longer converge on the topbar
-   mark the way it did left-aligned, so it shrinks about its own centre and the
-   bar fades in underneath it instead. */
 .hero-mark {
   display: block; height: auto;
   width: clamp(3.4rem, 6vw, 5.2rem);
@@ -335,29 +305,14 @@ a:hover { text-decoration: underline; }
   position: sticky; top: 1rem; z-index: 5;
 }
 
-/* The hand-off.
-   The opening does not leave as one block. Each band departs at its own rate,
-   nearest first, so the hero unstacks with depth instead of sliding away flat.
-   The logo goes last and lifts toward the bar, where the topbar mark is fading
-   in to meet it: the one element that persists is the identity. */
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
 
-    /* One clock for the whole hero. Per-element view() would give each layer
-       its own, and the order would then be fixed by position on screen: the
-       logo sits highest, so it would always leave first. A shared timeline
-       lets the departure order be chosen instead of inherited. */
+    /* one shared timeline: per-element view() would order the bands by position */
     .hero { view-timeline-name: --hero; }
 
-    /* No filter or transform on .hero-inner: either one would make it the
-       containing block for the sticky mark inside it and break the handover.
-       The softening lives in each layer's own keyframe instead. */
+    /* no filter or transform here: it would break the sticky mark inside */
 
-    /* Nearest band goes first, logo last. Scoped under .hero so these outrank
-       the shared .hero-fade entrance rules declared further down the file. */
-    /* Render and strip are one band and leave as one. Nothing here is driven
-       by scroll position — the build on show comes from the hero's own clock —
-       this only keeps the band from outstaying the copy on the way out. */
     .hero .hero-side {
       animation: fade-up 1.1s var(--ease) both, layer-out linear both;
       animation-timeline: auto, --hero;
@@ -378,8 +333,6 @@ a:hover { text-decoration: underline; }
       animation-range: exit 12% exit 50%;
       --lift: -4rem;
     }
-    /* The masthead is the last thing to leave: mark and name go together now
-       that they are one centred block, shrinking about their own centre. */
     .hero .hero-mast {
       animation: fade-up 1.1s var(--ease) both, mark-out linear both;
       animation-timeline: auto, --hero;
@@ -402,9 +355,7 @@ a:hover { text-decoration: underline; }
 @keyframes mark-out { to { opacity: 0; transform: scale(0.31); } }
 @keyframes cue-out  { to { opacity: 0; } }
 
-/* Headline arrives a word at a time; --i is set per word by JS.
-   The clip box is pushed below the baseline and pulled back with a negative
-   margin, so descenders (the g in "guess") are not sliced off. */
+/* --i is set per word by JS */
 .display .w {
   display: inline-block; overflow: hidden; vertical-align: bottom;
   padding-bottom: 0.18em; margin-bottom: -0.18em;
@@ -433,22 +384,15 @@ a:hover { text-decoration: underline; }
 
 /* --- hero loop ------------------------------------------------------------ */
 
-/* Sits directly under the render it reads; keeps its measure while that bleeds. */
 .hero-demo {
   margin: 1.5rem 0 0;
   max-width: 30rem;
 }
 
-/* Two columns: the strip sits under the render it describes, close enough to
-   read as one unit, and takes the column's full width rather than its own cap. */
 @media (min-width: 64rem) {
   .hero-demo { margin: 1.8rem 0 0; max-width: none; }
 }
 
-/* Composition strip. The track is the full width of the column; the fill is
-   how far this build reaches on the category axis, and the segments divide
-   that fill by mass. So the bar carries two readings at once — how much, and
-   of what. */
 .hd-comp {
   width: 100%; height: 0.5rem;
   background: var(--line); overflow: hidden;
@@ -486,8 +430,7 @@ a:hover { text-decoration: underline; }
 
 /* --- hero render ---------------------------------------------------------- */
 
-/* One column: full-bleed. The margin cancels the hero's padding rather than
-   using 100vw, which would count a desktop scrollbar. */
+/* full-bleed: cancels the hero padding, not 100vw, which counts the scrollbar */
 .hero-render {
   margin: 1.2rem calc(var(--pad) * -1) 0;
 }
@@ -496,27 +439,17 @@ a:hover { text-decoration: underline; }
   .hero-render { margin: 0; }
 }
 
-/* Aspect is fixed by the crop, so the frame reserves its box before the images
-   decode and nothing in the hero shifts on load. */
+/* reserves its box before the images decode */
 .hr-frame {
   position: relative;
   aspect-ratio: 1170 / 743;
 
-  /* The crop slices the room off mid-wall on the left and right, and a straight
-     cut against the page ground reads as a pasted rectangle. Fading the outer
-     sixth of each side lets the geometry dissolve into the background instead
-     of ending at an edge. The dividing face spans 21%–58% of the frame, so the
-     fade never reaches the surface that carries the material. */
   -webkit-mask-image:
     linear-gradient(to right, transparent, #000 15%, #000 85%, transparent);
   mask-image:
     linear-gradient(to right, transparent, #000 15%, #000 85%, transparent);
 }
 
-/* A pool of the build's colour behind the model, showing only in the empty
-   ground around it. Insets and blur radius are paired: the mask clips to the
-   box, so the pool must stop ~3 blur radii short of top and bottom or the blur
-   cuts off square. Left and right can bleed — the mask fades there already. */
 .hr-frame::before {
   content: '';
   position: absolute; z-index: 0;
@@ -529,9 +462,6 @@ a:hover { text-decoration: underline; }
   .hr-frame::before { transition: background-color 1.15s var(--ease); }
 }
 
-/* All three stack; only opacity separates them. They share a camera and differ
-   across one face, so the cross-fade reads as that surface changing material
-   rather than as two pictures dissolving. */
 .hr-shot {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
@@ -543,10 +473,7 @@ a:hover { text-decoration: underline; }
   .hr-shot { transition: opacity 1.15s var(--ease); }
 }
 
-/* The dividing face, outlined in the build's colour. --pc is set on this
-   element by the hero loop; stroke transitions even though a custom property
-   cannot, because it is the used value that animates. preserveAspectRatio is
-   none so the polygon tracks the image under any width. */
+/* --pc is set on this element by the hero loop */
 .hr-trace {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
@@ -562,13 +489,10 @@ a:hover { text-decoration: underline; }
   filter: drop-shadow(0 0 9px var(--pc, var(--accent)));
 }
 @media (prefers-reduced-motion: no-preference) {
-  /* A custom property cannot itself transition, but the stroke that reads it
-     can: it is the used value that animates. */
   .hr-trace polygon { transition: stroke 1.15s var(--ease); }
 }
 
-/* One column: the hero runs ~1.2 screens rather than shrink the headline or
-   the render. Declared after the render's own rules so these win. */
+/* declared after the render's own rules so these win */
 @media (max-width: 63.99rem) {
   .hero { padding-top: 5.2rem; padding-bottom: 2.4rem; }
   .hero-mast { margin-bottom: 1rem; }
@@ -577,9 +501,7 @@ a:hover { text-decoration: underline; }
   /* anchored to the hero's bottom, which here is behind the readout strip */
   .scroll-cue { display: none; }
 
-  /* 11% crop, split top and bottom. The face spans 19%–71% so it clears both
-     cuts; cropping harder clips the ceiling edge. Clips the frame rather than
-     the images so the trace SVG stays registered to the picture. */
+  /* 11% crop, split top and bottom, so the face clears both cuts */
   .hero-render {
     position: relative; overflow: hidden;
     aspect-ratio: 1170 / 660;
@@ -590,7 +512,6 @@ a:hover { text-decoration: underline; }
   }
 }
 
-
 /* --- big visual: one indicator, one number -------------------------------- */
 
 .bigviz-intro {
@@ -600,11 +521,6 @@ a:hover { text-decoration: underline; }
 
 .bigviz-track { height: 300vh; position: relative; }
 
-/* Laptop: the heading holds the left while the number scrubs on the right.
-   Both are sticky, each within its own grid area — the row is as tall as the
-   300vh track, so the heading stays put for the whole scrub. The stage keeps
-   its own padding, so the intro's right padding is dropped to avoid doubling
-   the gutter between the two columns. */
 @media (min-width: 64rem) {
   .bigviz {
     display: grid;
@@ -619,8 +535,6 @@ a:hover { text-decoration: underline; }
   .bigviz-track  { grid-column: 2; }
   .bv-static     { grid-column: 1 / -1; }
   .bigviz-stage  { padding-left: 3rem; }
-  /* sized off the viewport, but it only owns a column here — at full scale
-     "Three ways to build it." breaks with "it." alone on the last line */
   .bigviz-intro .section-head { font-size: clamp(2rem, 3.4vw, 3.1rem); }
 }
 
@@ -665,8 +579,6 @@ a:hover { text-decoration: underline; }
   will-change: width;
 }
 
-/* band edges and the median sit above the fill, so the bar can be read
-   against the category even where it covers it */
 .bv-edge {
   position: absolute; top: -0.25rem; bottom: -0.25rem; width: 1px; z-index: 3;
   background: var(--ink-dim); opacity: 0.75;
@@ -675,7 +587,6 @@ a:hover { text-decoration: underline; }
   position: absolute; top: -0.5rem; bottom: -0.5rem; width: 1px; z-index: 4;
   background: var(--ink);
 }
-
 
 .bv-ticks {
   display: flex; justify-content: space-between;
@@ -740,8 +651,6 @@ a:hover { text-decoration: underline; }
 }
 .statement-close { min-height: 70svh; }
 
-/* The closing line has the page's last word; the mark sits opposite it so the
-   row reads as a signature rather than a half-empty screen. */
 .close-mark { display: none; }
 
 @media (min-width: 64rem) {
@@ -760,10 +669,6 @@ a:hover { text-decoration: underline; }
 
 /* --- paired sections ------------------------------------------------------ */
 
-/* Two sections that answer each other, set side by side so a laptop screen is
-   filled rather than run down its left edge. Each child keeps its own .prose
-   padding, so the pair needs no padding of its own. Below the breakpoint the
-   wrapper does nothing and the sections stack exactly as they did. */
 @media (min-width: 64rem) {
   .duo {
     display: grid;
@@ -814,9 +719,6 @@ a:hover { text-decoration: underline; }
   max-width: calc(var(--measure) + var(--pad) * 2);
 }
 
-/* The turn ("carbon is one of five") and the heading it sets up. Stacked on a
-   narrow screen; on a laptop they face each other, statement left, heading
-   right, so the pivot and its consequence are read together. */
 .sim-claim {
   margin: 0;
   padding: 9rem var(--pad) 0;
@@ -831,9 +733,6 @@ a:hover { text-decoration: underline; }
     grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: center;
   }
-  /* The claim and the heading face each other, so they are set at one size —
-     .statement and .section-head have different scales of their own, and the
-     mismatch reads as an accident when the two sit side by side. */
   .sim-claim,
   .sim-intro .section-head { font-size: clamp(2rem, 3.4vw, 3.1rem); }
   .sim-claim { padding-bottom: 4rem; }
@@ -841,8 +740,7 @@ a:hover { text-decoration: underline; }
 }
 .section-sub { margin: 0; color: var(--ink-dim); }
 
-/* Scroll distance is pacing. Too tall and the stage feels like it is refusing
-   to respond; these are tuned so one transition takes well under a screen. */
+/* scroll distance is pacing; tuned so one transition takes about a screen */
 .sim-track { height: 320vh; position: relative; }
 
 .sim-stage {
@@ -958,9 +856,6 @@ a:hover { text-decoration: underline; }
 }
 
 /* verdict chips */
-/* The verdict ramp uses the same three steps as the three builds, so better /
-   typical / worse and timber / gypsum / aluminium read as one system rather
-   than two competing ones. Validated: worst CVD ΔE 8.5, worst normal 16.1. */
 .chip {
   display: inline-block;
   padding: 0.16rem 0.5rem;
@@ -968,10 +863,7 @@ a:hover { text-decoration: underline; }
   border: 1px solid currentColor;
   color: var(--mid);
   transition: color 0.6s var(--ease), border-color 0.6s var(--ease);
-  /* A scrubbed stage sets --verdict-fade while a verdict swaps over, so the
-     chip dips instead of snapping. It has to be a multiplier rather than a
-     plain opacity: a soft verdict is already carried at 0.6, and overwriting
-     that would make "likely" look identical to a settled call. */
+  /* --verdict-fade dips the chip while a verdict swaps; must be a multiplier */
   opacity: var(--verdict-fade, 1);
 }
 .chip-good { color: var(--good); }
@@ -986,8 +878,7 @@ a:hover { text-decoration: underline; }
 
 /* --- static (reduced-motion) equivalent ----------------------------------- */
 
-/* The unpinned equivalent. Always populated; CSS decides when it is the one
-   that shows — reduced motion, or a viewport too short to pin into. */
+/* always populated; CSS decides which of the two shows */
 .sim-static { display: none; padding: 2rem var(--pad) 8rem; }
 .demo-flag-static { margin: 0 0 2rem; }
 .static-grid {
@@ -1007,8 +898,7 @@ a:hover { text-decoration: underline; }
 }
 .static-card .panel-title { margin-top: 1.6rem; }
 
-/* Axis labels are 11px in a 420-wide viewBox, so under ~250px they drop below
-   7px and stop being readable. The cards scroll, so they can have the room. */
+/* below ~250px the axis labels drop under 7px: the cards scroll instead */
 .static-card .radar-holder { margin: 0 0 0.4rem; }
 .static-card .radar-svg { max-width: 20rem; }
 
@@ -1020,11 +910,6 @@ a:hover { text-decoration: underline; }
 
 /* --- verdict demo --------------------------------------------------------- */
 
-/* Two states side by side, given room to breathe. The chips are the whole
-   point, so they are set large and the captions stay out of their way. */
-/* Two chips, nothing else. The rule and column layout here existed to separate
-   each chip from the caption under it; with the captions gone they framed empty
-   space. */
 .verdict-demo {
   display: flex; flex-wrap: wrap; gap: 1rem;
   margin: 2.4rem 0 0;
@@ -1057,8 +942,7 @@ a:hover { text-decoration: underline; }
 
 /* --- layer by layer ------------------------------------------------------- */
 
-/* The panel's <p> rules are scoped to .assembly: a bare class would lose to
-   `.prose p` (0,1,1) if this section is ever moved inside .prose. */
+/* scoped to .assembly: a bare class loses to `.prose p` (0,1,1) */
 
 .assembly { padding: 0 0 4rem; }
 .assembly-intro {
@@ -1067,9 +951,6 @@ a:hover { text-decoration: underline; }
 }
 .assembly-intro p { margin: 0; color: var(--ink-dim); }
 
-/* Unpinned by default: the track is only as tall as its content, and the
-   figure and panel stack. The pinned layout is opted into at the bottom, and
-   the same query lives in js/assembly.js. */
 .as-track { margin-top: 2.5rem; }
 .as-stage { display: flex; justify-content: center; padding: 0 var(--pad); }
 .as-group {
@@ -1079,10 +960,7 @@ a:hover { text-decoration: underline; }
 
 /* a definite dimension in each layout: `width: auto` on an SVG inside a
    shrink-to-fit box resolves to zero */
-/* overflow visible: the callout leader runs outside the viewBox so the box
-   stays tight around the stack and the figure centres on itself.
-   A definite dimension is required in each layout — `width: auto` on an SVG
-   inside a shrink-to-fit box resolves to zero. */
+/* overflow visible: the callout is drawn outside the viewBox */
 #as-svg { display: block; width: min(100%, 17rem); height: auto; overflow: visible; }
 .as-layer { cursor: pointer; }
 .as-layer:focus { outline: none; }
@@ -1114,8 +992,7 @@ a:hover { text-decoration: underline; }
   align-items: baseline; gap: 0.8rem; font-size: 0.9rem;
 }
 .as-row b { font-weight: 400; color: var(--ink); }
-/* indicator rows stay on one line: the name and the value+unit never wrap,
-   and the panel is wide enough to hold the longest of them */
+/* one line per row: name and value never wrap */
 .as-val {
   font-variant-numeric: tabular-nums; color: var(--ink-dim); font-size: 0.85rem;
   white-space: nowrap;
@@ -1128,27 +1005,20 @@ a:hover { text-decoration: underline; }
   transition: width 0.7s var(--ease);
 }
 
-/* Pinned. Both layouts pin: the wall has to arrive closed, settle in the
-   middle of the screen, and come apart as you keep scrolling. Only where the
-   panel goes differs, and js/assembly.js moves it between the two. The queries
-   are duplicated there; change one, change both. */
+/* Both layouts pin. Queries duplicated in js/assembly.js; change one, change both. */
 @media (min-height: 34rem) {
   .as-track { height: 215svh; margin-top: 0; }
   .as-stage { position: sticky; top: 0; height: 100svh; align-items: center; }
   #as-svg { height: min(56svh, 400px); width: auto; }
 
-  /* narrow: the panel is moved out of the track, so it follows the pin */
   .assembly > .as-panel {
     margin: 2.5rem auto 0;
     max-width: min(24rem, calc(100% - var(--pad) * 2));
   }
 }
 
-/* Wide enough for the panel to sit beside a centred figure. */
 @media (min-width: 68rem) and (min-height: 38rem) {
   .as-track { height: 240svh; }
-  /* width: auto so the group is only as wide as the figure — the panel is
-     taken out of flow, and JS slides the group to recentre the pair */
   .as-group { display: block; position: relative; width: auto; }
   #as-svg { height: min(68svh, 520px); width: auto; }
   .as-panel {
@@ -1171,10 +1041,7 @@ a:hover { text-decoration: underline; }
 
 /* --- one indicator, stage by stage ---------------------------------------- */
 
-/* Centred on the page, unlike the other prose blocks: this one carries a
-   full-width chart, and left-aligning it strands the chart against a wide
-   empty right-hand side. The heading and lead-in keep their measure and are
-   centred with it, so the whole composition sits on one axis. */
+/* centred: this block carries a full-width chart */
 .prose-wide {
   max-width: calc(58rem + var(--pad) * 2);
   margin-inline: auto;

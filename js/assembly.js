@@ -15,8 +15,7 @@
 
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* A timber-frame external wall, outside face first. Compositions are the real
-     make-up of each product, in the proportions they are manufactured to. */
+  /* Outside face first. */
   window.ASSEMBLY = {
     layers: [
       { id: 'rainscreen', mm: 8, hatch: 'dot',
@@ -80,38 +79,29 @@
     var LAYERS = window.ASSEMBLY.layers, N = LAYERS.length;
     var DEFAULT = 2;                                   /* thermal insulation */
 
-    /* Both layouts pin; `wide` only decides where the panel goes. Queries are
-       duplicated in site.css; change one, change both. */
+    /* queries duplicated in site.css; change one, change both */
     var tall = window.matchMedia('(min-height: 34rem)');
     var wide = window.matchMedia('(min-width: 68rem) and (min-height: 38rem)');
 
-    /* Beside the figure when there is room, otherwise after the whole pinned
-       track, so it does not scroll up over the pinned figure. CSS cannot move
-       a node between those two places. */
+    /* beside the figure when wide, after the whole track when not */
     function place() {
       var home = wide.matches ? group : track.parentNode;
       if (panel.parentNode !== home) home.appendChild(panel);
     }
 
-    /* --- geometry ---------------------------------------------------------
-       Isometric boards, outside face on top. Every layer is one rectangular
-       slab of the same width and depth, so the stack stays believable, and
-       materials are told apart by hatch. The hatch carries the isometric
-       matrix, so it lies in the plane of the board instead of sitting on it. */
+    /* --- geometry --------------------------------------------------------- */
 
     var NS = 'http://www.w3.org/2000/svg';
     var BW = 200, BD = 140, GAP = 40, PAD = 16;
     var GROW = 1.14, GROW_H = 1.20;           /* the selected board opens up */
     var ISO = 'matrix(0.866 0.5 -0.866 0.5 0 0)';
 
-    /* Diagrammatic thickness: at true scale a 160 mm cavity against a 0.5 mm
-       membrane leaves four invisible lines. Order and rank are kept. */
+    /* diagrammatic thickness, not true scale */
     var H = LAYERS.map(function (l) { return 12 + 78 * Math.sqrt(l.mm / 160); });
     var STACK_H = H.reduce(function (a, b) { return a + b; }, 0) +
                   H[DEFAULT] * (GROW_H - 1) + GAP * (N - 1);
 
-    /* OX puts the stack's projected centre at the centre of the viewBox, so
-       the figure is centred by its own box with no correction. */
+    /* stack centred on the viewBox, so the figure centres by its own box */
     var OX = BD * GROW * 0.866 + PAD;
     var VB_W = Math.round(2 * (OX + (BW - BD) * 0.433));
     var OY = STACK_H / 2 + PAD;
@@ -138,16 +128,11 @@
         return ('0' + Math.round(v + (y[i] - v) * t).toString(16)).slice(-2);
       }).join('');
     }
-    /* A narrow tonal range, light enough that a dark hatch reads on every
-       board and on the accent. */
     function tone(i) { return mix('#4a5b55', '#67796f', i / (N - 1)); }
     function clamp(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
     function ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
 
-    /* --- hatches ----------------------------------------------------------
-       One tile per material family, in section-drawing conventions: stipple
-       for cementitious, diagonals for timber board, a wave for mineral wool,
-       a dashed line for a thin film, fine crosses for plasterboard. */
+    /* --- hatches ---------------------------------------------------------- */
     var HATCH = {
       dot:   { w: 8,  h: 8,  d: 'M1.8 1.8h1.2M5.6 5.6h1.2', cap: 'round', sw: 1.2 },
       diag:  { w: 8,  h: 8,  d: 'M-1 9 L9 -1 M6 9 L9 6 M-1 2 L2 -1', sw: 0.9 },
@@ -191,10 +176,6 @@
     for (var i = N - 1; i >= 0; i--) stackG.appendChild(slabs[i].g);
     svg.appendChild(stackG);
 
-    /* The callout: a dot on the selected board, a leader, then the name. It
-       points at the board rather than sitting under the whole stack. The SVG
-       is overflow: visible, so the leader runs outside the viewBox on purpose
-       and the stack keeps the box to itself. */
     var callG = el('g', {});
     var callLine = el('path', { stroke: '#6f9187', 'stroke-width': 1, fill: 'none' });
     var callDot  = el('circle', { r: 2.6, fill: '#3ecf8e' });
@@ -270,10 +251,7 @@
           callDot.setAttribute('cy', anchor.y.toFixed(1));
           callDot.setAttribute('r', 2.6);
         } else {
-          /* Narrow screens have no room for the name beside the figure, so it
-             sits under the stack — but it still has to connect. The leader
-             steps out past the left edge first, then down, then in: a straight
-             run would cross every board below the selected one. */
+          /* steps around the stack: a straight run would cross the boards below */
           var capY = lowest + 36;
           var tw = callText.getComputedTextLength ? callText.getComputedTextLength() : 92;
           var out = -22;
@@ -291,9 +269,7 @@
         callG.setAttribute('opacity', hi.toFixed(3));
       }
 
-      /* Painter's order is z, low first. The selected board is lifted to the
-         front only once it is highlighted: while the wall is still closed it
-         would punch its face through the boards above it. */
+      /* selected board to the front only once highlighted */
       order.sort(function (a, b) {
         return (hi > 0.02 ? (a.on ? 1 : 0) - (b.on ? 1 : 0) : 0) || a.z - b.z;
       }).forEach(function (o) { stackG.appendChild(slabs[o.i].g); });
@@ -306,8 +282,7 @@
       return dec(v.toFixed(Math.min(6, d)));
     }
 
-    /* Forced reflow, not a double rAF: rAF is parked in a background tab,
-       which would leave every bar stuck at zero width. */
+    /* reflow, not rAF: rAF is parked in a background tab */
     function paint(i) {
       var l = LAYERS[i];
       callText.textContent = tx(l.name);
@@ -346,17 +321,13 @@
 
     /* --- scroll ----------------------------------------------------------- */
 
-    /* The panel is absolutely positioned, so the group is only as wide as the
-       figure and centres on it. As the panel arrives the group slides left by
-       half of what the panel occupies, leaving figure-plus-panel centred. */
+    /* slides the group left by half the panel, so the pair stays centred */
     function shiftFor(t) {
       var m = parseFloat(getComputedStyle(panel).marginLeft) || 0;
       return -(panel.offsetWidth + m) / 2 * t;
     }
 
-    /* The callout is drawn outside the viewBox, so it is not in the group's
-       layout box and would pull the composition visually left. Half of what it
-       overhangs is added back. */
+    /* the callout is outside the layout box; add half its overhang back */
     function calloutShift(t) {
       var w = svg.getBoundingClientRect().width;
       if (!w || !callText.getComputedTextLength) return 0;
@@ -368,7 +339,6 @@
       side = wide.matches;
       var vh = window.innerHeight || 800;
 
-      /* too short to pin, or motion is off: show it all at once */
       if (reduced || !tall.matches) {
         open = 1; hi = 1;
         panel.style.opacity = ''; group.style.transform = '';
@@ -391,9 +361,6 @@
         return;
       }
 
-      /* Narrow: same pin, same sequence, but the panel is below the track and
-         scrolls in after it. It keeps full opacity — one whose opacity is a
-         function of a scroll sum can sit blank at rest on a moving toolbar. */
       open = ease(clamp((t - 0.15) / 0.50));
       hi   = ease(clamp((t - 0.58) / 0.26));
       panel.style.opacity = '';

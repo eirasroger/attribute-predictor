@@ -7,8 +7,7 @@
 
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* tx() resolves an { en, ca } pair, str() a dictionary key, dec() the decimal
-     separator. Short names: `t` and `num` are taken by locals in this file. */
+  /* short names: `t` and `num` are taken by locals in this file */
   var I18N = window.I18N || {};
   var tx  = I18N.t   || function (p) { return p && p.en != null ? p.en : p; };
   var str = I18N.s   || function () { return ''; };
@@ -19,8 +18,7 @@
   var SUP = { '-': '⁻', '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴',
               '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹' };
 
-  /* Three significant digits, trailing zeros kept so the readout holds its
-     width while scrubbing. Exponent form at the extremes. */
+  /* trailing zeros kept so the readout holds its width while scrubbing */
   function fmt(v) {
     if (!isFinite(v)) return '–';
     if (v === 0) return '0';
@@ -48,8 +46,7 @@
     return 'mid';
   }
 
-  /* If the error range straddles a threshold the claim cannot be settled, so
-     the wording softens. Each softened form is its own key, not a prefix. */
+  /* each softened form is its own key, not a prefix: that rule is English */
   function verdict(v, d) {
     var here = classify(v, d);
     var soft = classify(v / FOLD_ERROR, d) !== classify(v * FOLD_ERROR, d);
@@ -80,7 +77,6 @@
     return (Math.max(-1, Math.min(1, l)) + 1) / 2;
   }
 
-  /* Indicators span orders of magnitude, so interpolate in log space. */
   function lerpLog(a, b, t) { return Math.exp(Math.log(a) + (Math.log(b) - Math.log(a)) * t); }
 
   function lerpValues(a, b, t) {
@@ -127,9 +123,8 @@
 
   /* --- generic pinned scrubber ------------------------------------------- */
 
-  /* Drives a sticky stage from scroll position. Pinning is decided at runtime,
-     not by breakpoint: whether the stage fits depends on width, height and
-     rendered font together. */
+  /* Pinning is decided at runtime, not by breakpoint: fit depends on width,
+     height and rendered font together. */
   function makeScrubber(sectionId, trackId, stageId, innerSel, paint) {
     var section = document.getElementById(sectionId);
     var track   = document.getElementById(trackId);
@@ -218,7 +213,6 @@
         var idx = t < 0.5 ? seg : seg + 1;
         if (idx !== shown) { shown = idx; name.textContent = tx(VARIANTS[idx].name); }
 
-        /* verdict comes from a build, not a half-way value — see paintReadouts */
         paintChip(chip, VARIANTS[idx].values.ghg, GHG);
         var dip = 1 - 0.8 * Math.sin(Math.PI * t);
         name.style.opacity = dip;
@@ -404,9 +398,7 @@
     });
   }
 
-  /* `settled` is the build the verdicts describe, when that differs from the
-     values on screen. Numbers interpolate during a scrub; verdicts must not, or
-     a chip walks through every state the interpolation crosses. */
+  /* verdicts must not interpolate, or a chip walks every state it crosses */
   function paintReadouts(rows, values, settled) {
     var vd = settled || values;
     rows.forEach(function (row) {
@@ -522,7 +514,8 @@
 
   /* --- hero: a loop that plays itself ------------------------------------ */
 
-  var HOLD = 2600, TWEEN = 1150;
+  /* KICK: setInterval only fires after a whole period */
+  var HOLD = 2600, TWEEN = 1150, KICK = 500;
 
   function initHeroLoop() {
     var comp = document.getElementById('hd-comp');
@@ -530,8 +523,6 @@
     var val  = document.getElementById('hd-val');
     if (!comp) return;
 
-    /* every build has the same number of materials, so the strip morphs
-       rather than being rebuilt */
     var segs = VARIANTS[0].materials.map(function (_, i) {
       var s = document.createElement('i');
       s.style.opacity = (1 - i * 0.17).toFixed(2);
@@ -539,8 +530,7 @@
       return s;
     });
 
-    /* Strip length is the reading, on the same 0.1×–10× median axis as the
-       radar and the big number. Linear would collapse the first two builds. */
+    /* same 0.1x-10x median axis as the radar; linear would collapse two builds */
     function reach(v) {
       return (logPos(v.values.ghg, CATEGORY.dist.ghg.median) * 100).toFixed(1) + '%';
     }
@@ -557,9 +547,7 @@
       });
     }
 
-    /* Only the incoming shot animates; the outgoing one holds full opacity
-       until covered. Fading both would let the ground show through the pair at
-       the midpoint. Safe because all three share an alpha channel. */
+    /* only the incoming shot animates: fading both shows ground at the midpoint */
     function paintRender(v) {
       if (!render) return;
       setProduct(render, v);
@@ -600,7 +588,7 @@
     show(0);
     if (reduced) return;   /* one frame, no loop */
 
-    var timer = null, raf = null;
+    var timer = null, kick = null, raf = null;
 
     function tweenTo(next) {
       var from = VARIANTS[i].values.ghg, to = VARIANTS[next].values.ghg;
@@ -616,7 +604,6 @@
     function advance() {
       var next = (i + 1) % VARIANTS.length;
       var v = VARIANTS[next];
-      /* widths and colour ride CSS transitions; only the number needs a tween */
       comp.style.width = reach(v);
       v.materials.forEach(function (m, k) { segs[k].style.width = m.pct + '%'; });
       setProduct(host, v);
@@ -626,14 +613,26 @@
       i = next;
     }
 
-    function play()  { if (!timer) timer = setInterval(advance, HOLD + TWEEN); }
-    function pause() { clearInterval(timer); timer = null; cancelAnimationFrame(raf); }
+    function play() {
+      if (timer || kick || document.hidden) return;
+      kick = setTimeout(function () {
+        kick = null;
+        advance();
+        timer = setInterval(advance, HOLD + TWEEN);
+      }, KICK);
+    }
+    function pause() {
+      clearTimeout(kick); kick = null;
+      clearInterval(timer); timer = null;
+      cancelAnimationFrame(raf);
+    }
 
-    /* off-screen or backgrounded, it stops */
+    /* the strip is below the fold on a phone; watch the band that holds both */
+    var watch = document.getElementById('hero-side') || comp;
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(function (entries) {
         entries[0].isIntersecting ? play() : pause();
-      }, { threshold: 0.15 }).observe(comp);
+      }, { threshold: 0.05 }).observe(watch);
     } else {
       play();
     }
@@ -644,8 +643,6 @@
 
   /* --- hero headline ------------------------------------------------------ */
 
-  /* Wraps each word so it can rise independently. Safe to rebuild the DOM
-     here only because the headline is static markup. */
   function splitHeadline() {
     var head = document.querySelector('[data-split]');
     if (!head || reduced) return;
@@ -675,9 +672,7 @@
 
   /* --- one indicator, stage by stage ------------------------------------- */
 
-  /* Diverging bars on a shared zero baseline — stage D is negative, so
-     polarity is geometry. The domain is FIXED across all three builds: an
-     auto-scaled one would keep A1–A3 the same length whichever build shows. */
+  /* Fixed domain across all three builds: auto-scaling hides the change. */
   var SC_HOLD = 850, SC_TWEEN = 1500, SC_KICK = 500, SC_RESUME = 4000;
 
   function scGeom(w) {
@@ -829,8 +824,6 @@
         var capB = el('line', {
           stroke: '#e8f2ee', 'stroke-width': 2, 'stroke-opacity': 0.8
         });
-        /* values live in their own right-hand column, so they never collide
-           with a bar end, a whisker cap or the row labels */
         var val = el('text', {
           x: geo.w - 4, y: cy + 4, fill: '#e8f2ee',
           'font-size': geo.fVal, 'text-anchor': 'end'
@@ -914,8 +907,6 @@
         var k = Math.min(1, (now - t0) / SC_TWEEN);
         var e = easeInOut(k);
 
-        /* bars are on a linear axis; the total spans a decade, so it rides
-           log space to keep an even visual rate */
         paint(A.map(function (r, i) {
           return {
             stage: r.stage,
@@ -989,7 +980,6 @@
     }
   }
 
-
   function initReveals() {
     var native = window.CSS && CSS.supports &&
                  CSS.supports('animation-timeline', 'view()');
@@ -1009,7 +999,6 @@
   function initTopbar() {
     var bar = document.getElementById('topbar');
     if (!bar) return;
-    /* arrives while the hero mark is still leaving, so the two read as one */
     function check() {
       bar.classList.toggle('visible', window.scrollY > window.innerHeight * 0.45);
     }
@@ -1019,8 +1008,7 @@
 
   /* --- nav ---------------------------------------------------------------- */
 
-  /* Two disclosures, one implementation. State lives on the DOM: aria-expanded
-     is what the CSS reads, so there is no second copy of "is it open". */
+  /* state lives on aria-expanded; the CSS reads it, so there is no second copy */
   function initNav() {
     var groups = [
       { btn: document.getElementById('nav-toggle'), box: document.querySelector('.nav')  },
@@ -1034,7 +1022,6 @@
     function setOpen(g, open) {
       g.btn.setAttribute('aria-expanded', open ? 'true' : 'false');
       g.box.setAttribute('data-open', open ? 'true' : 'false');
-      /* the bar needs a ground behind an open panel; set here, not with :has() */
       if (bar && g.box.classList.contains('nav')) {
         bar.classList.toggle('nav-open', open);
       }
@@ -1083,8 +1070,7 @@
     initTopbar();
     initNav();
 
-    /* Both pinned and unpinned layouts are populated; CSS picks which shows,
-       so a window that becomes too short already has its fallback rendered. */
+    /* both layouts are populated; CSS picks which shows */
     initStatic();
     initBigViz();
     if (!reduced) initStage();

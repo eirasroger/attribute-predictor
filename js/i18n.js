@@ -10,29 +10,24 @@
 
   var LANGS = ['en', 'ca'];
 
-  /* Chosen before first paint by the inline script in <head>, which is the only
-     copy of the detection logic. */
+  /* set by the inline script in <head> */
   var lang = document.documentElement.lang;
   if (LANGS.indexOf(lang) < 0) lang = 'en';
 
   /* --- resolving ---------------------------------------------------------- */
 
-  /* Falls back to English: a gap should leave the page
-     readable and show up in audit(), not blank a heading. */
+  /* falls back to English so a gap shows up in audit(), not as a blank */
   function t(pair) {
     if (pair == null) return '';
     if (typeof pair === 'string') return pair;          /* not translated */
     return pair[lang] != null ? pair[lang] : pair.en;
   }
 
-  /* Catalan writes 0,310. Applied to formatted output, so the exponent and
-     range forms get it too. */
+  /* Catalan writes 0,310 */
   function num(text) {
     return lang === 'ca' ? String(text).replace(/\./g, ',') : String(text);
   }
 
-  /* Grouped by section, in document order. Keys carrying markup the design
-     needs (a <br>, the accent span) are applied with data-i18n-html. */
   var COPY = {
 
     /* head ---------------------------------------------------------------- */
@@ -59,7 +54,6 @@
       ca: 'Aplicació d\'escriptori'
     },
     'ui.language': { en: 'Language', ca: 'Idioma' },
-    /* Endonyms: findable by someone who cannot read the current language. */
     'ui.english':  { en: 'English',  ca: 'English' },
     'ui.catalan':  { en: 'Català',   ca: 'Català'  },
 
@@ -419,7 +413,6 @@
     if (typeof STAGES !== 'undefined') {
       STAGES.forEach(function (st) { check(st.desc, 'STAGES.' + st.key + '.desc'); });
     }
-    /* js/assembly.js publishes this before DOMContentLoaded, so it is here */
     if (window.ASSEMBLY) {
       check(window.ASSEMBLY.name, 'ASSEMBLY.name');
       window.ASSEMBLY.layers.forEach(function (l) {

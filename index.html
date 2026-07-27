@@ -10,8 +10,7 @@
 <meta name="theme-color" content="#0f1412">
 <link rel="canonical" href="https://eirasroger.github.io/attribute-predictor/">
 
-<!-- Link previews. Crawlers do not run JS, so these stay English and are the
-     only absolute URLs on the page: og:image is not resolved against <base>. -->
+<!-- og:image must be absolute; crawlers do not run JS, so these stay English -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Attribute Predictor">
 <meta property="og:url" content="https://eirasroger.github.io/attribute-predictor/">
@@ -30,9 +29,7 @@
 <link rel="apple-touch-icon" href="assets/logo.png">
 <link rel="stylesheet" href="css/site.css">
 
-<!-- Language, decided before first paint. Only copy of the detection logic;
-     i18n.js reads it back off <html lang>. The markup ships English, so paint
-     is held for anyone needing a swap, with a timer that gives up. -->
+<!-- Decided before first paint. Only copy of the detection logic. -->
 <script>
 (function () {
   var LANGS = ['en', 'ca'], root = document.documentElement, pick = null;
@@ -58,8 +55,6 @@
 </head>
 <body>
 
-<!-- Two halves: the identity fades in with the hero hand-off, the nav is
-     visible from the first pixel. -->
 <header class="topbar" id="topbar">
   <div class="topbar-id">
     <img class="topbar-mark" src="assets/logo.png" alt="" width="22" height="22">
@@ -82,7 +77,6 @@
          href="mailto:roger.verges.eiras@gmail.com?subject=Attribute%20Predictor">Contact</a>
 
       <div class="lang" id="lang">
-        <!-- desktop trigger; on narrow screens the list below is just open -->
         <button type="button" class="lang-btn" id="lang-btn"
                 aria-expanded="false" aria-controls="lang-list"
                 data-i18n-attr="aria-label:ui.language" aria-label="Language">
@@ -124,7 +118,6 @@
 
   <!-- 1 ▸ hero ------------------------------------------------------------ -->
   <section class="hero" id="hero">
-    <!-- masthead: the mark and the name, centred over the whole opening -->
     <div class="hero-mast hero-fade">
       <img class="hero-mark" src="assets/logo.png"
            alt="Attribute Predictor" width="84" height="84">
@@ -142,16 +135,8 @@
       </p>
     </div>
 
-    <!-- Render and readout are one band: the render shows which surface changed
-         and the strip under it says what that cost. They share a column so the
-         two read together. On a narrow screen the render drops out and this
-         collapses back to the strip alone, directly under the copy. -->
     <div class="hero-side hero-fade hero-fade-3" id="hero-side">
 
-      <!-- The same partition, rendered once per build. All three share a camera
-           and differ only across the dividing face, so the swap is a cross-fade
-           on one surface and the room never moves. Decorative: the loop's
-           meaning is carried by .hero-demo below. -->
       <div class="hero-render" id="hero-render" aria-hidden="true">
         <div class="hr-frame">
         <img class="hr-shot is-on" id="hr-timber"
@@ -161,9 +146,6 @@
         <img class="hr-shot" id="hr-aluminium"
              src="assets/partition-aluminium.webp" alt="" width="1170" height="743">
 
-        <!-- Traces the dividing face in the build's own colour, so the render
-             joins the same colour system as the strip, radar and stage chart.
-             Coordinates are the face quad measured in the cropped frame. -->
           <svg class="hr-trace" viewBox="0 0 1170 743" preserveAspectRatio="none"
                focusable="false">
             <polygon points="232,264 665,141 666,363 233,527"/>
@@ -171,7 +153,6 @@
         </div>
       </div>
 
-      <!-- self-playing loop: composition changes, the number follows -->
       <div class="hero-demo" id="hero-demo" aria-hidden="true">
         <div>
           <div class="hd-comp"><div class="hd-fill" id="hd-comp"></div></div>
@@ -232,8 +213,7 @@
     </p>
   </section>
 
-  <!-- 4 ▸ layer by layer. Driven by js/assembly.js, which shares nothing with
-       the rest of the page except INDICATORS. ------------------------------ -->
+  <!-- 4 ▸ layer by layer -------------------------------------------------- -->
   <section class="assembly" aria-labelledby="assembly-heading">
     <div class="assembly-intro">
       <h2 id="assembly-heading" class="section-head reveal" data-i18n="assembly.head">
@@ -247,11 +227,8 @@
       </p>
     </div>
 
-    <!-- the track is the scroll distance; the stage pins inside it -->
     <div class="as-track" id="as-track">
       <div class="as-stage">
-        <!-- the group is centred on the section alone, then slides left by half
-             the panel so the pair ends up centred -->
         <div class="as-group" id="as-group">
           <!-- aria-hidden: the panel carries the same content as text -->
           <svg id="as-svg" aria-hidden="true" focusable="false"></svg>
@@ -260,7 +237,6 @@
       </div>
     </div>
   </section>
-
 
   <!-- 4 ▸ act one: one indicator, one number ------------------------------- -->
   <section class="bigviz" id="bigviz" aria-labelledby="bigviz-heading">
@@ -369,7 +345,6 @@
 
           </div>
 
-
         </div>
       </div>
     </div>
@@ -406,8 +381,6 @@
       crosses the threshold the wording softens to <em>likely</em> and the
       colour eases off.
     </p>
-    <!-- every verdict the model can return, best to worst; the softened
-         "likely" form of each sits next to the call it hedges -->
     <div class="verdict-demo reveal" aria-hidden="true">
       <div class="vd"><span class="chip chip-good" data-i18n="verdict.good">Better than typical</span></div>
       <div class="vd"><span class="chip chip-good chip-soft" data-i18n="verdict.good.soft">Likely better than typical</span></div>
@@ -451,9 +424,7 @@
         <svg id="sc-svg" aria-hidden="true" focusable="false"></svg>
       </div>
 
-      <!-- Accessible twin of the chart; the chart itself carries the visuals.
-           The wrapper takes .sr-only, not the table: a table cannot shrink
-           below its min-content width, so hiding it directly overflows. -->
+      <!-- .sr-only goes on the wrapper: a table cannot shrink below min-content -->
       <div class="sr-only">
         <table id="sc-table">
           <caption data-i18n="stages.table.caption">
@@ -548,7 +519,7 @@
 <script src="js/i18n.js"></script>
 <script src="js/data.js"></script>
 <script src="js/site.js"></script>
-<!-- independent of the three above; only reads INDICATORS from data.js -->
+<!-- self-contained; only reads INDICATORS -->
 <script src="js/assembly.js"></script>
 </body>
 </html>
