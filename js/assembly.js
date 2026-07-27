@@ -270,13 +270,22 @@
           callDot.setAttribute('cy', anchor.y.toFixed(1));
           callDot.setAttribute('r', 2.6);
         } else {
-          /* Narrow screens have no room beside the figure. A leader would have
-             to run down through the boards below the selected one, so the name
-             simply sits under the whole stack. */
-          callLine.setAttribute('d', '');
-          callDot.setAttribute('r', 0);
+          /* Narrow screens have no room for the name beside the figure, so it
+             sits under the stack — but it still has to connect. The leader
+             steps out past the left edge first, then down, then in: a straight
+             run would cross every board below the selected one. */
+          var capY = lowest + 36;
+          var tw = callText.getComputedTextLength ? callText.getComputedTextLength() : 92;
+          var out = -22;
+          callLine.setAttribute('d',
+            'M' + anchor.x.toFixed(1) + ' ' + anchor.y.toFixed(1) +
+            'H' + out + 'V' + capY.toFixed(1) +
+            'H' + (CENTRE_X - tw / 2 - 10).toFixed(1));
+          callDot.setAttribute('cx', anchor.x.toFixed(1));
+          callDot.setAttribute('cy', anchor.y.toFixed(1));
+          callDot.setAttribute('r', 2.6);
           callText.setAttribute('x', CENTRE_X);
-          callText.setAttribute('y', (lowest + 34).toFixed(1));
+          callText.setAttribute('y', capY.toFixed(1));
           callText.setAttribute('text-anchor', 'middle');
         }
         callG.setAttribute('opacity', hi.toFixed(3));

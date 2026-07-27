@@ -160,8 +160,8 @@
 
     /* act one --------------------------------------------------------------- */
     'bigviz.head': {
-      en: 'One partition.<br><span class="dim">Three ways to build it.</span>',
-      ca: 'Una partició interior.<br><span class="dim">Tres maneres de construir-la.</span>'
+      en: 'One partition.<br><span class="dim">Many ways to build it.</span>',
+      ca: 'Una partició interior.<br><span class="dim">Moltes maneres de construir-la.</span>'
     },
     'bigviz.sub': {
       en: 'Same category, same job, same functional unit. Change the ' +
