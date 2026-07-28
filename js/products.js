@@ -6,7 +6,7 @@ var PRODUCTS = [
   {
     id: 'extractor',
     slug: 'extractor',
-    name: 'Document Extractor',
+    name: 'Field Extractor',
     tagline: {
       en: 'Turns documents into structured data.',
       ca: 'Converteix documents en dades estructurades.'
