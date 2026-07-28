@@ -980,95 +980,12 @@
     }
   }
 
-  function initReveals() {
-    var native = window.CSS && CSS.supports &&
-                 CSS.supports('animation-timeline', 'view()');
-    if (native || reduced || !('IntersectionObserver' in window)) return;
-
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
-      });
-    }, { rootMargin: '0px 0px -12% 0px' });
-
-    document.querySelectorAll('.reveal').forEach(function (n) { io.observe(n); });
-  }
-
-  /* --- top bar ------------------------------------------------------------ */
-
-  function initTopbar() {
-    var bar = document.getElementById('topbar');
-    if (!bar) return;
-    function check() {
-      bar.classList.toggle('visible', window.scrollY > window.innerHeight * 0.45);
-    }
-    window.addEventListener('scroll', check, { passive: true });
-    check();
-  }
-
-  /* --- nav ---------------------------------------------------------------- */
-
-  /* state lives on aria-expanded; the CSS reads it, so there is no second copy */
-  function initNav() {
-    var groups = [
-      { btn: document.getElementById('nav-toggle'), box: document.querySelector('.nav')  },
-      { btn: document.getElementById('lang-btn'),   box: document.getElementById('lang') }
-    ].filter(function (g) { return g.btn && g.box; });
-
-    if (!groups.length) return;
-
-    var bar = document.getElementById('topbar');
-
-    function setOpen(g, open) {
-      g.btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-      g.box.setAttribute('data-open', open ? 'true' : 'false');
-      if (bar && g.box.classList.contains('nav')) {
-        bar.classList.toggle('nav-open', open);
-      }
-    }
-    function closeAll(except) {
-      groups.forEach(function (g) { if (g !== except) setOpen(g, false); });
-    }
-
-    groups.forEach(function (g) {
-      setOpen(g, false);
-      g.btn.addEventListener('click', function (e) {
-        e.stopPropagation();
-        var open = g.btn.getAttribute('aria-expanded') !== 'true';
-        closeAll(g);
-        setOpen(g, open);
-      });
-      /* a click inside must not count as a click outside */
-      g.box.addEventListener('click', function (e) { e.stopPropagation(); });
-    });
-
-    document.addEventListener('click', function () { closeAll(); });
-    document.addEventListener('keydown', function (e) {
-      if (e.key !== 'Escape') return;
-      groups.forEach(function (g) {
-        if (g.btn.getAttribute('aria-expanded') === 'true') {
-          setOpen(g, false);
-          g.btn.focus();
-        }
-      });
-    });
-
-    /* the panel and the drop are different things either side of 44rem */
-    var narrow = window.matchMedia('(max-width: 44rem)');
-    var onChange = function () { closeAll(); };
-    if (narrow.addEventListener) narrow.addEventListener('change', onChange);
-    else if (narrow.addListener) narrow.addListener(onChange);
-  }
-
   /* --- go ---------------------------------------------------------------- */
 
   function init() {
     splitHeadline();
     initHeroLoop();
     initStageChart();
-    initReveals();
-    initTopbar();
-    initNav();
 
     /* both layouts are populated; CSS picks which shows */
     initStatic();

@@ -1,0 +1,185 @@
+/* ===========================================================================
+   The hub. Light ground, no product colour of its own: the cards bring it.
+   Loads after css/base.css.
+   =========================================================================== */
+
+:root {
+  --ground:      #fbfbfd;
+  --ground-up:   #f4f4f7;
+  --surface:     #ffffff;
+  /* contrast-checked on --ground: 16.3:1 / 7.6:1 / 4.9:1 / 5.3:1 */
+  --ink:         #1d1d1f;
+  --ink-dim:     #515156;
+  --ink-faint:   #6e6e73;
+  --line:        #d6d6db;
+  --accent:      #1c6ea4;
+  --accent-dim:  #14547e;
+}
+
+/* --- hero ----------------------------------------------------------------- */
+
+.hub-hero {
+  position: relative; isolation: isolate;
+  padding: clamp(8.5rem, 20vh, 13rem) var(--pad) clamp(4.5rem, 10vh, 7.5rem);
+}
+.hub-hero > *:not(.hub-hero-wash) { position: relative; z-index: 1; }
+
+.hub-hero-wash {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(48rem 32rem at 74% 2%,
+      color-mix(in srgb, #6b7ad8 15%, transparent) 0%, transparent 66%),
+    radial-gradient(40rem 30rem at 4% -8%,
+      color-mix(in srgb, #3d9468 13%, transparent) 0%, transparent 64%),
+    radial-gradient(46rem 30rem at 99% 84%,
+      color-mix(in srgb, #a8506e 11%, transparent) 0%, transparent 68%),
+    radial-gradient(34rem 24rem at 30% 104%,
+      color-mix(in srgb, #c98226 10%, transparent) 0%, transparent 70%);
+  /* without the fade the wash cuts off at the section edge as a visible line */
+  -webkit-mask-image: linear-gradient(180deg, #000 58%, transparent 100%);
+          mask-image: linear-gradient(180deg, #000 58%, transparent 100%);
+}
+
+.hub-head {
+  font-size: clamp(2.2rem, 7.4vw, 6.2rem);
+  letter-spacing: -0.045em;
+}
+
+.hub-hero-foot {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end; gap: 1.4rem clamp(2rem, 6vw, 5rem);
+  margin-top: clamp(3rem, 7vw, 5rem);
+  padding-top: 1.9rem;
+  border-top: 1px solid var(--line);
+}
+.hub-hero-foot .lede { margin: 0; max-width: 33rem; }
+
+.hub-jump {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-size: 0.95rem; font-weight: 500; white-space: nowrap;
+  color: var(--ink);
+  transition: color 0.3s var(--ease);
+}
+.hub-jump:hover { color: var(--accent); text-decoration: none; }
+.hub-jump svg {
+  width: 0.66rem; height: auto;
+  transition: transform 0.35s var(--ease);
+}
+.hub-jump:hover svg { transform: translateX(3px); }
+
+@media (max-width: 46rem) {
+  .hub-hero-foot { grid-template-columns: 1fr; align-items: start; }
+}
+
+/* --- products ------------------------------------------------------------- */
+
+.products { padding: 4rem 0 7rem; scroll-margin-top: 4.5rem; }
+
+.products-head {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 2rem;
+  padding: 0 var(--pad) 3rem;
+}
+.products-head .section-head { margin: 0 0 0.9rem; }
+.products-sub {
+  margin: 0; max-width: 30rem;
+  color: var(--ink-dim); font-size: 1.02rem;
+}
+
+.rail-nav { display: flex; gap: 0.6rem; flex: 0 0 auto; padding-bottom: 0.3rem; }
+.rail-btn {
+  width: 2.6rem; height: 2.6rem;
+  display: grid; place-items: center;
+  border: 1px solid var(--line); border-radius: 50%;
+  background: var(--surface); color: var(--ink-dim); cursor: pointer;
+  transition: color 0.25s var(--ease), border-color 0.25s var(--ease),
+              opacity 0.25s var(--ease);
+}
+.rail-btn svg { width: 0.7rem; height: auto; display: block; }
+.rail-btn:hover { color: var(--ink); border-color: var(--ink-faint); }
+.rail-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.rail-btn[disabled] { opacity: 0.3; cursor: default; }
+.rail-fits .rail-nav { display: none; }
+
+/* --- the rail ------------------------------------------------------------- */
+
+.rail {
+  display: flex; gap: clamp(1rem, 1.8vw, 1.6rem);
+  padding: 0.75rem var(--pad) 2.5rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.rail::-webkit-scrollbar { display: none; }
+
+.card {
+  flex: 0 0 clamp(15.5rem, 26vw, 22rem);
+  display: flex; flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  overflow: hidden;
+  color: inherit; text-decoration: none;
+  box-shadow: 0 1px 2px rgba(20, 20, 26, 0.04),
+              0 8px 20px -12px rgba(20, 20, 26, 0.18);
+  transition: transform 0.5s var(--ease), border-color 0.5s var(--ease),
+              box-shadow 0.5s var(--ease);
+}
+.card:hover, .card:focus-visible {
+  text-decoration: none;
+  transform: translateY(-7px);
+  border-color: color-mix(in srgb, var(--pc) 42%, var(--line));
+  box-shadow: 0 1px 2px rgba(20, 20, 26, 0.05),
+              0 1.6rem 2.8rem -1.2rem color-mix(in srgb, var(--pc) 60%, transparent);
+}
+.card:focus-visible { outline: 2px solid var(--pi); outline-offset: 3px; }
+
+.card-art {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  display: grid; place-items: center;
+  background:
+    radial-gradient(120% 90% at 22% 8%,
+      color-mix(in srgb, var(--pc) 17%, var(--surface)) 0%,
+      color-mix(in srgb, var(--pc) 6%, var(--surface)) 46%,
+      color-mix(in srgb, var(--pc) 2%, var(--surface)) 100%);
+}
+.card-art::after {
+  content: ""; position: absolute; inset: auto 0 0 0; height: 1px;
+  background: linear-gradient(90deg,
+    transparent, color-mix(in srgb, var(--pc) 28%, var(--line)), transparent);
+}
+.card-art img { width: 88%; height: auto; display: block; }
+
+.card-body {
+  display: flex; flex-direction: column;
+  flex: 1 1 auto;
+  padding: 1.5rem 1.5rem 1.4rem;
+}
+.card-name {
+  margin: 0 0 0.5rem;
+  font-size: 1.16rem; font-weight: 600; letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+.card-tag {
+  margin: 0 0 1.6rem;
+  font-size: 0.9rem; line-height: 1.55; color: var(--ink-dim);
+}
+.card-cue {
+  margin-top: auto;
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-size: 0.74rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--pi);
+}
+.card-cue svg { width: 0.62rem; height: auto; }
+.card[data-ready="false"] .card-cue { color: var(--ink-faint); }
+.card[data-ready="false"] .card-cue svg { display: none; }
+
+/* --- close ---------------------------------------------------------------- */
+
+.hub-close { border-top: 1px solid var(--line); }
+
+@media (max-width: 46rem) {
+  .products-head { flex-direction: column; align-items: flex-start; gap: 1.4rem; }
+  .card { flex-basis: min(78vw, 19rem); }
+}

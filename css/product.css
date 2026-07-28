@@ -1,0 +1,91 @@
+/* ===========================================================================
+   A product page that has no product yet. Light ground; the accent comes from
+   the [data-tint] block in css/base.css. Loads after css/base.css.
+   =========================================================================== */
+
+:root {
+  --ground:      #fbfbfd;
+  --ground-up:   #f4f4f7;
+  --surface:     #ffffff;
+  --ink:         #1d1d1f;
+  --ink-dim:     #515156;
+  --ink-faint:   #6e6e73;
+  --line:        #d6d6db;
+}
+
+body {
+  --accent:     var(--pi);
+  --accent-dim: var(--pi);
+}
+
+.stub {
+  min-height: 82svh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: clamp(8rem, 20vh, 13rem) var(--pad) 5rem;
+  max-width: calc(46rem + var(--pad) * 2);
+}
+
+/* the same panel the hub card gives it */
+.stub-art {
+  width: clamp(13rem, 32vw, 19rem);
+  aspect-ratio: 4 / 3;
+  display: grid; place-items: center;
+  margin-bottom: 2.4rem;
+  border: 1px solid color-mix(in srgb, var(--pc) 16%, var(--line));
+  border-radius: 1.25rem;
+  background:
+    radial-gradient(120% 90% at 22% 8%,
+      color-mix(in srgb, var(--pc) 17%, var(--surface)) 0%,
+      color-mix(in srgb, var(--pc) 6%, var(--surface)) 46%,
+      color-mix(in srgb, var(--pc) 2%, var(--surface)) 100%);
+  box-shadow: 0 1px 2px rgba(20, 20, 26, 0.04),
+              0 8px 20px -12px rgba(20, 20, 26, 0.18);
+}
+.stub-mark { width: 88%; height: auto; display: block; }
+
+.stub-status {
+  display: inline-flex; align-self: flex-start; align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 1.6rem; padding: 0.3rem 0.75rem;
+  border: 1px solid color-mix(in srgb, var(--pc) 35%, var(--line));
+  border-radius: 2rem;
+  background: color-mix(in srgb, var(--pc) 8%, var(--surface));
+  font-size: 0.72rem; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--pi);
+}
+
+.stub-name {
+  margin: 0;
+  font-size: clamp(2.4rem, 6.4vw, 4.4rem);
+  line-height: 1.04; letter-spacing: -0.038em; font-weight: 600;
+}
+
+.stub-tag {
+  margin: 1.4rem 0 0; max-width: 30rem;
+  font-size: clamp(1.05rem, 2vw, 1.3rem); line-height: 1.45;
+  color: var(--ink-dim);
+}
+
+.stub-body {
+  margin: 2.4rem 0 0; max-width: 34rem;
+  color: var(--ink-dim);
+}
+
+.stub-note {
+  margin: 2.4rem 0 0; padding-top: 1.6rem; max-width: 34rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.88rem; color: var(--ink-faint);
+}
+
+.stub-links {
+  display: flex; flex-wrap: wrap; gap: 0.8rem 1.6rem;
+  margin-top: 2.4rem;
+}
+.stub-link {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  font-size: 0.94rem; font-weight: 500;
+}
+.stub-link svg { width: 0.62rem; height: auto; }
+.stub-link-quiet { color: var(--ink-dim); }
+.stub-link-quiet:hover { color: var(--ink); }
