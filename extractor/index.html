@@ -3,18 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Field Extractor</title>
-<meta name="description" content="Turns documents into structured data.">
-<meta name="color-scheme" content="light">
-<meta name="theme-color" content="#fbfbfd">
+<title>Field Extractor: technical documents, returned as structured data</title>
+<meta name="description" data-i18n-attr="content:meta.description"
+      content="Reads technical documents and returns the fields you asked for, wherever they sit inside them. Prose, tables, footnotes, any language.">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#12100d">
 <link rel="canonical" href="https://eirasroger.github.io/attribute-predictor/extractor/">
 
 <!-- crawlers do not run JS, so these stay English -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Company">
 <meta property="og:url" content="https://eirasroger.github.io/attribute-predictor/extractor/">
-<meta property="og:title" content="Field Extractor">
-<meta property="og:description" content="Turns documents into structured data.">
+<meta property="og:title" content="Field Extractor: written for people, returned as data">
+<meta property="og:description"
+      content="Reads technical documents and returns the fields you asked for, wherever they sit inside them. Prose, tables, footnotes, any language.">
 <meta property="og:locale" content="en">
 <meta name="twitter:card" content="summary">
 
@@ -22,47 +24,390 @@
 <link rel="apple-touch-icon" href="../assets/logo.png">
 <script src="../js/boot.js"></script>
 <link rel="stylesheet" href="../css/base.css">
-<link rel="stylesheet" href="../css/product.css">
+<link rel="stylesheet" href="../css/extractor.css">
 </head>
-<body data-base="../" data-page="extractor" data-tint="extractor">
+<body data-base="../" data-page="extractor" data-tint="extractor"
+      data-tag="topbar.tag" data-note="footer.note" data-topbar-hold="hero">
 
 <header class="topbar" id="topbar"></header>
 
 <main>
-  <section class="stub">
-    <div class="stub-art">
-      <img class="stub-mark" id="p-mark" src="../assets/marks/extractor.svg"
-           alt="" width="200" height="150">
+
+  <!-- 1 ▸ hero ------------------------------------------------------------- -->
+  <section class="hero" id="hero">
+    <div class="hero-mast hero-fade">
+      <p class="eyebrow">Field Extractor</p>
     </div>
 
-    <p class="stub-status" data-i18n="status.soon">In development</p>
+    <div class="hero-inner">
+      <h1 class="display" data-i18n-html="hero.head">
+        Written for people.<br>Returned as <span class="accent">data</span>.
+      </h1>
+      <p class="lede hero-fade hero-fade-2" data-i18n="hero.lede">
+        Point it at technical documents. It reads them the way a person would,
+        finds what you asked for wherever it happens to be, and hands back a
+        catalogue you can query.
+      </p>
+    </div>
 
-    <h1 class="stub-name" id="p-name">Field Extractor</h1>
-    <p class="stub-tag" id="p-tag">Turns documents into structured data.</p>
-    <p class="stub-body" id="p-body">Reads technical documents and returns fields you can query, compare and analyse. Language models do the reading. The structure stays yours to define.</p>
+    <div class="hero-side hero-fade hero-fade-3" id="hero-side">
+      <div class="hx" id="hx" aria-hidden="true">
+        <svg class="hx-wires" id="hx-wires" focusable="false"></svg>
 
-    <p class="stub-note" data-i18n="status.note">
-      This one is being built. There is nothing to download yet.
+        <article class="paper paper-sm" id="hx-paper">
+          <p class="pp-maker" data-i18n="pipe.doc.maker">Manufacturer</p>
+          <p class="pp-p">
+            The board is spun from basaltic rock and recycled blast furnace
+            slag. Its
+            <mark class="pp-hit" data-lane="lambda">declared thermal
+            conductivity is 0,035 W/(m·K)</mark> at a mean temperature of
+            10 °C, and its
+            <mark class="pp-hit" data-lane="density">nominal density is
+            40 kg/m³</mark>. Reaction to fire is classified
+            <mark class="pp-hit" data-lane="fire">A1</mark> to EN 13501-1.
+          </p>
+        </article>
+
+        <ul class="hx-out" id="hx-out"></ul>
+      </div>
+    </div>
+
+    <div class="scroll-cue" aria-hidden="true"><span></span></div>
+  </section>
+
+  <!-- 2 ▸ the gap ---------------------------------------------------------- -->
+  <section class="statement">
+    <p class="reveal" data-i18n-html="gap.statement">
+      Every product you sell is fully documented.<br>
+      <span class="dim">And none of it can be counted, sorted or compared.</span>
+    </p>
+  </section>
+
+  <!-- 3 ▸ where it starts --------------------------------------------------- -->
+  <section class="prose prose-full">
+    <h2 class="section-head reveal" data-i18n="fits.head">It starts with a folder.</h2>
+    <p class="reveal" data-i18n="fits.lede">
+      Almost everything a company knows about its products lives in documents,
+      and a document is not something you can run a question against. Until it
+      is data, none of it can be used twice.
     </p>
 
-    <div class="stub-links">
-      <a class="stub-link" href="mailto:roger.verges.eiras@gmail.com?subject=Document%20Extractor">
-        <span data-i18n="status.ask">Ask about it</span>
+    <ul class="fits reveal">
+      <li>
+        <h3 data-i18n="fits.a.head">A catalogue nobody can read at once</h3>
+        <p data-i18n="fits.a.body">
+          Four hundred products, every one of them fully described, none of it
+          in a form anything can add up. The knowledge is already there. It has
+          simply never been available.
+        </p>
+      </li>
+      <li>
+        <h3 data-i18n="fits.b.head">One question, a whole catalogue</h3>
+        <p data-i18n="fits.b.body">
+          Which of these are A1, under 0,035, and still valid next spring.
+          Nobody opens four hundred files to answer that. With the fields in
+          columns it is one filter.
+        </p>
+      </li>
+      <li>
+        <h3 data-i18n="fits.c.head">Documents nobody designed for this</h3>
+        <p data-i18n="fits.c.body">
+          Scans, exports, sheets written in whatever language the factory works
+          in. There is no format underneath them, which is exactly why parsing
+          them has never worked.
+        </p>
+      </li>
+    </ul>
+
+    <p class="reveal callout" data-i18n="fits.callout">
+      The document stays the authority. What comes back is a working copy that
+      points at it, line by line.
+    </p>
+  </section>
+
+  <!-- 4 ▸ the pipeline ------------------------------------------------------ -->
+  <section class="pipe" id="pipe" aria-labelledby="pipe-heading">
+    <div class="pipe-intro">
+      <h2 id="pipe-heading" class="section-head reveal" data-i18n="pipe.head">
+        From a page to a record.
+      </h2>
+      <p class="section-sub reveal" data-i18n="pipe.sub">
+        One document, read end to end.
+      </p>
+    </div>
+
+    <div class="pipe-track" id="pipe-track">
+      <div class="pipe-stage" id="pipe-stage">
+
+        <div class="pipe-grid" id="pipe-grid">
+          <svg class="pipe-wires" id="pipe-wires" aria-hidden="true" focusable="false"></svg>
+
+          <div class="pipe-col pipe-col-a">
+            <p class="pipe-col-head" data-i18n="pipe.col.a">The page, as it arrived</p>
+
+            <article class="paper" id="pipe-paper">
+              <header class="pp-head">
+                <p class="pp-maker" data-i18n="pipe.doc.maker">Manufacturer</p>
+                <p class="pp-kind" data-i18n="pipe.doc.kind">Technical data sheet</p>
+                <h3 class="pp-title" data-i18n="pipe.doc.title">Mineral wool board</h3>
+                <p class="pp-sub" data-i18n="pipe.doc.sub">140 mm, for ventilated façades</p>
+              </header>
+
+              <h4 class="pp-h">1. Description</h4>
+              <p class="pp-p">
+                The board is spun from basaltic rock and recycled blast furnace
+                slag with limestone as a flux, bonded with a thermosetting
+                phenolic resin. The
+                <mark class="pp-hit" data-lane="lambda">declared thermal
+                conductivity is 0,035 W/(m·K)</mark> at a mean temperature of
+                10 °C, and the
+                <mark class="pp-hit" data-lane="density">nominal density is
+                40 kg/m³</mark>.
+              </p>
+
+              <h4 class="pp-h">2. Composition</h4>
+              <div class="pp-hit pp-block" data-lane="comp">
+                <table class="pp-tbl">
+                  <tbody>
+                    <tr><td>Basalt</td><td>58,0</td><td>% m/m</td></tr>
+                    <tr><td>Blast furnace slag</td><td>28,0</td><td>% m/m</td></tr>
+                    <tr><td>Limestone</td><td>9,2</td><td>% m/m</td></tr>
+                    <tr><td>Phenolic binder</td><td>4,3</td><td>% m/m</td></tr>
+                    <tr><td>Mineral oil</td><td>0,5</td><td>% m/m</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <h4 class="pp-h">3. Declared performance</h4>
+              <table class="pp-tbl">
+                <tbody>
+                  <tr><td>Reaction to fire</td>
+                      <td><mark class="pp-hit" data-lane="fire">A1</mark></td>
+                      <td>EN 13501-1</td></tr>
+                  <tr><td>Water absorption</td><td>≤ 1,0 kg/m²</td><td>EN 1609</td></tr>
+                  <tr><td>Vapour resistance</td><td>μ = 1</td><td>EN 12086</td></tr>
+                </tbody>
+              </table>
+            </article>
+          </div>
+
+          <div class="pipe-col pipe-col-b">
+            <p class="pipe-col-head" data-i18n="pipe.col.b">
+              What it found, and what it made of it
+            </p>
+            <ul class="chips" id="pipe-chips"></ul>
+          </div>
+
+          <div class="pipe-col pipe-col-c">
+            <p class="pipe-col-head" data-i18n="pipe.col.c">The record</p>
+            <div class="rec" id="pipe-rec"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 5 ▸ composition -------------------------------------------------------- -->
+  <section class="comp" aria-labelledby="comp-heading">
+    <div class="comp-intro">
+      <h2 id="comp-heading" class="section-head reveal" data-i18n="comp.head">
+        Nobody writes a composition the same way twice.
+      </h2>
+      <p class="reveal" data-i18n="comp.lede">
+        This is where reading stops being pattern matching. The same board,
+        declared four ways: a table, a sentence, another language, and a
+        different basis entirely. All four have to land in the same shape, or
+        none of them can be compared to anything.
+      </p>
+    </div>
+
+    <div class="comp-body reveal">
+      <div class="comp-sources">
+        <ol class="src-tabs" id="src-tabs"></ol>
+        <div class="src-stage" id="src-stage"></div>
+      </div>
+      <div class="comp-out">
+        <p class="comp-out-head">
+          <span data-i18n="comp.out">Normalised</span>
+          <span class="comp-basis" id="comp-basis"></span>
+        </p>
+        <ol class="comp-list" id="comp-list"></ol>
+        <p class="comp-total">
+          <span data-i18n="comp.total">Total</span>
+          <span class="comp-total-v">100,0</span>
+        </p>
+      </div>
+    </div>
+
+    <p class="comp-note reveal" data-i18n="comp.note">
+      A composition is not one value. It is a list of materials and the share of
+      each, and a share means nothing until you know what it is a share of.
+      Getting the basis wrong is how a whole catalogue quietly stops adding up.
+    </p>
+  </section>
+
+  <!-- 6 ▸ one product, four documents ---------------------------------------- -->
+  <section class="docs" aria-labelledby="docs-heading">
+    <div class="docs-intro">
+      <h2 id="docs-heading" class="section-head reveal" data-i18n="docs.head">
+        One product. Four documents. One row.
+      </h2>
+      <p class="reveal" data-i18n="docs.lede">
+        No single document holds the whole picture. The declaration has the
+        carbon, the data sheet has the physics, the end of life sheet has the
+        part everyone forgets to ask for. Read together they make one record.
+      </p>
+    </div>
+
+    <div class="docs-body reveal">
+      <ol class="doc-row" id="doc-row"></ol>
+      <div class="doc-merge" id="doc-merge"></div>
+    </div>
+
+    <p class="docs-cap" data-i18n="docs.cap">
+      Take a document to see what only it can give you.
+    </p>
+  </section>
+
+  <!-- 7 ▸ the schema --------------------------------------------------------- -->
+  <section class="schema" aria-labelledby="schema-heading">
+    <div class="schema-intro">
+      <h2 id="schema-heading" class="section-head reveal" data-i18n="schema.head">
+        You decide what a row looks like.
+      </h2>
+      <p class="reveal" data-i18n="schema.lede">
+        A field is a name, a type, a unit, and one sentence saying what to look
+        for. Write that sentence the way you would explain it to a new
+        colleague. Change the fields and the same documents give you a different
+        table.
+      </p>
+    </div>
+
+    <div class="sch reveal">
+      <div class="sch-tabs" id="sch-tabs" role="tablist"
+           data-i18n-attr="aria-label:schema.pick" aria-label="Choose a schema"></div>
+      <div class="sch-body">
+        <div class="sch-fields" id="sch-fields"></div>
+        <div class="sch-out">
+          <p class="sch-out-head" data-i18n="schema.out">What comes back</p>
+          <div class="rec" id="sch-rec"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 ▸ trust --------------------------------------------------------------- -->
+  <div class="duo">
+    <section class="prose">
+      <h2 class="section-head reveal" data-i18n="trust.head">Every value points back.</h2>
+      <p class="reveal" data-i18n="trust.body">
+        A number with no source is a number somebody has to go and check by
+        hand. Each field carries the document it came from and the place inside
+        it, so the value and the evidence arrive together.
+      </p>
+    </section>
+
+    <section class="prose">
+      <h2 class="section-head reveal" data-i18n="blank.head">Empty is an answer.</h2>
+      <p class="reveal" data-i18n="blank.body">
+        When a document does not say, the field comes back empty and names the
+        document it looked in. A blank you can trust is worth more than a value
+        you cannot.
+      </p>
+    </section>
+  </div>
+
+  <!-- 9 ▸ the catalogue -------------------------------------------------------- -->
+  <section class="work" aria-labelledby="work-heading">
+    <div class="work-intro">
+      <h2 id="work-heading" class="section-head reveal" data-i18n="work.head">
+        Then you can ask it anything.
+      </h2>
+      <p class="reveal" data-i18n="work.lede">
+        This is what the reading was for. A question that used to be a week of
+        someone opening files is now three clicks, and the answer holds still
+        long enough to act on.
+      </p>
+    </div>
+
+    <div class="wb reveal" id="wb">
+      <div class="wb-bar">
+        <div class="wb-filters" id="wb-filters"
+             data-i18n-attr="aria-label:work.filters" aria-label="Narrow it down"></div>
+        <p class="wb-count" id="wb-count"></p>
+      </div>
+
+      <div class="wb-body">
+        <div class="wb-table-holder">
+          <table class="wb-table" id="wb-table"></table>
+          <p class="wb-empty" id="wb-empty" data-i18n="work.empty" hidden>
+            Nothing clears all of those.
+          </p>
+        </div>
+
+        <figure class="wb-fig">
+          <figcaption>
+            <span class="wb-fig-title" data-i18n="work.chart">Conductivity against density</span>
+            <span class="wb-fig-unit" data-i18n="work.chart.y">λD, W/(m·K)</span>
+          </figcaption>
+          <div class="wb-plot" id="wb-plot">
+            <svg id="wb-svg" aria-hidden="true" focusable="false"></svg>
+          </div>
+          <p class="wb-fig-x" data-i18n="work.chart.x">Density, kg/m³</p>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 ▸ it feeds the rest ---------------------------------------------------- -->
+  <section class="feeds" aria-labelledby="feeds-heading">
+    <h2 id="feeds-heading" class="section-head reveal" data-i18n="feeds.head">
+      And it feeds the rest.
+    </h2>
+    <p class="reveal feeds-lede" data-i18n="feeds.lede">
+      A material composition with the shares normalised is exactly what the
+      Attribute Predictor takes. Structured product data is the input our other
+      tools were built for. This is where it comes from.
+    </p>
+    <ul class="feed-list reveal" id="feed-list"></ul>
+  </section>
+
+  <!-- 11 ▸ call to action ------------------------------------------------------- -->
+  <section class="cta">
+    <div class="cta-inner reveal">
+      <h2 class="cta-head" data-i18n="cta.head">Point it at your folder.</h2>
+      <p class="cta-body" data-i18n="cta.body">
+        Tell us what you need out of it, and we will show you what comes back.
+      </p>
+      <a class="cta-btn" href="mailto:roger.verges.eiras@gmail.com?subject=Field%20Extractor">
+        <span data-i18n="cta.btn">Get in touch</span>
         <svg viewBox="0 0 12 10" fill="none" stroke="currentColor"
              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
              aria-hidden="true" focusable="false"><path d="M1 5h9M6.8 1.2 10.6 5l-3.8 3.8"/></svg>
       </a>
-      <a class="stub-link stub-link-quiet" href="../#products"
-         data-i18n="nav.products">Products</a>
     </div>
   </section>
+
+  <!-- 12 ▸ close ----------------------------------------------------------------- -->
+  <section class="statement statement-close">
+    <p class="reveal" data-i18n-html="close.statement">
+      The reading is done.<br>
+      <span class="dim">Now the work can start.</span>
+    </p>
+    <img class="close-mark reveal" src="../assets/marks/extractor.svg" alt=""
+         width="200" height="150">
+  </section>
+
 </main>
 
 <footer id="sitefooter"></footer>
 
 <script src="../js/i18n.js"></script>
+<script src="../js/copy.extractor.js"></script>
 <script src="../js/products.js"></script>
 <script src="../js/shell.js"></script>
-<script src="../js/product.js"></script>
+<script src="../js/extract.data.js"></script>
+<script src="../js/extractor.js"></script>
 </body>
 </html>

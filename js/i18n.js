@@ -135,6 +135,54 @@
     if (typeof STAGES !== 'undefined') {
       STAGES.forEach(function (st) { check(st.desc, 'STAGES.' + st.key + '.desc'); });
     }
+    if (typeof LANES !== 'undefined') {
+      LANES.forEach(function (l) {
+        check(l.field, 'LANES.' + l.id + '.field');
+        check(l.where, 'LANES.' + l.id + '.where');
+      });
+    }
+    if (typeof LANE_MISSING !== 'undefined') {
+      check(LANE_MISSING.field, 'LANE_MISSING.field');
+      check(LANE_MISSING.note,  'LANE_MISSING.note');
+    }
+    if (typeof COMP !== 'undefined') {
+      check(COMP.basis, 'COMP.basis');
+      check(COMP.field, 'COMP.field');
+      check(COMP.where, 'COMP.where');
+      COMP.materials.forEach(function (m) {
+        check(m.name, 'COMP.' + m.id + '.name');
+      });
+    }
+    if (typeof SOURCES !== 'undefined') {
+      SOURCES.forEach(function (s2) {
+        check(s2.label, 'SOURCES.' + s2.id + '.label');
+        check(s2.note,  'SOURCES.' + s2.id + '.note');
+      });
+    }
+    if (typeof CATALOGUE !== 'undefined') {
+      CATALOGUE.filters.forEach(function (f) {
+        check(f.label, 'CATALOGUE.filters.' + f.id);
+      });
+    }
+    if (typeof DOCS !== 'undefined') {
+      DOCS.forEach(function (d) {
+        check(d.kind,  'DOCS.' + d.id + '.kind');
+        check(d.gives, 'DOCS.' + d.id + '.gives');
+        d.record.forEach(function (f, i) {
+          check(f.k, 'DOCS.' + d.id + '.record[' + i + ']');
+        });
+      });
+    }
+    if (typeof SCHEMAS !== 'undefined') {
+      SCHEMAS.forEach(function (s2) {
+        check(s2.name, 'SCHEMAS.' + s2.id + '.name');
+        s2.fields.forEach(function (f, i) {
+          check(f.n, 'SCHEMAS.' + s2.id + '.fields[' + i + '].n');
+          check(f.d, 'SCHEMAS.' + s2.id + '.fields[' + i + '].d');
+        });
+      });
+    }
+
     if (window.ASSEMBLY) {
       check(window.ASSEMBLY.name, 'ASSEMBLY.name');
       window.ASSEMBLY.layers.forEach(function (l) {

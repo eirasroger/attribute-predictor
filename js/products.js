@@ -19,7 +19,7 @@ var PRODUCTS = [
           'comparar i analitzar. Els models de llenguatge fan la lectura. ' +
           'L\'estructura la defineixes tu.'
     },
-    ready: false
+    ready: true
   },
   {
     id: 'predictor',
