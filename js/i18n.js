@@ -1,11 +1,3 @@
-/* ---------------------------------------------------------------------------
-   LANGUAGE — the engine, plus the strings every page shares. Page copy lives
-   in js/copy.<page>.js and registers itself:
-
-       I18N.add({ 'hero.lede': { en: '…', ca: '…' } });
-
-   js/data.js uses the same shape for domain vocabulary. See docs/overview.md.
-   --------------------------------------------------------------------------- */
 (function () {
   'use strict';
 
@@ -17,10 +9,10 @@
 
   /* --- resolving ---------------------------------------------------------- */
 
-  /* falls back to English so a gap shows up in audit(), not as a blank */
+  /* falls back to English: a gap must surface in audit(), not as a blank */
   function t(pair) {
     if (pair == null) return '';
-    if (typeof pair === 'string') return pair;          /* not translated */
+    if (typeof pair === 'string') return pair;
     return pair[lang] != null ? pair[lang] : pair.en;
   }
 
@@ -78,8 +70,6 @@
 
   /* --- applying to the document -------------------------------------------- */
 
-  /* data-i18n → textContent, data-i18n-html → innerHTML,
-     data-i18n-attr → "aria-label:key, title:key" */
   function apply(root) {
     (root || document).querySelectorAll('[data-i18n]').forEach(function (n) {
       n.textContent = s(n.getAttribute('data-i18n'));
@@ -98,9 +88,7 @@
     if (COPY['meta.title']) document.title = s('meta.title');
   }
 
-  /* Backstop: walks everything translatable here and in the data files and
-     names what is missing. Console only — a half-translated page should still
-     serve. */
+  /* console only: a half-translated page must still serve */
   function audit() {
     Object.keys(COPY).forEach(function (key) {
       LANGS.forEach(function (l) {
@@ -210,8 +198,8 @@
     }
   }
 
-  /* Reload, not re-render: most of the page is JS-built and some of it is
-     mid-animation at any moment. See docs/overview.md. */
+  /* reload, not re-render: half the page is JS-built and some of it is
+     mid-animation at any moment */
   function setLang(next) {
     if (LANGS.indexOf(next) < 0 || next === lang) return;
     try { localStorage.setItem('ap-lang', next); } catch (e) {}

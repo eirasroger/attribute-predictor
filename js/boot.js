@@ -1,7 +1,4 @@
-/* ---------------------------------------------------------------------------
-   Language, decided before first paint. Only copy of the detection logic.
-   Must stay render-blocking in <head>, above the stylesheet.
-   --------------------------------------------------------------------------- */
+/* must stay render-blocking in <head>, above the stylesheet */
 (function () {
   var LANGS = ['en', 'ca', 'es'], root = document.documentElement, pick = null;
   try { pick = new URLSearchParams(location.search).get('lang'); } catch (e) {}

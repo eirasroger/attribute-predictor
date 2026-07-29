@@ -1,19 +1,14 @@
-/* ---------------------------------------------------------------------------
-   The product rail. A slow continuous drift, seamless because one cloned set
-   sits behind the first. It holds still while the pointer or focus is inside
-   it, so it never moves under a click.
-   --------------------------------------------------------------------------- */
 (function () {
   'use strict';
 
   var SPEED = 26;      /* px per second */
-  var RESUME = 2200;   /* quiet needed after a manual scroll */
+  var RESUME = 2200;   /* ms of quiet after a manual scroll */
 
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var I18N = window.I18N || {};
   var tx = I18N.t || function (p) { return p && p.en != null ? p.en : p; };
 
-  /* markup ships English; js/products.js is the source of truth for both */
+  /* markup ships English; js/products.js is the source of truth */
   function fillCards() {
     var byId = {};
     (typeof PRODUCTS !== 'undefined' ? PRODUCTS : []).forEach(function (p) {
@@ -82,7 +77,6 @@
       quiet = setTimeout(function () {
         quiet = null;
         pos = rail.scrollLeft;
-        /* the copies are identical, so the wrap cannot be seen */
         if (pos >= loop) { pos -= loop; rail.scrollLeft = pos; }
       }, ms);
     };

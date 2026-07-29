@@ -5,8 +5,8 @@
    file is a prediction; do not present it as one.
    --------------------------------------------------------------------------- */
 
-/* User-facing strings are { en, ca, es } triples; units are not, SI is SI.
-   Axis labels are drawn into a fixed radar — keep them to two short lines. */
+/* units are not translated, SI is SI; `axis` is drawn into a fixed radar, so
+   keep it to two short lines */
 const INDICATORS = [
   { key: 'ghg',
     short: { en: 'Greenhouse gas emissions',   ca: 'Emissions de GEH',
@@ -40,8 +40,6 @@ const INDICATORS = [
     unit: 'MJ/kg' }
 ];
 
-/* The category distribution every result is read against. Median plus the
-   p25–p75 band of real products in the same category. */
 const CATEGORY = {
   name: { en: 'Indoor partition', ca: 'Envà interior', es: 'Tabique interior' },
   n: 214,
@@ -54,12 +52,8 @@ const CATEGORY = {
   }
 };
 
-/* Three builds of the same partition — same job, same category, same
-   functional unit, only the composition changes.
-
-   Each build owns a colour for the whole page: `color` is the mark, `ink` the
-   AA-contrast tint for text. Validated with docs/cvd.py (worst CVD ΔE 10.9);
-   re-run it before changing any of them. */
+/* `color` and `ink` are validated, not chosen: re-run docs/cvd.py before
+   changing either */
 const VARIANTS = [
   {
     id: 'timber',
@@ -133,11 +127,9 @@ const VARIANTS = [
   }
 ];
 
-/* Decides when a verdict can be stated plainly and when it has to soften. */
 const FOLD_ERROR = 1.35;
 
-/* Each stage is its own model with its own fold error. Not additive — the
-   total is predicted separately. `label` is the EN 15804 module code. */
+/* not additive: TOTAL_FOLD is its own figure, not a sum of these */
 const STAGES = [
   { key: 'a1a3', label: 'A1–A3', fold: 1.18,
     desc: { en: 'Product stage',    ca: 'Etapa de producte',

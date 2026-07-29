@@ -1,8 +1,4 @@
-/* ---------------------------------------------------------------------------
-   Fills a product page from js/products.js, so a name or a line of copy is
-   written once. Runs before i18n's sweep; every node it writes carries plain
-   text, not keys.
-   --------------------------------------------------------------------------- */
+/* runs before i18n's sweep, so every node it writes carries text, not keys */
 (function () {
   'use strict';
 

@@ -1,7 +1,4 @@
-/* ===========================================================================
-   The hub. Light ground, no product colour of its own: the cards bring it.
-   Loads after css/base.css.
-   =========================================================================== */
+/* loads after css/base.css */
 
 :root {
   --ground:      #fbfbfd;

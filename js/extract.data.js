@@ -1,19 +1,12 @@
 /* ===========================================================================
-   ILLUSTRATIVE DATA ONLY.
-
-   Every document, value and figure below was written for this page. Nothing is
-   a real declaration and nothing is output from the product. The manufacturer
-   is deliberately unnamed, the same way the wordmark is the literal word
-   Company. Standard numbers are real standards, cited so the illustrated
-   documents look like the documents they imitate.
-
-   Document body text is not translated. A supplier's sheet arrives in whatever
-   language it was written in, and the set below is mixed on purpose. Field
-   names, labels and captions are pairs like everywhere else.
+   ILLUSTRATIVE DATA ONLY. Nothing below is a real declaration or output from
+   the product. The manufacturer stays unnamed, and the document body text
+   stays untranslated on purpose: a supplier's sheet arrives in whatever
+   language it was written in. Field names, labels and captions are pairs like
+   everywhere else.
    =========================================================================== */
 
-/* The scalar fields the pipeline lifts off the sheet. The marks in
-   extractor/index.html carry data-lane, matching the ids here. */
+/* the marks in extractor/index.html carry data-lane, matching these ids */
 var LANES = [
   {
     id: 'lambda',
@@ -46,8 +39,6 @@ var LANES = [
   }
 ];
 
-/* The composition lane is a different shape: one field, many rows, each with a
-   name and a share. It is the reason a record is not a flat list of scalars. */
 var COMP = {
   basis: { en: '% by mass', ca: '% en massa', es: '% en masa' },
   field: { en: 'Material composition', ca: 'Composició de materials',
@@ -76,9 +67,7 @@ var LANE_MISSING = {
           es: 'No consta en este documento' }
 };
 
-/* Four ways the same composition is written down. `from` is the phrase each
-   source actually used for that material, which is what the resolver had to
-   get past. */
+/* `from` is the phrase that source used for the material, shown on every row */
 var SOURCES = [
   {
     id: 'table',
@@ -178,8 +167,7 @@ var SOURCES = [
   }
 ];
 
-/* Same product, four documents. `lines` is what the sheet shows, `record` is
-   what that sheet alone contributes to the merged row. */
+/* `lines` is what the sheet shows, `record` what that sheet alone contributes */
 var DOCS = [
   {
     id: 'epd',
@@ -276,7 +264,6 @@ var DOCS = [
   }
 ];
 
-/* Three schemas over the same pile of documents. */
 var SCHEMAS = [
   {
     id: 'thermal',
@@ -378,8 +365,8 @@ var SCHEMAS = [
   }
 ];
 
-/* Product families. The three acronyms are the same in every language, which is
-   why they are plain strings and the two names are pairs. */
+/* the acronyms are plain strings on purpose: they are the same in every
+   language, and audit() knows it */
 var FAMILIES = {
   mw:  { en: 'Mineral wool', ca: 'Llana mineral',  es: 'Lana mineral'  },
   gw:  { en: 'Glass wool',   ca: 'Llana de vidre', es: 'Lana de vidrio' },
@@ -388,7 +375,6 @@ var FAMILIES = {
   xps: 'XPS'
 };
 
-/* The catalogue behind the closing section: what a folder becomes. */
 var CATALOGUE = {
   total: 84,
   rows: [

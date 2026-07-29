@@ -1,10 +1,5 @@
-/* ---------------------------------------------------------------------------
-   The shell every page shares: top bar, footer, and the behaviour attached to
-   them. Built synchronously so i18n.js still finds the nodes on DOMContentLoaded.
-
-   Read off <body>: data-base ('' or '../'), data-page, data-mark, data-tag,
-   data-note, data-topbar-hold.
-   --------------------------------------------------------------------------- */
+/* built synchronously at parse time, or i18n.js sweeps before these nodes
+   exist and the whole shell ships English */
 (function () {
   'use strict';
 
@@ -197,7 +192,6 @@
     check();
   }
 
-  /* state lives on aria-expanded; the CSS reads it, so there is no second copy */
   function initNav() {
     var groups = [
       { btn: document.getElementById('nav-toggle'), box: document.querySelector('.nav') },
@@ -243,7 +237,7 @@
       });
     });
 
-    /* the panel and the drop are different things either side of 44rem */
+    /* 44rem also in css/base.css; change one, change both */
     var narrow = window.matchMedia('(max-width: 44rem)');
     var onChange = function () { closeAll(); };
     if (narrow.addEventListener) narrow.addEventListener('change', onChange);

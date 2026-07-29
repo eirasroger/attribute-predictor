@@ -1,8 +1,3 @@
-/* ---------------------------------------------------------------------------
-   Field Extractor page. Hero loop, the pipeline stage, the composition
-   resolver, the document set, the schema switcher and the catalogue workbench.
-   Content comes from js/extract.data.js, which is illustrative throughout.
-   --------------------------------------------------------------------------- */
 (function () {
   'use strict';
 
@@ -24,8 +19,8 @@
 
   function clamp(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
 
-  /* Entrance stagger. --i drives the delay in CSS, so the order is data, not a
-     chain of timers that can overlap when a switch is repeated quickly. */
+  /* --i drives the delay in css/extractor.css; a chain of timers here would
+     overlap itself when a switch is repeated quickly */
   function stagger(nodes) {
     nodes.forEach(function (n, i) {
       n.classList.add('stag');
@@ -42,8 +37,6 @@
     });
   }
 
-  /* Fade the old contents out before rebuilding, so a switch reads as one
-     movement instead of a flicker. */
   function swap(box, build) {
     if (reduced) { box.textContent = ''; build(); return; }
     box.classList.add('is-swapping');
@@ -56,8 +49,8 @@
 
   /* --- wires ---------------------------------------------------------------- */
 
-  /* An inline <mark> that wraps spans several rects; the last one is where the
-     phrase ends, which is where a leader should leave from. */
+  /* an inline <mark> that wraps has several rects, and the union box is wrong
+     for both ends: leave from the last, arrive at the first */
   function anchor(node, side) {
     var rects = node.getClientRects();
     var r = rects.length ? rects[side === 'right' ? rects.length - 1 : 0]
@@ -88,8 +81,6 @@
     var band = document.getElementById('hero-side');
     if (!box || !out || !wires || typeof LANES === 'undefined') return;
 
-    /* the sheet decides which lanes run here, so marking a different phrase in
-       the markup is the whole edit */
     var lanes = [].map.call(box.querySelectorAll('.pp-hit[data-lane]'), function (m) {
       var id = m.getAttribute('data-lane'), found = null;
       LANES.forEach(function (lane) { if (lane.id === id) found = lane; });
@@ -172,8 +163,6 @@
     if (!section || !track || !stage || !grid || !paper || !chipBox ||
         !recBox || !wires || typeof LANES === 'undefined') return;
 
-    /* the composition rides the same rails as the scalars, but resolves into a
-       block of rows rather than one value */
     var lanes = LANES.concat([{
       id: 'comp',
       field: COMP.field,
@@ -239,7 +228,6 @@
                              tx(lane.where), false));
     });
 
-    /* one field, many rows: the shape a flat record cannot hold */
     var group = el('div', 'rec-group');
     var gh = el('p', 'rec-group-head');
     gh.appendChild(el('span', null, tx(COMP.field)));
@@ -369,7 +357,6 @@
       buttons.push(b);
     });
 
-    /* rows are built once; only the phrase each one was read from changes */
     var froms = [];
     COMP.materials.forEach(function (m) {
       var li = el('li', 'cm');
@@ -383,8 +370,7 @@
 
       var bar = el('div', 'cm-bar');
       var fill = document.createElement('span');
-      /* true part of the whole: rescaling to the largest share would read as
-         basalt being the entire product */
+      /* part of the whole, never rescaled to the largest share */
       fill.style.width = m.share.toFixed(1) + '%';
       bar.appendChild(fill);
       li.appendChild(bar);
@@ -714,9 +700,8 @@
       filterBox.appendChild(b);
     });
 
-    /* The table lays out as a grid, so column widths never depend on content.
-       Roles are explicit because changing `display` on table elements drops the
-       implicit ones. */
+    /* the table lays out as a grid, and changing `display` on a table element
+       drops its implicit ARIA role: every role below has to stay explicit */
     table.setAttribute('role', 'table');
 
     var thead = document.createElement('thead');
@@ -761,9 +746,8 @@
       return dec(c.dp ? r[c.key].toFixed(c.dp) : String(r[c.key]));
     }
 
-    /* Built once. A filter is a state change on these nodes, never a rebuild:
-       re-creating the rows is what made the table flash and what pushed a
-       scrollbar in and out while the new <tr>s were mid-transform. */
+    /* built once: a filter is a state change on these nodes, never a rebuild.
+       Re-creating them flashes the table and puts a scrollbar on it. */
     var map = {}, dots = {};
     rows.forEach(function (r) {
       var tr = el('tr', 'wb-row wb-body-row');
@@ -792,8 +776,7 @@
       map[r.ref] = { tr: tr, cells: cells, dot: dot };
     });
 
-    /* First, Last, Invert, Play: the rows keep their identity across a sort and
-       glide to their new places instead of being replaced. */
+    /* FLIP: the rows keep their identity across a sort, never replaced */
     function reorder(order) {
       var first = {};
       order.forEach(function (r) {

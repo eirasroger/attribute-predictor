@@ -1,6 +1,6 @@
 /* ===========================================================================
-   Shared shell. Structure only: every page sets its own --ground / --ink /
-   --accent before this is used. No build step; served as-is.
+   Structure only, no colour: every page sets its own --ground, --ink and
+   --accent before this is used.
    =========================================================================== */
 
 :root {
@@ -13,8 +13,9 @@
 
 /* --- product tints -------------------------------------------------------- */
 
-/* Identity only, never the sole carrier of meaning: every card names itself.
-   assets/marks/*.svg bake the same values; change one, change both. */
+/* validated for normal vision only, and safe because a tint never carries
+   meaning alone. assets/marks/*.svg bake the same values; change one,
+   change both. */
 [data-tint="extractor"]   { --pc: #c98226; --pi: #8f5a12; }
 [data-tint="predictor"]   { --pc: #3d9468; --pi: #26714b; }
 [data-tint="circularity"] { --pc: #0b5266; --pi: #0b5266; }
@@ -52,7 +53,6 @@ a:hover { text-decoration: underline; }
 
 /* --- top bar -------------------------------------------------------------- */
 
-/* Always present; only its ground fades in on scroll. */
 .topbar {
   position: fixed; inset: 0 0 auto 0; z-index: 40;
   display: flex; align-items: center; gap: 0.9rem;
@@ -92,7 +92,7 @@ a:hover { text-decoration: underline; }
 .topbar-sep { color: var(--ink-faint); margin: 0 -0.35rem; }
 .topbar-tag { color: var(--ink-faint); white-space: nowrap; }
 @media (max-width: 52rem) { .topbar-tag { display: none; } }
-/* the product name earns the room here; home is still in the nav and footer */
+/* never .wordmark here: on the hub it is the only brand in the bar */
 @media (max-width: 34rem) { .topbar-home, .topbar-sep { display: none; } }
 
 /* --- nav ------------------------------------------------------------------ */
@@ -285,7 +285,6 @@ a:hover { text-decoration: underline; }
 @media (max-width: 44rem) {
   .nav-toggle { display: block; }
 
-  /* a drop inside a drop is two taps to do one thing: the list sits open */
   .drop-btn { display: none; }
   .drop { padding-bottom: 0.5rem; border-bottom: 1px solid var(--line); }
   /* both selectors: the [data-open] rule above outranks a bare .drop-panel */
@@ -401,7 +400,6 @@ a:hover { text-decoration: underline; }
     grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: start;
   }
-  /* the second column has the first one's gutter to its left already */
   .duo > .prose + .prose { padding-left: 0; }
 }
 
@@ -423,7 +421,6 @@ a:hover { text-decoration: underline; }
     transition: opacity var(--slow) var(--ease),
                 transform var(--slow) var(--ease);
   }
-  /* native scroll-driven path, where supported */
   @supports (animation-timeline: view()) {
     .reveal {
       opacity: 0; transform: translateY(2.2rem);

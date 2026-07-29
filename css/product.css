@@ -1,7 +1,4 @@
-/* ===========================================================================
-   A product page that has no product yet. Light ground; the accent comes from
-   the [data-tint] block in css/base.css. Loads after css/base.css.
-   =========================================================================== */
+/* loads after css/base.css; the accent comes from its [data-tint] block */
 
 :root {
   --ground:      #fbfbfd;
@@ -25,7 +22,6 @@ body {
   max-width: calc(46rem + var(--pad) * 2);
 }
 
-/* the same panel the hub card gives it */
 .stub-art {
   width: clamp(13rem, 32vw, 19rem);
   aspect-ratio: 4 / 3;

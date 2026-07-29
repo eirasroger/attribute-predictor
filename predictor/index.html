@@ -153,7 +153,7 @@
     <div class="as-track" id="as-track">
       <div class="as-stage">
         <div class="as-group" id="as-group">
-          <!-- aria-hidden: the panel carries the same content as text -->
+          <!-- aria-hidden: the panel states the same content as text -->
           <svg id="as-svg" aria-hidden="true" focusable="false"></svg>
           <div class="as-panel" id="as-panel"></div>
         </div>
@@ -209,7 +209,6 @@
   <!-- 5 + 6 ▸ act two: the full stage --------------------------------------- -->
   <section class="sim" id="sim" aria-labelledby="sim-heading">
 
-    <!-- the turn and the heading it sets up, side by side -->
     <div class="sim-head">
       <p class="sim-claim reveal" data-i18n-html="sim.claim">
         Carbon is one of five.<br>
@@ -251,7 +250,7 @@
 
             <div class="panel panel-radar">
               <div class="radar-holder">
-                <!-- aria-hidden: the readouts panel states every value in words -->
+                <!-- aria-hidden: the readouts state every value in words -->
                 <svg id="radar" class="radar-svg" viewBox="0 0 420 380"
                      aria-hidden="true" focusable="false"></svg>
               </div>
@@ -274,7 +273,6 @@
 
     <!-- unpinned equivalent: reduced motion, or a viewport too short to pin -->
     <div class="sim-static" id="sim-static">
-      <!-- one legend for all three cards -->
       <ul class="radar-key static-key" aria-hidden="true">
         <li><span class="key-swatch key-median"></span><span data-i18n="radar.key.median">Category median</span></li>
         <li><span class="key-swatch key-value"></span><span data-i18n="radar.key.value">Product impact</span></li>
@@ -332,7 +330,6 @@
         </div>
         <div class="sc-switch" role="group" aria-label="Choose a composition"
              data-i18n-attr="aria-label:stages.chart.switch">
-          <!-- buttons injected -->
         </div>
       </figcaption>
 
@@ -343,7 +340,7 @@
       </div>
 
       <div class="sc-plot">
-        <!-- aria-hidden: #sc-table below carries the same values as text -->
+        <!-- aria-hidden: #sc-table below carries every value as text -->
         <svg id="sc-svg" aria-hidden="true" focusable="false"></svg>
       </div>
 
@@ -425,7 +422,6 @@
 <script src="../js/shell.js"></script>
 <script src="../js/data.js"></script>
 <script src="../js/site.js"></script>
-<!-- self-contained; only reads INDICATORS -->
 <script src="../js/assembly.js"></script>
 </body>
 </html>

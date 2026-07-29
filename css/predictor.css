@@ -1,6 +1,4 @@
-/* ===========================================================================
-   Attribute Predictor. Dark ground, one accent. Loads after css/base.css.
-   =========================================================================== */
+/* loads after css/base.css */
 
 :root {
   --ground:      #0f1412;
@@ -13,7 +11,7 @@
   --accent:      #3ecf8e;
   --accent-dim:  #2a9d6a;
 
-  /* Verdict ramp. Re-run docs/cvd.py before changing any of these. */
+  /* verdict ramp: re-run docs/cvd.py before changing any of these */
   --good:        #3ecf8e;
   --mid:         #dda94f;
   --bad:         #d4757f;
@@ -212,7 +210,6 @@
   .hero-render { margin: 0; }
 }
 
-/* reserves its box before the images decode */
 .hr-frame {
   position: relative;
   aspect-ratio: 1170 / 743;
@@ -250,7 +247,7 @@
 .hr-trace {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
-  z-index: 3;                    /* clears both the outgoing and incoming shot */
+  z-index: 3;
   overflow: visible;
   pointer-events: none;
 }
@@ -337,7 +334,6 @@
   letter-spacing: 0; color: var(--ink-faint);
 }
 
-/* log₁₀ scale, one decade either side of the category median */
 .bv-scale {
   position: relative; height: 0.65rem;
   background: var(--line);
@@ -618,7 +614,6 @@
 .static-card .radar-holder { margin: 0 0 0.4rem; }
 .static-card .radar-svg { max-width: 20rem; }
 
-/* one legend for the grid — the rings mean the same in every card */
 .static-key {
   justify-content: center;
   margin: 0 auto 2.2rem; max-width: 84rem;
@@ -708,7 +703,6 @@
   align-items: baseline; gap: 0.8rem; font-size: 0.9rem;
 }
 .as-row b { font-weight: 400; color: var(--ink); }
-/* one line per row: name and value never wrap */
 .as-val {
   font-variant-numeric: tabular-nums; color: var(--ink-dim); font-size: 0.85rem;
   white-space: nowrap;
@@ -721,7 +715,7 @@
   transition: width 0.7s var(--ease);
 }
 
-/* Both layouts pin. Queries duplicated in js/assembly.js; change one, change both. */
+/* queries duplicated in js/assembly.js; change one, change both */
 @media (min-height: 34rem) {
   .as-track { height: 215svh; margin-top: 0; }
   .as-stage { position: sticky; top: 0; height: 100svh; align-items: center; }
@@ -757,7 +751,6 @@
 
 /* --- one indicator, stage by stage ---------------------------------------- */
 
-/* centred: this block carries a full-width chart */
 .prose-wide {
   max-width: calc(58rem + var(--pad) * 2);
   margin-inline: auto;
@@ -765,8 +758,6 @@
 .prose-wide > h2,
 .prose-wide > p { max-width: var(--measure); margin-inline: auto; }
 
-/* Full-bleed prose: the heading and lead-in keep a readable measure, but the
-   list below spreads across the whole width instead of stacking in a column. */
 .prose-full { max-width: none; }
 .prose-full > h2, .prose-full > p { max-width: var(--measure); }
 
@@ -791,7 +782,6 @@
   font-size: 1.05rem; letter-spacing: -0.02em; font-weight: 600;
 }
 
-/* filter row: one control set, above the plot it scopes */
 .sc-switch { display: flex; gap: 0.4rem; flex-wrap: wrap; }
 .sc-switch button {
   font: inherit; font-size: 0.76rem; line-height: 1.4;
@@ -807,14 +797,12 @@
 }
 .sc-switch button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-/* a dot carries identity even before the button is the active one */
 .sc-switch button::before {
   content: ''; display: inline-block;
   width: 0.5rem; height: 0.5rem; margin-right: 0.45rem;
   background: var(--pc); vertical-align: baseline;
 }
 
-/* hero figure: proportional digits, not tabular — see anti-patterns */
 .sc-total {
   display: flex; align-items: baseline; gap: 0.7rem; flex-wrap: wrap;
   margin: 1.6rem 0 0.4rem;
@@ -832,8 +820,6 @@
 .sc-plot { position: relative; margin-top: 1.2rem; }
 #sc-svg { width: 100%; height: auto; display: block; overflow: visible; }
 
-/* The chart carries the values on screen; the table is its screen-reader twin,
-   so nothing is gated behind hover or colour. */
 .sc-total-val { transition: color 0.9s var(--ease); }
 .sc-total-val { color: var(--ink); }
 
@@ -855,8 +841,8 @@
 
 /* --- narrow screens ------------------------------------------------------- */
 
-/* The pinned stage has exactly one screen to work with, so narrow layouts
-   drop content rather than overflow it. */
+/* the pinned stage has one screen to work with, so these drop content rather
+   than overflow it */
 
 @media (max-width: 62rem) {
   .sim-track     { height: 300vh; }
@@ -899,7 +885,6 @@
   .stage-variant .value { font-size: 1.2rem; }
   .stage-dots { margin: 0.2rem 0 0; }
 
-  /* materials become a compact two-up grid rather than five full rows */
   .materials        { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.1rem; }
   .materials li     { padding: 0.22rem 0; font-size: 0.8rem; line-height: 1.35; }
   .materials .m-bar { display: none; }
@@ -915,8 +900,8 @@
   .demo-flag { margin-top: 0.7rem; font-size: 0.62rem; }
 }
 
-/* Set by JS when the stage genuinely does not fit the viewport. Breakpoints
-   cannot predict this — it depends on height, width and rendered font. */
+/* set by JS: a breakpoint cannot predict fit, which depends on height, width
+   and rendered font together */
 .sim--unpinned .sim-track  { display: none; }
 .sim--unpinned .sim-static { display: block; }
 

@@ -1,9 +1,5 @@
 /* ---------------------------------------------------------------------------
    ILLUSTRATIVE DATA — NOT MODEL OUTPUT.
-
-   Layer by layer: a wall that comes apart. Self-contained — own data, geometry
-   and scroll scrub. The only thing it reads from elsewhere is INDICATORS, so
-   indicator names and units keep one source of truth.
    --------------------------------------------------------------------------- */
 (function () {
   'use strict';
@@ -15,7 +11,7 @@
 
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* Outside face first. */
+  /* outside face first: the draw order depends on it */
   window.ASSEMBLY = {
     layers: [
       { id: 'rainscreen', mm: 8, hatch: 'dot',
@@ -101,13 +97,12 @@
     var svg   = document.getElementById('as-svg');
     var panel = document.getElementById('as-panel');
     var LAYERS = window.ASSEMBLY.layers, N = LAYERS.length;
-    var DEFAULT = 2;                                   /* thermal insulation */
+    var DEFAULT = 2;
 
-    /* queries duplicated in site.css; change one, change both */
+    /* queries duplicated in css/predictor.css; change one, change both */
     var tall = window.matchMedia('(min-height: 34rem)');
     var wide = window.matchMedia('(min-width: 68rem) and (min-height: 38rem)');
 
-    /* beside the figure when wide, after the whole track when not */
     function place() {
       var home = wide.matches ? group : track.parentNode;
       if (panel.parentNode !== home) home.appendChild(panel);
@@ -117,7 +112,7 @@
 
     var NS = 'http://www.w3.org/2000/svg';
     var BW = 200, BD = 140, GAP = 40, PAD = 16;
-    var GROW = 1.14, GROW_H = 1.20;           /* the selected board opens up */
+    var GROW = 1.14, GROW_H = 1.20;
     var ISO = 'matrix(0.866 0.5 -0.866 0.5 0 0)';
 
     /* diagrammatic thickness, not true scale */
@@ -125,7 +120,6 @@
     var STACK_H = H.reduce(function (a, b) { return a + b; }, 0) +
                   H[DEFAULT] * (GROW_H - 1) + GAP * (N - 1);
 
-    /* stack centred on the viewBox, so the figure centres by its own box */
     var OX = BD * GROW * 0.866 + PAD;
     var VB_W = Math.round(2 * (OX + (BW - BD) * 0.433));
     var OY = STACK_H / 2 + PAD;
@@ -213,7 +207,6 @@
     var open = 1, hi = 1, sel = DEFAULT, hoverIdx = -1, side = true;
 
     function draw() {
-      /* per-gap stagger: the outside face comes away first */
       var g = [], span = 1 - (N - 2) * 0.11, k;
       for (k = 0; k < N - 1; k++) g.push(ease(clamp((open - k * 0.11) / span)));
 
@@ -265,7 +258,7 @@
 
       if (anchor) {
         if (side) {
-          var ex = -30;                     /* outside the box, deliberately */
+          var ex = -30;   /* outside the viewBox on purpose; see calloutShift */
           callLine.setAttribute('d', 'M' + anchor.x.toFixed(1) + ' ' +
                                      anchor.y.toFixed(1) + 'H' + ex);
           callText.setAttribute('x', ex - 12);
@@ -293,7 +286,8 @@
         callG.setAttribute('opacity', hi.toFixed(3));
       }
 
-      /* selected board to the front only once highlighted */
+      /* front only once highlighted: sooner and it punches through the boards
+         still stacked above it */
       order.sort(function (a, b) {
         return (hi > 0.02 ? (a.on ? 1 : 0) - (b.on ? 1 : 0) : 0) || a.z - b.z;
       }).forEach(function (o) { stackG.appendChild(slabs[o.i].g); });
@@ -345,7 +339,6 @@
 
     /* --- scroll ----------------------------------------------------------- */
 
-    /* slides the group left by half the panel, so the pair stays centred */
     function shiftFor(t) {
       var m = parseFloat(getComputedStyle(panel).marginLeft) || 0;
       return -(panel.offsetWidth + m) / 2 * t;

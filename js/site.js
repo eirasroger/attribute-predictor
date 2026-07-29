@@ -1,13 +1,10 @@
-/* ===========================================================================
-   Attribute Predictor — marketing site
-   No framework, no build step. Reads the illustrative data in js/data.js.
-   =========================================================================== */
 (function () {
   'use strict';
 
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* short names: `t` and `num` are taken by locals in this file */
+  /* never `t` or `num`: both are taken by locals in the paint callbacks below,
+     and a shadowed translator falls through to English with no error */
   var I18N = window.I18N || {};
   var tx  = I18N.t   || function (p) { return p && p.en != null ? p.en : p; };
   var str = I18N.s   || function () { return ''; };
@@ -71,7 +68,7 @@
 
   /* --- shared maths ------------------------------------------------------ */
 
-  /* 0–1 position on a log₁₀ scale, one decade either side of the median. */
+  /* 0–1 on a log₁₀ scale, one decade either side of the median */
   function logPos(value, median) {
     var l = Math.log10(value / median);
     return (Math.max(-1, Math.min(1, l)) + 1) / 2;
@@ -108,13 +105,12 @@
     }).join(',') + ')';
   }
 
-  /* --pc is the mark colour, --pi the AA-contrast text tint. */
   function setProduct(node, variant) {
     node.style.setProperty('--pc', variant.color);
     node.style.setProperty('--pi', variant.ink);
   }
 
-  /* hold, move, hold — each build gets a moment before the next */
+  /* hold, move, hold */
   function staged(t) {
     if (t <= 0.18) return 0;
     if (t >= 0.82) return 1;
@@ -123,8 +119,8 @@
 
   /* --- generic pinned scrubber ------------------------------------------- */
 
-  /* Pinning is decided at runtime, not by breakpoint: fit depends on width,
-     height and rendered font together. */
+  /* pinning is decided at runtime, never by breakpoint: fit depends on width,
+     height and rendered font together */
   function makeScrubber(sectionId, trackId, stageId, innerSel, paint) {
     var section = document.getElementById(sectionId);
     var track   = document.getElementById(trackId);
@@ -459,7 +455,6 @@
         stageEl.style.setProperty('--pc', color);
         stageEl.style.setProperty('--pi', hexLerp(a.ink, b.ink, t));
 
-        /* the material list cannot morph — it swaps, under a fade */
         var idx = t < 0.5 ? seg : seg + 1;
 
         paintRadar(radar, values, color);
@@ -476,7 +471,6 @@
         matsEl.style.opacity = dip;
         nameEl.style.opacity = dip;
         noteEl.style.opacity = dip;
-        /* verdicts swap at the half-way point, so they ride the same dip */
         rowsEl.style.setProperty('--verdict-fade', dip);
       });
   }
@@ -490,7 +484,7 @@
       var card = document.createElement('div');
       card.className = 'static-card';
       setProduct(card, variant);
-      /* radar is aria-hidden — the readouts below state every value in words */
+      /* the radar stays aria-hidden: the readouts state every value in words */
       card.innerHTML =
         '<h3></h3><p class="sc-note"></p>' +
         '<div class="radar-holder">' +
@@ -538,7 +532,6 @@
     var host = document.getElementById('hero-demo');
     var i = 0;
 
-    /* one <img> per build, keyed by variant id; only opacity moves */
     var render = document.getElementById('hero-render');
     var shots = {}, showing = null;
     if (render) {
@@ -586,7 +579,7 @@
     }
 
     show(0);
-    if (reduced) return;   /* one frame, no loop */
+    if (reduced) return;
 
     var timer = null, kick = null, raf = null;
 
@@ -672,7 +665,6 @@
 
   /* --- one indicator, stage by stage ------------------------------------- */
 
-  /* Fixed domain across all three builds: auto-scaling hides the change. */
   var SC_HOLD = 850, SC_TWEEN = 1500, SC_KICK = 500, SC_RESUME = 4000;
 
   function scGeom(w) {
@@ -731,7 +723,8 @@
     var tbody    = document.querySelector('#sc-table tbody');
     var switcher = fig.querySelector('.sc-switch');
 
-    /* one domain for every build, so lengths stay comparable */
+    /* one fixed domain for every build: auto-scaling would hide the change the
+       animation exists to show */
     var all = VARIANTS.map(stageRows);
     var lo = 0, hi = 0;
     all.forEach(function (rows) {
@@ -749,7 +742,8 @@
       b.textContent = tx(v.name);
       setProduct(b, v);
       b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
-      /* hover nudges and releases; focus/click is the sticky version */
+      /* every pause path schedules its own resume: one stray hover must not
+         leave the chart dead */
       b.addEventListener('pointerenter', function () { nudge(i); });
       b.addEventListener('pointerleave', release);
       b.addEventListener('focus', function () { nudge(i); });
@@ -759,7 +753,7 @@
     });
     var buttons = Array.prototype.slice.call(switcher.children);
 
-    var parts = null;      /* the animated nodes, rebuilt only on resize */
+    var parts = null;
     var geo   = null;
     var scale = null;
 
@@ -775,7 +769,6 @@
       var axisY = geo.top + STAGES.length * geo.rowH + 6;
       var step = niceStep(hi - lo, geo.narrow ? 3 : 5);
 
-      /* gridlines and labels never move: the domain is fixed */
       for (var t = Math.ceil(lo / step) * step; t <= hi + 1e-9; t += step) {
         var gx = scale(t);
         svg.appendChild(el('line', {
@@ -955,7 +948,6 @@
     build();
     settle(0);
 
-    /* off-screen or backgrounded, it stops */
     if (!reduced && 'IntersectionObserver' in window) {
       new IntersectionObserver(function (entries) {
         visible = entries[0].isIntersecting;
@@ -969,7 +961,6 @@
       document.hidden ? pause() : play();
     });
 
-    /* geometry is derived from the container, so it has to follow it */
     var rt = null;
     window.addEventListener('resize', function () {
       clearTimeout(rt);
@@ -987,7 +978,7 @@
     initHeroLoop();
     initStageChart();
 
-    /* both layouts are populated; CSS picks which shows */
+    /* both layouts are always populated; CSS picks which one shows */
     initStatic();
     initBigViz();
     if (!reduced) initStage();

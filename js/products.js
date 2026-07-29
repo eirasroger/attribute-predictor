@@ -1,7 +1,5 @@
-/* ---------------------------------------------------------------------------
-   The catalogue. Names are placeholders. `slug` is the URL segment.
-   Tints live in css/base.css under [data-tint]; re-run docs/cvd.py before changing.
-   --------------------------------------------------------------------------- */
+/* `slug` is the URL segment. Every name here is a placeholder. Tints live in
+   css/base.css under [data-tint]; re-run docs/cvd.py before changing one. */
 var PRODUCTS = [
   {
     id: 'extractor',

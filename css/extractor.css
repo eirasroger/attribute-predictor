@@ -1,7 +1,4 @@
-/* ===========================================================================
-   Field Extractor. Warm dark ground, paper is the only light. Loads after
-   css/base.css.
-   =========================================================================== */
+/* loads after css/base.css */
 
 :root {
   --ground:      #12100d;
@@ -28,7 +25,7 @@
 
 /* --- entrance and exchange -------------------------------------------------- */
 
-/* --i is set per node by JS, so order is data rather than a chain of timers */
+/* --i is set per node by js/extractor.js */
 @media (prefers-reduced-motion: no-preference) {
   .stag {
     opacity: 0; transform: translateY(0.55rem);
@@ -73,7 +70,6 @@
   .prose-full .callout { max-width: var(--measure); }
 }
 
-/* section shells that are not .prose, so they set their own measure */
 .band-intro {
   max-width: calc(var(--measure) + var(--pad) * 2);
   padding: 0 var(--pad);
@@ -151,8 +147,8 @@
               0 0 0 1px rgba(201, 130, 38, 0.16);
 }
 
-/* Scoped with .paper throughout: `.prose p` is (0,1,1) and outranks a bare
-   `.pp-p`, which would tint the document body with the page ink. */
+/* scoped with .paper throughout: `.prose p` is (0,1,1) and outranks a bare
+   `.pp-p`, which tints the document body with the dark page's ink */
 .paper .pp-head {
   margin: 0 0 1.1rem; padding-bottom: 0.8rem;
   border-bottom: 1.5px solid var(--paper-ink);
@@ -209,7 +205,7 @@
   color: var(--paper-dim); font-size: 0.66rem; white-space: nowrap;
 }
 
-/* The highlight is a background sweep, so the text never moves as it lands. */
+/* a background sweep, never a size change: the leaders are measured off this */
 .pp-hit {
   background: transparent; color: inherit;
   border-radius: 0.15rem;
@@ -293,7 +289,6 @@
 .pipe-track { position: relative; }
 .pipe-stage { padding: 2rem var(--pad) 0; }
 
-/* Pinned only where three columns and a full sheet both fit. */
 @media (min-width: 66rem) and (min-height: 42rem) {
   .pipe-track { height: 340vh; }
   .pipe-stage {
@@ -330,8 +325,7 @@
   color: var(--ink-faint);
 }
 
-/* Set by JS whenever the stage is not pinning: reduced motion, or a viewport
-   that cannot hold it. Both selectors beat the media query above. */
+/* set by JS when the stage cannot pin; both classes beat the query above */
 .pipe.pipe-flat .pipe-track { height: auto; }
 .pipe.pipe-flat .pipe-stage {
   position: static; height: auto;
@@ -346,7 +340,7 @@
 
 .chips { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
 
-/* The box never moves: the leaders are measured off it, so only its contents
+/* the box never moves: leaders are measured off it, so only its contents may
    travel. Same reason .rec-row animates opacity alone. */
 .chip-i {
   padding: 0.7rem 0.85rem;
@@ -434,7 +428,6 @@
 .rec-row.is-empty .rec-v { color: var(--ink-faint); font-weight: 400; }
 .rec-src { grid-column: 1 / -1; font-size: 0.64rem; color: var(--ink-faint); }
 
-/* one field, many rows: the shape a flat record cannot hold */
 .rec-group {
   padding: 0.55rem 0.85rem 0.7rem;
   background: color-mix(in srgb, var(--accent-deep) 5%, transparent);
@@ -577,7 +570,6 @@
   max-width: calc(var(--measure) + var(--pad) * 2);
   padding: 0 var(--pad);
 }
-/* Four across, converging into one record beneath: the section's own sentence. */
 .docs-body {
   max-width: calc(76rem + var(--pad) * 2);
   margin: 3rem auto 0; padding: 0 var(--pad);
@@ -783,9 +775,8 @@
 
 .wb-table-holder { min-width: 0; overflow-x: auto; }
 
-/* Laid out as a grid, not as a table: the column widths are then fixed by the
-   template rather than by content, so no state change can reflow them. That is
-   what stopped the holder's scrollbar flashing in and out on every filter. */
+/* a grid, not a table: column widths come from the template, so no state
+   change can reflow them and put a scrollbar on the holder */
 .wb-table {
   --wb-cols: minmax(4.6rem, 0.9fr) minmax(5.2rem, 1fr)
              4.4rem 4.4rem 5.6rem 5.4rem 4.4rem;
@@ -843,9 +834,8 @@ th.num .wb-sort { flex-direction: row-reverse; }
 .wb-sort.is-desc .wb-caret { transform: rotate(180deg); }
 .wb-sort:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
-/* The excluded rows stay: watching the set narrow is the point of a filter.
-   Everything below is a state change on nodes that already exist, staggered by
-   --r so the table turns over as a sweep rather than all at once. */
+/* everything below is a state change on rows that already exist, staggered by
+   --r so the table turns over as a sweep rather than all at once */
 .wb-body-row {
   transition: background-color 0.45s var(--ease), transform 0.5s var(--ease);
   transition-delay: calc(var(--r, 0) * 22ms), 0s;
@@ -854,14 +844,12 @@ th.num .wb-sort { flex-direction: row-reverse; }
   background: color-mix(in srgb, var(--accent-deep) 8%, transparent);
 }
 
-/* Excluded rows recede cell by cell rather than by row opacity: opacity on the
-   row would take the disqualifying cell down with everything else, and that
-   cell is the one thing the visitor still needs to read. */
+/* cell by cell, never row opacity: opacity on the row cannot be undone by the
+   disqualifying cell below, and that cell has to stay readable */
 .wb-body-row.is-out td.wb-c {
   color: color-mix(in srgb, var(--ink-faint) 46%, transparent);
 }
 
-/* the rule that marks a survivor, drawn from the middle out */
 .wb-body-row::before {
   content: '';
   position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
@@ -872,10 +860,7 @@ th.num .wb-sort { flex-direction: row-reverse; }
 }
 .wb-body-row.is-hit::before { transform: scaleY(1); }
 
-/* The cell that disqualified the row says so, which is the whole point of
-   leaving the row on screen. It stays legible while its neighbours recede, and
-   the strike is drawn in the accent so it reads back to the chip that caused
-   it. Third selector class beats the .is-out rule above. */
+/* the third class is what beats the .is-out rule above */
 .wb-body-row.is-out td.wb-c.is-fail {
   color: var(--ink-dim);
   text-decoration: line-through;
@@ -886,8 +871,8 @@ th.num .wb-sort { flex-direction: row-reverse; }
 /* FLIP: the inverted offset is applied without a transition, then released */
 .wb-body-row.is-flip { transition: none; }
 
-/* Family is the one column no filter judges, so it is the one to drop before
-   the table starts scrolling. Header and cells are the same nth child. */
+/* family is the one column no filter judges, so it is the one that drops.
+   Header and cells share the nth child; change both. */
 @media (max-width: 46rem) {
   .wb-table {
     --wb-cols: minmax(4.4rem, 1fr) 4.2rem 4.2rem 5.2rem 5rem 4.2rem;
