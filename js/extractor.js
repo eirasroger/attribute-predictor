@@ -748,8 +748,16 @@
     tbody.setAttribute('role', 'rowgroup');
     table.appendChild(tbody);
 
+    var byKey = {};
+    COLS.forEach(function (c) { byKey[c.key] = c; });
+
+    /* a text cell may hold a pair, so sorting has to compare what is shown */
+    function val(r, c) {
+      return c.num ? r[c.key] : tx(r[c.key]);
+    }
+
     function fmt(r, c) {
-      if (!c.num) return r[c.key];
+      if (!c.num) return val(r, c);
       return dec(c.dp ? r[c.key].toFixed(c.dp) : String(r[c.key]));
     }
 
@@ -893,7 +901,8 @@
       var any = CATALOGUE.filters.some(function (f) { return active[f.id]; });
       var kept = rows.filter(passes);
       var order = rows.slice().sort(function (a, b) {
-        var x = a[sort.key], y = b[sort.key];
+        var col = byKey[sort.key];
+        var x = val(a, col), y = val(b, col);
         return (x > y ? 1 : x < y ? -1 : 0) * sort.dir;
       });
 

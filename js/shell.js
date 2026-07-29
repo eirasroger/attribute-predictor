@@ -142,6 +142,10 @@
                 '<img src="' + base + 'assets/catalan-language.webp" alt="" ' +
                      'width="20" height="20">' +
                 '<span data-i18n="ui.catalan">Català</span></button></li>' +
+              '<li><button type="button" class="lang-opt" data-lang="es" lang="es">' +
+                '<img src="' + base + 'assets/spanish-language.webp" alt="" ' +
+                     'width="20" height="20">' +
+                '<span data-i18n="ui.spanish">Español</span></button></li>' +
             '</ul>' +
           '</div>' +
         '</div>' +

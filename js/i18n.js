@@ -9,7 +9,7 @@
 (function () {
   'use strict';
 
-  var LANGS = ['en', 'ca'];
+  var LANGS = ['en', 'ca', 'es'];
 
   /* set by js/boot.js in <head> */
   var lang = document.documentElement.lang;
@@ -24,37 +24,43 @@
     return pair[lang] != null ? pair[lang] : pair.en;
   }
 
-  /* Catalan writes 0,310 */
+  /* only English writes 0.310 */
   function num(text) {
-    return lang === 'ca' ? String(text).replace(/\./g, ',') : String(text);
+    return lang === 'en' ? String(text) : String(text).replace(/\./g, ',');
   }
 
   var COPY = {
 
     /* chrome -------------------------------------------------------------- */
-    'ui.language': { en: 'Language', ca: 'Idioma' },
-    'ui.english':  { en: 'English',  ca: 'English' },
-    'ui.catalan':  { en: 'Català',   ca: 'Català'  },
+    'ui.language': { en: 'Language', ca: 'Idioma',  es: 'Idioma'  },
+    'ui.english':  { en: 'English',  ca: 'English', es: 'English' },
+    'ui.catalan':  { en: 'Català',   ca: 'Català',  es: 'Català'  },
+    'ui.spanish':  { en: 'Español',  ca: 'Español', es: 'Español' },
 
-    'nav.label':    { en: 'Main',     ca: 'Principal' },
-    'nav.menu':     { en: 'Menu',     ca: 'Menú'      },
-    'nav.home':     { en: 'Home',     ca: 'Inici'    },
-    'nav.contact':  { en: 'Contact',  ca: 'Contacte' },
-    'nav.products': { en: 'Our products', ca: 'Els nostres productes' },
-    'nav.allproducts': { en: 'All products', ca: 'Tots els productes' },
+    'nav.label':    { en: 'Main',     ca: 'Principal', es: 'Principal' },
+    'nav.menu':     { en: 'Menu',     ca: 'Menú',      es: 'Menú'      },
+    'nav.home':     { en: 'Home',     ca: 'Inici',     es: 'Inicio'    },
+    'nav.contact':  { en: 'Contact',  ca: 'Contacte',  es: 'Contacto'  },
+    'nav.products': { en: 'Our products', ca: 'Els nostres productes',
+                      es: 'Nuestros productos' },
+    'nav.allproducts': { en: 'All products', ca: 'Tots els productes',
+                         es: 'Todos los productos' },
 
-    'status.soon':    { en: 'In development', ca: 'En desenvolupament' },
-    'status.explore': { en: 'Explore',         ca: 'Descobreix'         },
+    'status.soon':    { en: 'In development', ca: 'En desenvolupament',
+                        es: 'En desarrollo' },
+    'status.explore': { en: 'Explore', ca: 'Descobreix', es: 'Descúbrelo' },
     'status.note': {
       en: 'This one is being built. There is nothing to download yet.',
-      ca: 'Aquest s\'està construint. Encara no hi ha res per descarregar.'
+      ca: 'Aquest s\'està construint. Encara no hi ha res per descarregar.',
+      es: 'Este se está construyendo. Todavía no hay nada que descargar.'
     },
-    'status.ask': { en: 'Ask about it', ca: 'Pregunta-hi' },
+    'status.ask': { en: 'Ask about it', ca: 'Pregunta-hi', es: 'Pregúntanos' },
 
-    'footer.products': { en: 'Products', ca: 'Productes' },
+    'footer.products': { en: 'Products', ca: 'Productes', es: 'Productos' },
     'footer.legal': {
       en: '© 2026 Roger Vergés. All rights reserved.',
-      ca: '© 2026 Roger Vergés. Tots els drets reservats.'
+      ca: '© 2026 Roger Vergés. Tots els drets reservats.',
+      es: '© 2026 Roger Vergés. Todos los derechos reservados.'
     }
   };
 
@@ -163,6 +169,11 @@
       CATALOGUE.filters.forEach(function (f) {
         check(f.label, 'CATALOGUE.filters.' + f.id);
       });
+    }
+    /* the acronyms in FAMILIES are plain strings on purpose */
+    if (typeof FAMILIES !== 'undefined') {
+      check(FAMILIES.mw, 'FAMILIES.mw');
+      check(FAMILIES.gw, 'FAMILIES.gw');
     }
     if (typeof DOCS !== 'undefined') {
       DOCS.forEach(function (d) {

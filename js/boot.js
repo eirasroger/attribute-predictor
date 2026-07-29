@@ -3,7 +3,7 @@
    Must stay render-blocking in <head>, above the stylesheet.
    --------------------------------------------------------------------------- */
 (function () {
-  var LANGS = ['en', 'ca'], root = document.documentElement, pick = null;
+  var LANGS = ['en', 'ca', 'es'], root = document.documentElement, pick = null;
   try { pick = new URLSearchParams(location.search).get('lang'); } catch (e) {}
   if (LANGS.indexOf(pick) < 0) {
     try { pick = localStorage.getItem('ap-lang'); } catch (e) {}

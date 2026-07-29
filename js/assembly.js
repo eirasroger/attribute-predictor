@@ -19,51 +19,75 @@
   window.ASSEMBLY = {
     layers: [
       { id: 'rainscreen', mm: 8, hatch: 'dot',
-        name: { en: 'Fibre cement rainscreen', ca: 'Plaqueta de fibrociment' },
+        name: { en: 'Fibre cement rainscreen', ca: 'Plaqueta de fibrociment',
+                es: 'Placa de fibrocemento' },
         materials: [
-          { name: { en: 'Portland cement',  ca: 'Ciment Pòrtland'     }, pct: 42 },
-          { name: { en: 'Silica sand',      ca: 'Sorra silícia'       }, pct: 34 },
-          { name: { en: 'Limestone filler', ca: 'Càrrega calcària'    }, pct: 14 },
-          { name: { en: 'Cellulose fibre',  ca: 'Fibra de cel·lulosa' }, pct: 7  },
-          { name: { en: 'Mineral pigment',  ca: 'Pigment mineral'     }, pct: 3  }
+          { name: { en: 'Portland cement',  ca: 'Ciment Pòrtland',
+                    es: 'Cemento Portland'    }, pct: 42 },
+          { name: { en: 'Silica sand',      ca: 'Sorra silícia',
+                    es: 'Arena silícea'       }, pct: 34 },
+          { name: { en: 'Limestone filler', ca: 'Càrrega calcària',
+                    es: 'Carga caliza'        }, pct: 14 },
+          { name: { en: 'Cellulose fibre',  ca: 'Fibra de cel·lulosa',
+                    es: 'Fibra de celulosa'   }, pct: 7  },
+          { name: { en: 'Mineral pigment',  ca: 'Pigment mineral',
+                    es: 'Pigmento mineral'    }, pct: 3  }
         ],
         values: { ghg: 0.98, fw: 0.019, ep: 0.00078, ap: 0.0049, adpf: 9.2 } },
 
       { id: 'sheathing', mm: 22, hatch: 'diag',
-        name: { en: 'Wood fibre sheathing', ca: 'Tauler de fibra de fusta' },
+        name: { en: 'Wood fibre sheathing', ca: 'Tauler de fibra de fusta',
+                es: 'Tablero de fibra de madera' },
         materials: [
-          { name: { en: 'Softwood fibre', ca: 'Fibra de fusta tova' }, pct: 94 },
-          { name: { en: 'PMDI binder',    ca: 'Lligant PMDI'        }, pct: 4  },
-          { name: { en: 'Paraffin wax',   ca: 'Cera de parafina'    }, pct: 2  }
+          { name: { en: 'Softwood fibre', ca: 'Fibra de fusta tova',
+                    es: 'Fibra de madera blanda' }, pct: 94 },
+          { name: { en: 'PMDI binder',    ca: 'Lligant PMDI',
+                    es: 'Ligante PMDI'           }, pct: 4  },
+          { name: { en: 'Paraffin wax',   ca: 'Cera de parafina',
+                    es: 'Cera de parafina'       }, pct: 2  }
         ],
         values: { ghg: 0.26, fw: 0.013, ep: 0.00088, ap: 0.0029, adpf: 5.0 } },
 
       { id: 'insulation', mm: 160, hatch: 'wool',
-        name: { en: 'Thermal insulation', ca: 'Aïllament tèrmic' },
+        name: { en: 'Thermal insulation', ca: 'Aïllament tèrmic',
+                es: 'Aislamiento térmico' },
         materials: [
-          { name: { en: 'Basalt rock',        ca: 'Roca basàltica'      }, pct: 46 },
-          { name: { en: 'Blast furnace slag', ca: 'Escòria d\'alt forn'  }, pct: 37 },
-          { name: { en: 'Limestone',          ca: 'Pedra calcària'      }, pct: 11 },
-          { name: { en: 'Phenolic binder',    ca: 'Lligant fenòlic'     }, pct: 5  },
-          { name: { en: 'Mineral oil',        ca: 'Oli mineral'         }, pct: 1  }
+          { name: { en: 'Basalt rock',        ca: 'Roca basàltica',
+                    es: 'Roca basáltica'        }, pct: 46 },
+          { name: { en: 'Blast furnace slag', ca: 'Escòria d\'alt forn',
+                    es: 'Escoria de alto horno' }, pct: 37 },
+          { name: { en: 'Limestone',          ca: 'Pedra calcària',
+                    es: 'Piedra caliza'         }, pct: 11 },
+          { name: { en: 'Phenolic binder',    ca: 'Lligant fenòlic',
+                    es: 'Ligante fenólico'      }, pct: 5  },
+          { name: { en: 'Mineral oil',        ca: 'Oli mineral',
+                    es: 'Aceite mineral'        }, pct: 1  }
         ],
         values: { ghg: 1.25, fw: 0.021, ep: 0.00082, ap: 0.0072, adpf: 16.0 } },
 
       { id: 'membrane', mm: 0.5, hatch: 'film',
-        name: { en: 'Airtightness membrane', ca: 'Membrana d\'estanquitat' },
+        name: { en: 'Airtightness membrane', ca: 'Membrana d\'estanquitat',
+                es: 'Membrana de estanquidad' },
         materials: [
-          { name: { en: 'Polypropylene spunbond', ca: 'Polipropilè spunbond' }, pct: 68 },
-          { name: { en: 'Polyethylene film',      ca: 'Film de polietilè'    }, pct: 27 },
-          { name: { en: 'Acrylic adhesive',       ca: 'Adhesiu acrílic'      }, pct: 5  }
+          { name: { en: 'Polypropylene spunbond', ca: 'Polipropilè spunbond',
+                    es: 'Polipropileno spunbond' }, pct: 68 },
+          { name: { en: 'Polyethylene film',      ca: 'Film de polietilè',
+                    es: 'Film de polietileno'    }, pct: 27 },
+          { name: { en: 'Acrylic adhesive',       ca: 'Adhesiu acrílic',
+                    es: 'Adhesivo acrílico'      }, pct: 5  }
         ],
         values: { ghg: 2.60, fw: 0.048, ep: 0.0011, ap: 0.0094, adpf: 62.0 } },
 
       { id: 'lining', mm: 15, hatch: 'board',
-        name: { en: 'Gypsum plasterboard', ca: 'Placa de cartró guix' },
+        name: { en: 'Gypsum plasterboard', ca: 'Placa de cartró guix',
+                es: 'Placa de yeso laminado' },
         materials: [
-          { name: { en: 'Gypsum',        ca: 'Guix'                  }, pct: 92 },
-          { name: { en: 'Paper liner',   ca: 'Cartró de revestiment' }, pct: 6  },
-          { name: { en: 'Starch binder', ca: 'Lligant de midó'       }, pct: 2  }
+          { name: { en: 'Gypsum',        ca: 'Guix',
+                    es: 'Yeso'                    }, pct: 92 },
+          { name: { en: 'Paper liner',   ca: 'Cartró de revestiment',
+                    es: 'Cartón de revestimiento' }, pct: 6  },
+          { name: { en: 'Starch binder', ca: 'Lligant de midó',
+                    es: 'Ligante de almidón'      }, pct: 2  }
         ],
         values: { ghg: 0.31, fw: 0.0092, ep: 0.00047, ap: 0.0025, adpf: 4.6 } }
     ]
