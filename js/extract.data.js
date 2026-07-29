@@ -6,6 +6,90 @@
    everywhere else.
    =========================================================================== */
 
+/* The hero cycles these. Body prose and titles are untranslated on purpose,
+   like DOCS below; only `kind` and the field names are pairs.
+
+   `f` is the index of the field a phrase or a cell feeds. Two marks may carry
+   the same `f`: that is the case where one attribute has to be assembled from
+   more than one place on the page, and both leaders run to the same row. A
+   table row with no `f` is in the document but not in the schema. */
+var HERO_DOCS = [
+  {
+    lang: 'en',
+    kind: { en: 'Technical data sheet', ca: 'Fitxa tècnica',
+            es: 'Ficha técnica' },
+    title: 'Mineral wool board',
+    sub: '140 mm, for ventilated façades',
+    body: [
+      'Basaltic rock and blast furnace slag are melted at about 1 500 °C, spun ' +
+      'into fibres and bonded with a thermosetting phenolic resin. The ',
+      { f: 0, t: 'declared thermal conductivity is 0,035 W/(m·K)' },
+      ' at a mean temperature of 10 °C, and the ',
+      { f: 1, t: 'nominal density is 40 kg/m³' },
+      '. Reaction to fire is classified ',
+      { f: 2, t: 'A1' },
+      ' to EN 13501-1.'
+    ],
+    fields: [
+      { name: { en: 'Thermal conductivity', ca: 'Conductivitat tèrmica',
+                es: 'Conductividad térmica' }, v: '0.035', u: 'W/(m·K)' },
+      { name: { en: 'Nominal density', ca: 'Densitat nominal',
+                es: 'Densidad nominal' }, v: '40', u: 'kg/m³' },
+      { name: { en: 'Reaction to fire', ca: 'Reacció al foc',
+                es: 'Reacción al fuego' }, v: 'A1', u: 'EN 13501-1' }
+    ]
+  },
+  {
+    lang: 'ca',
+    format: 'table',
+    kind: { en: 'Declaration of performance', ca: 'Declaració de prestacions',
+            es: 'Declaración de prestaciones' },
+    title: 'Placa de guix laminat',
+    sub: '12,5 mm, per a envans interiors',
+    lead: 'Prestacions declarades segons EN 520.',
+    rows: [
+      { k: 'Resistència a flexió', v: '550',       u: 'N',          f: 0 },
+      { k: 'Reacció al foc',       v: 'A2-s1,d0',  u: 'EN 13501-1', f: 1 },
+      { k: 'Densitat nominal',     v: '680',       u: 'kg/m³',      f: 2 },
+      { k: 'Factor de resistència al vapor', v: '10', u: 'μ' }
+    ],
+    fields: [
+      { name: { en: 'Bending strength', ca: 'Resistència a flexió',
+                es: 'Resistencia a flexión' }, v: '550', u: 'N' },
+      { name: { en: 'Reaction to fire', ca: 'Reacció al foc',
+                es: 'Reacción al fuego' }, v: 'A2-s1,d0', u: 'EN 13501-1' },
+      { name: { en: 'Nominal density', ca: 'Densitat nominal',
+                es: 'Densidad nominal' }, v: '680', u: 'kg/m³' }
+    ]
+  },
+  {
+    lang: 'es',
+    kind: { en: 'Product data sheet', ca: 'Fitxa de producte',
+            es: 'Ficha de producto' },
+    title: 'Lana mineral para fachada',
+    sub: 'Panel semirrígido, doble densidad',
+    body: [
+      'El panel se suministra en un ',
+      { f: 0, t: 'espesor de 140 mm' },
+      ' con una ',
+      { f: 0, t: 'resistencia térmica declarada de 4,00 m²K/W' },
+      '. La ',
+      { f: 1, t: 'densidad nominal es de 40 kg/m³' },
+      ' y la ',
+      { f: 2, t: 'reacción al fuego es A1' },
+      '.'
+    ],
+    fields: [
+      { name: { en: 'Thermal conductivity', ca: 'Conductivitat tèrmica',
+                es: 'Conductividad térmica' }, v: '0.035', u: 'W/(m·K)' },
+      { name: { en: 'Nominal density', ca: 'Densitat nominal',
+                es: 'Densidad nominal' }, v: '40', u: 'kg/m³' },
+      { name: { en: 'Reaction to fire', ca: 'Reacció al foc',
+                es: 'Reacción al fuego' }, v: 'A1', u: 'EN 13501-1' }
+    ]
+  }
+];
+
 /* the marks in extractor/index.html carry data-lane, matching these ids */
 var LANES = [
   {
@@ -105,7 +189,7 @@ var SOURCES = [
             es: 'Aquí no hay ninguna celda. La posición no dice nada.' },
     lang: 'en',
     kind: 'prose',
-    text: 'The board is spun from basaltic rock at 58 % of product mass and ' +
+    text: 'The board is made from basaltic rock at 58 % of product mass and ' +
           'recycled blast furnace slag at 28 %, with limestone added as a flux ' +
           'at 9,2 %. A thermosetting phenolic binder accounts for a further ' +
           '4,3 %, and 0,5 % mineral oil suppresses dust in handling.',

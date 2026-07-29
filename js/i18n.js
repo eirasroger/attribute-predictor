@@ -147,6 +147,14 @@
         check(m.name, 'COMP.' + m.id + '.name');
       });
     }
+    if (typeof HERO_DOCS !== 'undefined') {
+      HERO_DOCS.forEach(function (h, i) {
+        check(h.kind, 'HERO_DOCS[' + i + '].kind');
+        h.fields.forEach(function (f, k) {
+          check(f.name, 'HERO_DOCS[' + i + '].fields[' + k + ']');
+        });
+      });
+    }
     if (typeof SOURCES !== 'undefined') {
       SOURCES.forEach(function (s2) {
         check(s2.label, 'SOURCES.' + s2.id + '.label');

@@ -58,6 +58,32 @@
     return { x: side === 'right' ? r.right : r.left, y: r.top + r.height / 2 };
   }
 
+  /* a leader leaves the sheet's edge level with its phrase, never the phrase
+     itself: a line drawn across a document reads as a scribble on it */
+  function edgeOf(hit, sheet) {
+    var rects = hit.getClientRects();
+    var r = rects.length ? rects[rects.length - 1] : hit.getBoundingClientRect();
+    return { x: sheet.getBoundingClientRect().right, y: r.top + r.height / 2 };
+  }
+
+  /* every lane runs through one shared trunk, so the three leaders converge to
+     a single line and fan out again. The trunk is identical in all three paths
+     and overlaps exactly, which is what makes it read as one. */
+  function lead(from, to, box, j) {
+    var x1 = from.x - box.left, y1 = from.y - box.top;
+    var x2 = to.x - box.left,   y2 = to.y - box.top;
+    var d1 = Math.max(12, (j.a - x1) * 0.5);
+    var d2 = Math.max(12, (x2 - j.b) * 0.5);
+    return 'M' + x1.toFixed(1) + ' ' + y1.toFixed(1) +
+           'C' + (x1 + d1).toFixed(1) + ' ' + y1.toFixed(1) +
+           ' ' + (j.a - d1).toFixed(1) + ' ' + j.y.toFixed(1) +
+           ' ' + j.a.toFixed(1) + ' ' + j.y.toFixed(1) +
+           'L' + j.b.toFixed(1) + ' ' + j.y.toFixed(1) +
+           'C' + (j.b + d2).toFixed(1) + ' ' + j.y.toFixed(1) +
+           ' ' + (x2 - d2).toFixed(1) + ' ' + y2.toFixed(1) +
+           ' ' + x2.toFixed(1) + ' ' + y2.toFixed(1);
+  }
+
   function curve(from, to, box) {
     var x1 = from.x - box.left, y1 = from.y - box.top;
     var x2 = to.x - box.left,   y2 = to.y - box.top;
@@ -67,9 +93,19 @@
            ' ' + x2 + ' ' + y2;
   }
 
-  function svgPath(parent) {
-    return parent.appendChild(
-      document.createElementNS('http://www.w3.org/2000/svg', 'path'));
+  function svgPath(parent, cls) {
+    var p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    if (cls) p.setAttribute('class', cls);
+    return parent.appendChild(p);
+  }
+
+  /* the dash pattern is the line's own length, so it has to be re-measured
+     every time the geometry changes or the line draws from the wrong place */
+  function setWire(path, d) {
+    path.setAttribute('d', d);
+    var len = path.getTotalLength ? path.getTotalLength() : 0;
+    path.style.setProperty('--len', len.toFixed(1));
+    path.style.setProperty('--nlen', (-len).toFixed(1));
   }
 
   /* --- hero ------------------------------------------------------------------ */
@@ -79,66 +115,245 @@
     var out = document.getElementById('hx-out');
     var wires = document.getElementById('hx-wires');
     var band = document.getElementById('hero-side');
-    if (!box || !out || !wires || typeof LANES === 'undefined') return;
+    var sheet = document.getElementById('hx-paper');
+    var stack = document.getElementById('hx-stack');
+    var rec = document.getElementById('hx-rec');
+    if (!box || !out || !wires || !sheet || !stack || !rec ||
+        typeof HERO_DOCS === 'undefined') return;
 
-    var lanes = [].map.call(box.querySelectorAll('.pp-hit[data-lane]'), function (m) {
-      var id = m.getAttribute('data-lane'), found = null;
-      LANES.forEach(function (lane) { if (lane.id === id) found = lane; });
-      return found;
-    }).filter(Boolean);
-    if (!lanes.length) return;
+    var N = 0, WIRES = 0;
+    HERO_DOCS.forEach(function (doc) {
+      N = Math.max(N, doc.fields.length);
+      WIRES = Math.max(WIRES, (doc.body || doc.rows).filter(function (part) {
+        return part && part.f != null;
+      }).length);
+    });
 
-    var items = [], paths = [];
+    var items = [], paths = [], sparks = [], hits = [], owner = [];
 
-    lanes.forEach(function (lane) {
+    for (var k = 0; k < N; k++) {
       var li = el('li', 'hx-item');
-      li.appendChild(el('span', 'hx-f', tx(lane.field)));
-      var v = el('span', 'hx-v', dec(lane.value));
-      v.appendChild(el('i', null, lane.unit));
+      li.appendChild(el('span', 'hx-f'));
+      var v = el('span', 'hx-v');
+      v.appendChild(document.createTextNode(''));
+      v.appendChild(el('i'));
       li.appendChild(v);
       out.appendChild(li);
       items.push(li);
+    }
+    for (k = 0; k < WIRES; k++) {
       paths.push(svgPath(wires));
-    });
+      sparks.push(svgPath(wires, 'hx-spark'));
+    }
 
-    var hits = lanes.map(function (lane) {
-      return box.querySelector('.pp-hit[data-lane="' + lane.id + '"]');
-    });
+    /* the sheet is rebuilt per document, so the marks are re-queried and the
+       leaders re-measured on every swap */
+    function dress(doc) {
+      sheet.lang = doc.lang;
+      sheet.innerHTML = '';
+
+      var head = el('header', 'pp-head');
+      head.appendChild(el('p', 'pp-maker', str('pipe.doc.maker')));
+      head.appendChild(el('p', 'pp-kind', tx(doc.kind)));
+      head.appendChild(el('h3', 'pp-title', doc.title));
+      head.appendChild(el('p', 'pp-sub', doc.sub));
+      sheet.appendChild(head);
+
+      hits = [];
+      owner = [];
+
+      function mark(text, f) {
+        var m = el('mark', 'pp-hit', text);
+        if (f != null) { hits.push(m); owner.push(f); }
+        return m;
+      }
+
+      if (doc.format === 'table') {
+        sheet.appendChild(el('p', 'pp-h', doc.lead));
+        var tbl = el('table', 'pp-tbl');
+        var tb = document.createElement('tbody');
+        doc.rows.forEach(function (r) {
+          var tr = document.createElement('tr');
+          tr.appendChild(el('td', null, r.k));
+          var td = el('td', 'num');
+          td.appendChild(mark(r.v, r.f));
+          tr.appendChild(td);
+          tr.appendChild(el('td', null, r.u));
+          tb.appendChild(tr);
+        });
+        tbl.appendChild(tb);
+        sheet.appendChild(tbl);
+      } else {
+        var p = el('p', 'pp-p');
+        doc.body.forEach(function (part) {
+          if (typeof part === 'string') {
+            p.appendChild(document.createTextNode(part));
+            return;
+          }
+          p.appendChild(mark(part.t, part.f));
+        });
+        sheet.appendChild(p);
+      }
+
+      items.forEach(function (row, i) {
+        var f = doc.fields[i];
+        row.querySelector('.hx-f').textContent = f ? tx(f.name) : '';
+        row.querySelector('.hx-v').firstChild.nodeValue = f ? dec(f.v) : '';
+        row.querySelector('.hx-v i').textContent = f ? f.u : '';
+        row.hidden = !f;
+      });
+    }
+
+    var NS = 'http://www.w3.org/2000/svg';
+    var node = wires.appendChild(document.createElementNS(NS, 'g'));
+    node.setAttribute('class', 'hx-node');
+    var ring = node.appendChild(document.createElementNS(NS, 'circle'));
+    ring.setAttribute('r', '5.5');
 
     function layout() {
+      if (!hits.length) return;
       var b = box.getBoundingClientRect();
-      hits.forEach(function (hit, i) {
-        if (!hit) return;
-        paths[i].setAttribute(
-          'd', curve(anchor(hit, 'right'), anchor(items[i], 'left'), b));
+      var from = hits.map(function (hit) { return edgeOf(hit, sheet); });
+      var to = owner.map(function (f) { return anchor(items[f], 'left'); });
+
+      var run = to[0].x - from[0].x;
+      var mid = function (pts) {
+        return pts.reduce(function (a, p) { return a + p.y; }, 0) / pts.length;
+      };
+      var a = from[0].x - b.left + run * 0.38;
+      var j = { a: a, b: a + Math.max(34, run * 0.26),
+                y: (mid(from) + mid(to)) / 2 - b.top };
+
+      paths.forEach(function (p, i) {
+        var d = i < hits.length ? lead(from[i], to[i], b, j) : '';
+        setWire(p, d);
+        setWire(sparks[i], d);
       });
+
+      ring.setAttribute('cx', ((j.a + j.b) / 2).toFixed(1));
+      ring.setAttribute('cy', j.y.toFixed(1));
     }
 
+    var was = 0;
     function show(n) {
       items.forEach(function (li, i) { li.classList.toggle('is-on', i < n); });
+      /* a mark is lit by the row it feeds, so two marks that assemble one
+         attribute light together and both leaders land on the same row */
       hits.forEach(function (hit, i) {
-        if (hit) hit.classList.toggle('is-on', i < n);
+        hit.classList.toggle('is-on', owner[i] < n);
       });
-      paths.forEach(function (p, i) { p.classList.toggle('is-on', i < n); });
+      paths.forEach(function (p, i) {
+        var on = i < hits.length && owner[i] < n;
+        p.classList.toggle('is-on', on);
+        sparks[i].classList.toggle('is-on', on);
+      });
+
+      node.classList.toggle('is-on', n > 0);
+      /* restart, not toggle: the pulse has to fire again on a lane that is
+         already lit when the next one arrives */
+      if (n > was) {
+        node.classList.remove('is-through');
+        void node.getBoundingClientRect();
+        node.classList.add('is-through');
+      }
+      was = n;
     }
 
+    /* the sheet is absolute, so its natural height has to be read with the
+       bottom edge released and then put back */
+    function measure() {
+      sheet.style.bottom = 'auto';
+      sheet.style.height = 'auto';
+      var h = sheet.offsetHeight;
+      sheet.style.bottom = '';
+      sheet.style.height = '';
+      return h;
+    }
+
+    function fit(animate) {
+      var h = measure();
+      if (animate) { stack.style.height = h + 'px'; return; }
+      stack.style.transition = 'none';
+      stack.style.height = h + 'px';
+      void stack.offsetHeight;
+      stack.style.transition = '';
+    }
+
+    var at = 0;
+    dress(HERO_DOCS[0]);
+    fit(false);
     layout();
-    window.addEventListener('resize', layout);
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
 
-    if (reduced) { show(lanes.length); return; }
+    function reflow() { fit(false); layout(); }
+    window.addEventListener('resize', reflow);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(reflow);
 
-    var step = 0, seen = true;
-    /* setInterval only fires after a full period: the first beat is kicked */
-    function tick() {
-      if (!seen || document.hidden) return;
-      step = (step + 1) % (lanes.length + 2);
-      show(step > lanes.length ? 0 : step);
+    if (reduced) { show(N); return; }
+
+    var BEAT = 1600, GATHER = 620, RESIZE = 680, SETTLE = 1300, HOLD = 3400;
+    var seen = true, timer = null;
+
+    /* One chain, not an interval: the riffle and the extraction are different
+       lengths. Every hop reschedules, and a hop that arrives while the hero is
+       off screen waits rather than dropping the sequence. */
+    function hop(fn, ms) {
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        if (!seen || document.hidden) { hop(fn, 300); return; }
+        fn();
+      }, ms);
+    }
+
+    function riffle(first) {
+      show(0);
+      /* the record belongs to a document: it goes while there is no document,
+         and comes back only once the next one has settled */
+      rec.classList.remove('is-live');
+      if (first) { deal(); return; }
+      /* the sheets come back over the old document, and the swap happens
+         underneath them where it cannot be seen */
+      stack.classList.remove('is-dealing');
+      stack.classList.add('is-gathering');
+      hop(swap, GATHER);
+    }
+
+    /* the swap and the resize both happen under the gathered stack, so the
+       only thing the visitor sees change size is the stack itself */
+    function swap() {
+      at = (at + 1) % HERO_DOCS.length;
+      dress(HERO_DOCS[at]);
+      fit(true);
+      hop(deal, RESIZE);
+    }
+
+    function deal() {
+      stack.classList.remove('is-gathering');
+      void stack.getBoundingClientRect();
+      stack.classList.add('is-dealing');
+      /* is-read carries a backwards fill, so the new sheet is already dimmed
+         and un-inked the frame the deal starts: no bright flash under the
+         sheets on their way off */
+      sheet.classList.add('is-read');
+      hop(reveal, SETTLE);
+    }
+
+    function reveal() {
+      layout();
+      rec.classList.add('is-live');
+      hop(function () { beat(1); }, 450);
+    }
+
+    function beat(n) {
+      show(n);
+      if (n < N) { hop(function () { beat(n + 1); }, BEAT); return; }
+      hop(function () {
+        sheet.classList.remove('is-read');
+        riffle(false);
+      }, HOLD);
     }
 
     show(0);
-    setTimeout(tick, 700);
-    setInterval(tick, 1900);
+    hop(function () { riffle(true); }, 900);
 
     /* gate on the band the visitor can see, not on the list it drives */
     if (band && 'IntersectionObserver' in window) {
@@ -250,11 +465,11 @@
       var b = grid.getBoundingClientRect();
       lanes.forEach(function (lane, i) {
         if (hits[i]) {
-          inWires[i].setAttribute(
-            'd', curve(anchor(hits[i], 'right'), anchor(chips[i], 'left'), b));
+          setWire(inWires[i],
+            curve(edgeOf(hits[i], paper), anchor(chips[i], 'left'), b));
         }
-        outWires[i].setAttribute(
-          'd', curve(anchor(chips[i], 'right'), anchor(targets[i], 'left'), b));
+        setWire(outWires[i],
+          curve(anchor(chips[i], 'right'), anchor(targets[i], 'left'), b));
       });
     }
 
