@@ -31,16 +31,16 @@ var PRODUCTS = [
     name: 'Attribute Predictor',
     tagline: {
       en: 'Estimates environmental performance from material composition.',
-      ca: 'Estima el comportament ambiental a partir de la composició de ' +
+      ca: 'Estima el comportament ambiental d\'un producte a partir de la seva composició de ' +
           'materials.',
-      es: 'Estima el comportamiento ambiental a partir de la composición de ' +
+      es: 'Estima el comportamiento ambiental de un producto a partir de su composición de ' +
           'materiales.'
     },
     body: {
       en: 'Give it a material composition. It estimates how a construction ' +
           'product is likely to perform environmentally, and tells you how ' +
           'far to trust the number.',
-      ca: 'Dona-li una composició de materials. Estima com és probable que ' +
+      ca: 'Dona-li una composició de materials. Estima com de probable és que ' +
           'es comporti ambientalment un producte de construcció, i et diu ' +
           'fins a quin punt pots confiar en la xifra.',
       es: 'Dale una composición de materiales. Estima cómo es probable que ' +
@@ -55,22 +55,21 @@ var PRODUCTS = [
     name: 'Circularity Forecaster',
     tagline: {
       en: 'Forecasts end-of-life circularity from material composition.',
-      ca: 'Preveu la circularitat al final de vida a partir de la composició ' +
+      ca: 'Preveu la circularitat al final de vida d\'un producte a partir de la composició ' +
           'de materials.',
-      es: 'Prevé la circularidad al final de vida a partir de la composición ' +
+      es: 'Prevé la circularidad al final de vida de un producto a partir de la composición ' +
           'de materiales.'
     },
     body: {
-      en: 'Estimates what becomes of a product once it leaves the building: ' +
-          'what can be recovered, what is lost, and how much of that was ' +
-          'decided the day it was assembled.',
-      ca: 'Estima què passa amb un producte quan surt de l\'edifici: què es ' +
-          'pot recuperar, què es perd, i quina part d\'això es va decidir el ' +
-          'dia que es va muntar.',
-      es: 'Estima qué pasa con un producto cuando sale del edificio: qué se ' +
-          'puede recuperar, qué se pierde, y qué parte de eso quedó decidida ' +
-          'el día en que se montó.'
-    },
+        en: 'Assesses end-of-life performance by estimating material recovery potential ' +
+        'and waste fractions derived from product characteristics.',
+
+        ca: 'Avalua el rendiment al final de vida estimant el potencial de recuperació de materials ' +
+        'i les fraccions de residus derivades de les característiques del producte.',
+
+        es: 'Evalúa el rendimiento al final de vida estimando el potencial de recuperación de materiales ' +
+        'y las fracciones de residuos derivadas de las características del producto.',
+          },
     ready: false
   },
   {
@@ -79,17 +78,17 @@ var PRODUCTS = [
     name: 'Compliance Filter',
     tagline: {
       en: 'Narrows a catalogue to what the project actually allows.',
-      ca: 'Redueix un catàleg al que el projecte realment permet.',
-      es: 'Reduce un catálogo a lo que el proyecto realmente permite.'
+      ca: 'Redueix un catàleg de productes al que el projecte realment permet.',
+      es: 'Reduce un catálogo de productos a lo que el proyecto realmente permite.'
     },
     body: {
       en: 'Filters products against regulatory requirements and project ' +
           'constraints, with a person in the loop at every decision that ' +
           'needs judgement.',
       ca: 'Filtra productes segons requisits normatius i restriccions de ' +
-          'projecte, amb una persona decidint cada punt que demana criteri.',
+          'projecte, amb una persona decidint cada punt que requereix d\'un criteri especialitzat.',
       es: 'Filtra productos según requisitos normativos y condicionantes de ' +
-          'proyecto, con una persona decidiendo cada punto que pide criterio.'
+          'proyecto, con una persona decidiendo cada punto que requiere de un criterio especializado.'
     },
     ready: false
   },
@@ -106,21 +105,20 @@ var PRODUCTS = [
           'circularidad.'
     },
     body: {
-      en: 'Complex product choices come down to four things pulling against ' +
-          'each other: what it costs, how it performs, what it does to the ' +
-          'environment, and what becomes of it afterwards. An adaptive model ' +
-          'weighs all four, learns how a project settles those trade-offs, ' +
-          'and makes the call.',
-      ca: 'Les decisions complexes de producte es redueixen a quatre coses ' +
-          'que estiren en direccions oposades: què costa, com es comporta, ' +
-          'què fa a l\'entorn, i què se\'n fa després. Un model adaptatiu ' +
-          'pondera les quatre, aprèn com un projecte resol aquests ' +
-          'compromisos, i pren la decisió.',
-      es: 'Las decisiones complejas de producto se reducen a cuatro cosas ' +
-          'que tiran en direcciones opuestas: lo que cuesta, cómo se ' +
-          'comporta, qué le hace al entorno, y qué se hace con ello después. ' +
-          'Un modelo adaptativo pondera las cuatro, aprende cómo resuelve un ' +
-          'proyecto ese equilibrio, y toma la decisión.'
+      en: 'Complex product choices are shaped by stakeholder requirements and project context, ' +
+      'then evaluated along cost, performance, environmental impact, and end-of-life outcomes. ' +
+      'An adaptive model learns how a project balances these criteria under its constraints ' +
+      'and reproduces that decision logic.',
+
+      ca: 'La selecció complexa de productes està condicionada pels requisits de les parts interessades ' +
+      'i pel context del projecte, i després s’avalua segons cost, rendiment, impacte ambiental ' +
+      'i resultats al final de vida. Un model adaptatiu aprèn com un projecte equilibra aquests ' +
+      'criteris dins de les seves restriccions i reprodueix aquesta lògica de decisió.',
+
+      es: 'La selección compleja de productos está condicionada por los requisitos de las partes interesadas ' +
+      'y por el contexto del proyecto, y luego se evalúa según coste, rendimiento, impacto ambiental ' +
+      'y resultados al final de vida. Un modelo adaptativo aprende cómo un proyecto equilibra esos ' +
+      'criterios dentro de sus restricciones y reproduce esa lógica de decisión.',
     },
     ready: false
   }

@@ -54,7 +54,7 @@
       ca: 'Aquest s\'està construint. Encara no hi ha res per descarregar.',
       es: 'Este se está construyendo. Todavía no hay nada que descargar.'
     },
-    'status.ask': { en: 'Ask about it', ca: 'Pregunta-hi', es: 'Pregúntanos' },
+    'status.ask': { en: 'Ask about it', ca: 'Pregunta\'ns', es: 'Pregúntanos' },
 
     'footer.products': { en: 'Products', ca: 'Productes', es: 'Productos' },
     'footer.legal': {
