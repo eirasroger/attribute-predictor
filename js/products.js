@@ -111,7 +111,7 @@ var PRODUCTS = [
       'and reproduces that decision logic.',
 
       ca: 'La selecció complexa de productes està condicionada pels requisits de les parts interessades ' +
-      'i pel context del projecte, i després s’avalua segons cost, rendiment, impacte ambiental ' +
+      'i pel context del projecte, i després s\'avalua segons cost, rendiment, impacte ambiental ' +
       'i resultats al final de vida. Un model adaptatiu aprèn com un projecte equilibra aquests ' +
       'criteris dins de les seves restriccions i reprodueix aquesta lògica de decisió.',
 
