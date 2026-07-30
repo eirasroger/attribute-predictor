@@ -199,6 +199,37 @@
       });
     }
 
+    if (typeof REQS !== 'undefined') {
+      REQS.forEach(function (r) {
+        check(r.label, 'REQS.' + r.id + '.label');
+        check(r.short, 'REQS.' + r.id + '.short');
+      });
+    }
+    if (typeof ORIGINS !== 'undefined') {
+      ORIGINS.forEach(function (o) {
+        check(o.label, 'ORIGINS.' + o.id + '.label');
+        check(o.note,  'ORIGINS.' + o.id + '.note');
+      });
+    }
+    if (typeof EXTRAS !== 'undefined') {
+      EXTRAS.forEach(function (e) {
+        check(e.label, 'EXTRAS.' + e.id + '.label');
+        check(e.why,   'EXTRAS.' + e.id + '.why');
+      });
+    }
+    /* the code and standard designations in CODES are plain strings on purpose */
+    if (typeof CODES !== 'undefined') {
+      check(CODES.spec,  'CODES.spec');
+      check(CODES.sheet, 'CODES.sheet');
+      check(CODES.geo,   'CODES.geo');
+      check(CODES.site,  'CODES.site');
+    }
+    if (typeof PROJECT !== 'undefined') {
+      check(PROJECT.name,    'PROJECT.name');
+      check(PROJECT.element, 'PROJECT.element');
+      check(PROJECT.where,   'PROJECT.where');
+    }
+
     if (window.ASSEMBLY) {
       check(window.ASSEMBLY.name, 'ASSEMBLY.name');
       window.ASSEMBLY.layers.forEach(function (l) {

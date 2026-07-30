@@ -3,18 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Compliance Filter</title>
-<meta name="description" content="Narrows a catalogue to what the project actually allows.">
-<meta name="color-scheme" content="light">
-<meta name="theme-color" content="#fbfbfd">
+<title>Compliance Filter: the catalogue, narrowed to what the project allows</title>
+<meta name="description" data-i18n-attr="content:meta.description"
+      content="Where a product sits decides what it has to be. The exposure, the drawings and the person on site set the limits, and the catalogue answers.">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#2b2f38">
 <link rel="canonical" href="https://eirasroger.github.io/attribute-predictor/compliance/">
 
 <!-- crawlers do not run JS, so these stay English -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Company">
 <meta property="og:url" content="https://eirasroger.github.io/attribute-predictor/compliance/">
-<meta property="og:title" content="Compliance Filter">
-<meta property="og:description" content="Narrows a catalogue to what the project actually allows.">
+<meta property="og:title" content="Compliance Filter: where it sits decides what it has to be">
+<meta property="og:description"
+      content="Where a product sits decides what it has to be. The exposure, the drawings and the person on site set the limits, and the catalogue answers.">
 <meta property="og:locale" content="en">
 <meta name="twitter:card" content="summary">
 
@@ -22,47 +24,111 @@
 <link rel="apple-touch-icon" href="../assets/logo.png">
 <script src="../js/boot.js"></script>
 <link rel="stylesheet" href="../css/base.css">
-<link rel="stylesheet" href="../css/product.css">
+<link rel="stylesheet" href="../css/compliance.css">
 </head>
-<body data-base="../" data-page="compliance" data-tint="compliance">
+<body data-base="../" data-page="compliance" data-tint="compliance"
+      data-tag="topbar.tag" data-note="footer.note" data-topbar-hold="hero">
 
 <header class="topbar" id="topbar"></header>
 
 <main>
-  <section class="stub">
-    <div class="stub-art">
-      <img class="stub-mark" id="p-mark" src="../assets/marks/compliance.svg"
-           alt="" width="200" height="150">
+
+  <!-- 1 ▸ hero: the wall at the waterline --------------------------------- -->
+  <section class="hero" id="hero">
+    <div class="hero-art" id="hero-art" aria-hidden="true">
+      <svg class="sc-svg" id="hero-svg" focusable="false"
+           preserveAspectRatio="xMidYMid slice"></svg>
     </div>
 
-    <p class="stub-status" data-i18n="status.soon">In development</p>
+    <div class="hero-inner">
+      <p class="eyebrow hero-fade">Compliance Filter</p>
+      <h1 class="display" data-i18n-html="hero.head">
+        Where it sits decides<br>what it <span class="accent">has to be</span>.
+      </h1>
+      <p class="lede hero-fade hero-fade-2" data-i18n="hero.lede">
+        The exposure sets the limits. The drawings and the person on site add
+        the rest. What clears all of them is what you can specify.
+      </p>
+    </div>
 
-    <h1 class="stub-name" id="p-name">Compliance Filter</h1>
-    <p class="stub-tag" id="p-tag">Narrows a catalogue to what the project actually allows.</p>
-    <p class="stub-body" id="p-body">Filters products against regulatory requirements and project constraints, with a person in the loop at every decision that needs judgement.</p>
+    <div class="scroll-cue" aria-hidden="true"><span></span></div>
+  </section>
 
-    <p class="stub-note" data-i18n="status.note">
-      This one is being built. There is nothing to download yet.
+  <!-- 2 ▸ the instrument -------------------------------------------------- -->
+  <section class="rig" id="rig" aria-labelledby="rig-heading">
+    <h2 id="rig-heading" class="section-head reveal" data-i18n="scene.head">
+      The environment is the requirement.
+    </h2>
+
+    <div class="rig-body reveal">
+
+      <div class="sc-holder">
+        <div class="sc" id="sc">
+          <svg class="sc-svg" id="sc-svg" preserveAspectRatio="xMidYMid meet"
+               focusable="false" aria-hidden="true"></svg>
+          <div class="sc-labels" id="sc-labels" aria-hidden="true"></div>
+        </div>
+        <p class="sc-cap" id="sc-cap"></p>
+      </div>
+
+      <div class="rig-side">
+        <div class="sw-block">
+          <p class="rig-lab" data-i18n="scene.adds">What the site adds</p>
+          <div class="sw-set" id="sw-set"></div>
+        </div>
+
+        <div class="bind-block">
+          <p class="rig-lab" data-i18n="scene.binds">What binds</p>
+          <div class="bind" id="bind"></div>
+          <p class="bind-draw" id="bind-draw" hidden></p>
+        </div>
+      </div>
+
+      <div class="cat">
+        <div class="cat-top">
+          <p class="rig-lab" data-i18n="scene.catalogue">The catalogue</p>
+          <p class="cat-count" id="cat-count"></p>
+        </div>
+        <ol class="cat-row" id="cat-row"></ol>
+        <p class="cat-cap" id="cat-cap"></p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 3 ▸ the honest line -------------------------------------------------- -->
+  <section class="statement">
+    <p class="reveal" data-i18n-html="close.statement">
+      Every one of these satisfies the class it was built for.<br>
+      <span class="dim">This project is what rules them out.</span>
     </p>
+  </section>
 
-    <div class="stub-links">
-      <a class="stub-link" href="mailto:roger.verges.eiras@gmail.com?subject=Compliance%20Filter">
-        <span data-i18n="status.ask">Ask about it</span>
+  <!-- 4 ▸ call to action --------------------------------------------------- -->
+  <section class="cta">
+    <div class="cta-inner reveal">
+      <h2 class="cta-head" data-i18n="cta.head">Tell it where the product goes.</h2>
+      <p class="cta-body" data-i18n="cta.body">
+        Send us a project and its catalogue. We will show you what is left.
+      </p>
+      <a class="cta-btn" href="mailto:roger.verges.eiras@gmail.com?subject=Compliance%20Filter">
+        <span data-i18n="cta.btn">Get in touch</span>
         <svg viewBox="0 0 12 10" fill="none" stroke="currentColor"
              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
              aria-hidden="true" focusable="false"><path d="M1 5h9M6.8 1.2 10.6 5l-3.8 3.8"/></svg>
       </a>
-      <a class="stub-link stub-link-quiet" href="../#products"
-         data-i18n="nav.products">Products</a>
     </div>
   </section>
+
 </main>
 
 <footer id="sitefooter"></footer>
 
 <script src="../js/i18n.js"></script>
+<script src="../js/copy.compliance.js"></script>
 <script src="../js/products.js"></script>
 <script src="../js/shell.js"></script>
-<script src="../js/product.js"></script>
+<script src="../js/comply.data.js"></script>
+<script src="../js/comply.js"></script>
 </body>
 </html>

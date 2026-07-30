@@ -88,7 +88,7 @@ var PRODUCTS = [
       es: 'Filtra productos según requisitos normativos y condicionantes de ' +
           'proyecto, con una persona decidiendo cada punto que requiere de un criterio especializado.'
     },
-    ready: false
+    ready: true
   },
   {
     id: 'recommender',
