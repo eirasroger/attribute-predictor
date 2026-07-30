@@ -39,56 +39,36 @@
 
 /* --- hero ------------------------------------------------------------------ */
 
-/* the text sits above the waterline rather than centred: a bright horizontal
-   plane crossing the headline is the one thing this composition cannot do */
 .hero {
   position: relative;
   min-height: 100svh;
-  display: flex; align-items: flex-start;
-  padding: 22svh var(--pad) 6rem;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 5.6rem var(--pad) 4rem;
   overflow: hidden;
 }
 
-/* the drawing is the ground the headline sits on, not a panel beside it */
-.hero-art {
-  position: absolute; inset: 0;
-  z-index: 0;
-}
-.hero-art .sc-svg { width: 100%; height: 100%; display: block; }
-.hero-art::after {
-  content: '';
-  position: absolute; inset: 0;
-  background:
-    linear-gradient(100deg,
-                    color-mix(in srgb, var(--ground) 88%, transparent) 12%,
-                    color-mix(in srgb, var(--ground) 58%, transparent) 40%,
-                    transparent 68%),
-    linear-gradient(to top, var(--ground), transparent 16%);
-}
+.hero-mast { margin: 0 0 1.8rem; }
+.hero-mast .eyebrow { margin: 0; font-size: 0.8rem; letter-spacing: 0.3em; }
+.hero-inner { max-width: 40rem; }
+.hero-inner .lede { max-width: 30rem; }
+.hero-side { margin-top: 2.4rem; }
 
-.hero-inner { position: relative; z-index: 1; max-width: 34rem; }
-.hero-inner .eyebrow { margin: 0 0 1.6rem; font-size: 0.8rem; letter-spacing: 0.3em; }
-.hero-inner .lede { max-width: 27rem; }
-
-@media (min-width: 60rem) {
-  .hero .display { font-size: clamp(2.8rem, 4.4vw, 4.4rem); }
-  .hero-inner { max-width: 40rem; }
-}
-/* narrow: the drawing becomes a band under the text instead of the ground it
-   sits on. Slicing a landscape frame into a phone column shows a corner. */
-@media (max-width: 63.99rem) {
+@media (min-width: 66rem) {
   .hero {
-    flex-direction: column; align-items: stretch;
-    gap: 2.4rem;
-    padding: 8rem 0 3rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.94fr);
+    grid-template-rows: auto 1fr;
+    align-items: center;
+    column-gap: clamp(2rem, 5vw, 4.5rem);
+    row-gap: 1.4rem;
+    padding-top: 5.5rem; padding-bottom: 3.6rem;
   }
-  .hero-inner { padding: 0 var(--pad); max-width: none; }
-  .hero-art { position: relative; inset: auto; }
-  .hero-art .sc-svg { height: auto; }
-  .hero-art::after {
-    background: linear-gradient(to bottom, var(--ground), transparent 14%),
-                linear-gradient(to top, var(--ground), transparent 12%);
-  }
+  .hero-mast { grid-column: 1 / -1; margin-bottom: 0; }
+  .hero .display { font-size: clamp(2.8rem, 4.4vw, 4.5rem); }
+  .hero .lede { margin-top: 2.2rem; }
+  .hero-side { margin-top: 0; }
+}
+@media (max-width: 65.99rem) {
   .scroll-cue { display: none; }
 }
 
@@ -99,7 +79,85 @@
     animation-delay: 0.1s;
   }
   .hero-fade-2 { animation-delay: 0.6s; }
+  .hero-fade-3 { animation-delay: 0.85s; }
   .hero .display { animation: fade-up 1.15s var(--ease) both; animation-delay: 0.3s; }
+}
+
+/* --- the hero figure: three plates ---------------------------------------- */
+
+/* the label layer is positioned as a percentage of .hs, so .hs has to be
+   exactly as tall as the svg inside it: nothing else may sit in this box */
+.hs { position: relative; max-width: 38rem; }
+.hs-svg { display: block; width: 100%; height: auto; }
+
+.hs-p-f { fill: #24272f; }
+.hs-p-s { fill: #1e2128; }
+.hs-p-e { stroke: var(--accent-deep); stroke-width: 1.2; fill: none; opacity: 0.5; }
+.hs-s-e { stroke: var(--pass); stroke-width: 1.2; fill: none; opacity: 0.5; }
+.hs-lead { stroke: var(--line); stroke-width: 1; fill: none; }
+
+.hs-hole   { fill: #171a21; }
+.hs-hole-l { stroke: #a7aebf; stroke-width: 1.1; fill: none; opacity: 0.4; }
+
+.hs-mote { fill: var(--ink-dim); opacity: 0.16; }
+
+/* a candidate is a machined solid in the plates' own projection, and it carries
+   no verdict until it has stopped somewhere */
+.hs-tok .tk-t { fill: #eef0f5; }
+.hs-tok .tk-f { fill: #c6ccd8; }
+.hs-tok .tk-s { fill: #8e95a4; }
+.hs-tok .tk-e { stroke: #fff; stroke-width: 1; fill: none; opacity: 0.5; }
+
+.hs-tok .tk-t, .hs-tok .tk-f, .hs-tok .tk-s {
+  transition: fill 0.34s var(--ease);
+}
+
+/* the contact shadow arrives with the verdict: in flight there is nothing for
+   the candidate to cast one on */
+.hs-tok .tk-sh {
+  fill: #0d0f13; opacity: 0;
+  transition: opacity 0.3s var(--ease);
+}
+.hs-tok.is-fail .tk-sh, .hs-tok.is-pass .tk-sh { opacity: 0.42; }
+
+/* the verdict ramp, reused: docs/cvd.py PASS at worst CVD dE 11.2. Position
+   carries the same meaning here, so colour is never the sole cue. */
+.hs-tok.is-fail .tk-t { fill: #f0b3b9; }
+.hs-tok.is-fail .tk-f { fill: var(--fail); }
+.hs-tok.is-fail .tk-s { fill: #9d5b62; }
+
+.hs-tok.is-pass .tk-t { fill: #c8ecd8; }
+.hs-tok.is-pass .tk-f { fill: var(--pass); }
+.hs-tok.is-pass .tk-s { fill: #5f9c7d; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .hs-mote { animation: hs-mote 9s var(--ease) infinite;
+             animation-delay: calc(var(--i, 0) * 0.31s); }
+  @keyframes hs-mote {
+    0%, 100% { transform: none; opacity: 0.08; }
+    45%      { transform: translate(4px, -6px); opacity: 0.26; }
+  }
+}
+
+.hs-labs { position: absolute; inset: 0; pointer-events: none; }
+.hs-lab {
+  position: absolute; left: 0; width: 31%;
+  margin: 0;
+  transform: translateY(-50%);
+  text-align: right; text-wrap: balance;
+  font-size: 0.66rem; font-weight: 600;
+  letter-spacing: 0.11em; text-transform: uppercase; line-height: 1.4;
+  color: var(--ink-faint);
+}
+.hs-lab.is-ok { color: var(--pass); }
+
+/* after the .hs base rule, never in the hero block above it: an equal-specificity
+   bare rule further down the file beats a media query */
+@media (max-width: 65.99rem) {
+  .hs { max-width: 25rem; }
+}
+@media (max-width: 30rem) {
+  .hs-lab { font-size: 0.58rem; letter-spacing: 0.05em; }
 }
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(1.4rem); }
@@ -232,8 +290,13 @@
 
 .rig { padding: 7rem 0 8rem; }
 .rig .section-head {
-  margin: 0 var(--pad) 3rem;
+  margin: 0 var(--pad) 1.1rem;
   max-width: 30rem;
+}
+.rig-sub {
+  margin: 0 var(--pad) 3rem;
+  max-width: 34rem;
+  font-size: 0.94rem; color: var(--ink-dim);
 }
 
 .rig-body {

@@ -3,46 +3,80 @@ I18N.add({
 
   'meta.title': {
     en: 'Compliance Filter: the catalogue, narrowed to what the project allows',
-    ca: 'Compliance Filter: el catàleg, reduït al que el projecte permet',
-    es: 'Compliance Filter: el catálogo, reducido a lo que el proyecto permite'
+    ca: 'Compliance Filter: el catàleg, reduït al que el projecte admet',
+    es: 'Compliance Filter: el catálogo, reducido a lo que el proyecto admite'
   },
   'meta.description': {
-    en: 'Where a product sits decides what it has to be. The exposure, the ' +
-        'drawings and the person on site set the limits, and the catalogue ' +
-        'answers.',
-    ca: 'On es col·loca un producte decideix què ha de ser. L\'exposició, els ' +
-        'plànols i la persona a l\'obra fixen els límits, i el catàleg respon.',
-    es: 'Dónde se coloca un producto decide qué tiene que ser. La exposición, ' +
-        'los planos y la persona en obra fijan los límites, y el catálogo responde.'
+    en: 'The regulation, the project documents and the person who knows the ' +
+        'job each set limits. What clears all three is the shortlist, and ' +
+        'every exclusion arrives with the reason for it.',
+    ca: 'La normativa, la documentació del projecte i qui coneix l\'obra ' +
+        'imposen cadascun els seus límits. El que els compleix tots és la ' +
+        'preselecció, i cada descart queda explicat.',
+    es: 'La normativa, la documentación del proyecto y quien conoce la obra ' +
+        'imponen cada uno sus propios límites. Lo que los cumple todos es la ' +
+        'preselección, y cada descarte queda explicado.'
   },
   'topbar.tag': {
-    en: 'Exposure to a shortlist',
-    ca: 'De l\'exposició a una llista curta',
-    es: 'De la exposición a una lista corta'
+    en: 'A catalogue to a shortlist',
+    ca: 'D\'un catàleg a una preselecció',
+    es: 'De un catálogo a una preselección'
   },
 
   /* --- hero -------------------------------------------------------------- */
 
   'hero.head': {
-    en: 'Where it sits decides<br>what it <span class="accent">has to be</span>.',
-    ca: 'On es col·loca decideix<br>què <span class="accent">ha de ser</span>.',
-    es: 'Dónde se coloca decide<br>qué <span class="accent">tiene que ser</span>.'
+    en: 'A catalogue<br>is not a <span class="accent">shortlist</span>.',
+    ca: 'Un catàleg<br>no és una <span class="accent">preselecció</span>.',
+    es: 'Un catálogo<br>no es una <span class="accent">preselección</span>.'
   },
   'hero.lede': {
-    en: 'The exposure sets the limits. The drawings and the person on site add ' +
-        'the rest. What clears all of them is what you can specify.',
-    ca: 'L\'exposició fixa els límits. Els plànols i la persona a l\'obra hi ' +
-        'afegeixen la resta. El que ho compleix tot és el que pots especificar.',
-    es: 'La exposición fija los límites. Los planos y la persona en obra añaden ' +
-        'el resto. Lo que lo cumple todo es lo que puedes especificar.'
+    en: 'The regulation, the project documents and the person who knows the ' +
+        'job each set limits. What clears all three is the shortlist, and ' +
+        'every exclusion arrives with the reason for it.',
+    ca: 'La normativa, la documentació del projecte i qui coneix l\'obra ' +
+        'imposen cadascun els seus límits. El que els compleix tots és la ' +
+        'preselecció, i cada descart queda explicat.',
+    es: 'La normativa, la documentación del proyecto y quien conoce la obra ' +
+        'imponen cada uno sus propios límites. Lo que los cumple todos es la ' +
+        'preselección, y cada descarte queda explicado.'
+  },
+  'hero.lab.reg': {
+    en: 'Regulatory constraints',
+    ca: 'Restriccions normatives',
+    es: 'Restricciones normativas'
+  },
+  'hero.lab.proj': {
+    en: 'Project constraints',
+    ca: 'Restriccions de projecte',
+    es: 'Restricciones de proyecto'
+  },
+  'hero.lab.op': {
+    en: 'Operator constraints',
+    ca: 'Restriccions de l\'operador',
+    es: 'Restricciones del operador'
+  },
+  'hero.lab.ok': {
+    en: 'Admissible products',
+    ca: 'Productes admissibles',
+    es: 'Productos admisibles'
   },
 
   /* --- the instrument ---------------------------------------------------- */
 
   'scene.head': {
-    en: 'The environment is the requirement.',
-    ca: 'L\'entorn és el requisit.',
-    es: 'El entorno es el requisito.'
+    en: 'One project, in section.',
+    ca: 'Un projecte, en secció.',
+    es: 'Un proyecto, en sección.'
+  },
+  'scene.sub': {
+    en: 'Here the limits come from where the element sits. On another project ' +
+        'they come from fire, from acoustics, from whatever the specification ' +
+        'asks for.',
+    ca: 'Aquí els límits els marca el lloc on va l\'element. En un altre ' +
+        'projecte els marca el foc, l\'acústica o el que exigeixi el plec.',
+    es: 'Aquí los límites los marca el lugar donde va el elemento. En otro ' +
+        'proyecto los marca el fuego, la acústica o lo que exija el pliego.'
   },
   'scene.adds': {
     en: 'What the site adds',

@@ -636,28 +636,370 @@
     else if (narrow.addListener) narrow.addListener(reframe);
   }
 
-  function initHeroArt() {
-    var svg = document.getElementById('hero-svg');
-    if (!svg) return;
-    /* wide: framed low and right so the waterline never crosses the headline.
-       Narrow: the art is a band under the text, so it is framed on its own. */
-    var WIDE = [-250, -158, 1320, 706], TALL = [150, -34, 730, 640];
-    var narrow = window.matchMedia('(max-width: 63.99rem)');
-    var at = null;
+  /* --- the hero figure ------------------------------------------------------- */
+
+  /* HOLES is the only place the argument is written: every candidate's fate and
+     every verdict derive from it. Never hardcode a count against it. */
+  var HOLES = [
+    [0, 1, 3, 4, 6, 7],
+    [0, 2, 3, 4, 7],
+    [0, 4, 5, 7]
+  ];
+
+  var S = {
+    W: 800, H: 640,
+    dx: 88, dy: -50,
+    x1: 268, x2: 684,
+    lane0: 308, pitch: 42, lanes: 9,
+    plateY: [206, 330, 454], th: 12,
+    shelfY: 566,
+    hole: 17, spawnY: -54,
+    speed: 112, settle: 0.16, hold: 2.9, fade: 1
+  };
+  /* with S.hold, this sets how often the instrument is empty of verdicts.
+     Measured at 3% of the time with docs/hero-test.html; shorten either and the
+     figure reads as a screensaver. */
+  var WAIT = { min: 0.4, jitter: 1.4 };
+
+  /* a hole has to swallow a candidate: 2 * S.hole must clear TOK.k + TOK.sx,
+     and 2 * S.hole + a gap must clear S.pitch */
+  var TOK = { k: 15, sx: 8, sy: -4.5 };
+
+  function laneX(i) { return S.lane0 + i * S.pitch; }
+  function midY(y) { return y + S.dy / 2; }
+  function restY(f) {
+    return midY(f < HOLES.length ? S.plateY[f] : S.shelfY) - TOK.k;
+  }
+
+  function fateOf(i) {
+    for (var p = 0; p < HOLES.length; p++) {
+      if (HOLES[p].indexOf(i) < 0) return p;
+    }
+    return HOLES.length;
+  }
+
+  function holeAt(i, y) {
+    return { cx: laneX(i) + S.dx / 2, cy: midY(y), rx: S.hole,
+             ry: S.hole * 0.4 };
+  }
+
+  /* The holes are punched out of the plate with a mask, never painted over it as
+     a dark ellipse: a painted ellipse has to be drawn after the candidates to
+     cover the plate, and then it occludes the candidate that is inside it. A
+     mask leaves a real opening, so a candidate is seen through the hole and is
+     hidden only by the solid plate around and in front of it. */
+  function holeMask(defs, uid, y, list) {
+    var id = uid + '-m' + y;
+    var m = sv('mask', {
+      id: id, maskUnits: 'userSpaceOnUse',
+      x: S.x1 - 8, y: y + S.dy - 8,
+      width: S.x2 - S.x1 + S.dx + 16, height: -S.dy + S.th + 16
+    }, defs);
+    sv('rect', { x: S.x1 - 8, y: y + S.dy - 8,
+                 width: S.x2 - S.x1 + S.dx + 16, height: -S.dy + S.th + 16,
+                 fill: '#fff' }, m);
+    list.forEach(function (i) {
+      var h = holeAt(i, y);
+      sv('ellipse', { cx: h.cx, cy: h.cy, rx: h.rx, ry: h.ry, fill: '#000' }, m);
+    });
+    return 'url(#' + id + ')';
+  }
+
+  /* Every plate is drawn in two passes, split along its own mid-depth line,
+     with the candidates in between. Candidates travel at mid-depth, so this is
+     what makes one sink through a hole and be cut by the plate instead of
+     sliding over its face. Draw every void, then every back, then the
+     candidates, then every front. */
+  function voids(parent, y, list) {
+    list.forEach(function (i) {
+      var h = holeAt(i, y);
+      sv('ellipse', { cx: h.cx, cy: h.cy, rx: h.rx, ry: h.ry,
+                      'class': 'hs-hole' }, parent);
+    });
+  }
+
+  function slabBack(parent, y, u, ok, mask) {
+    var g = sv('g', null, parent), h = S.dx / 2, v = S.dy / 2;
+    var f = poly(g, [[S.x1 + S.dx, y + S.dy], [S.x2 + S.dx, y + S.dy],
+                     [S.x2 + h, y + v], [S.x1 + h, y + v]], 'hs-p-t');
+    f.setAttribute('fill', u(ok ? 'sf' : 'pf'));
+    f.setAttribute('mask', mask);
+    return g;
+  }
+
+  function slabFront(parent, y, list, u, ok, mask) {
+    var g = sv('g', null, parent), h = S.dx / 2, v = S.dy / 2;
+    var f = poly(g, [[S.x1 + h, y + v], [S.x2 + h, y + v], [S.x2, y], [S.x1, y]],
+                 'hs-p-t');
+    f.setAttribute('fill', u(ok ? 'sf' : 'pf'));
+    f.setAttribute('mask', mask);
+
+    poly(g, [[S.x2, y], [S.x2 + S.dx, y + S.dy],
+             [S.x2 + S.dx, y + S.dy + S.th], [S.x2, y + S.th]], 'hs-p-s');
+    sv('rect', { x: S.x1, y: y, width: S.x2 - S.x1, height: S.th,
+                 'class': 'hs-p-f' }, g);
+    sv('path', { d: 'M' + S.x1 + ' ' + y + 'H' + S.x2,
+                 'class': ok ? 'hs-s-e' : 'hs-p-e' }, g);
+
+    /* the near rim, after the candidates: a candidate in the hole passes behind
+       the lip closest to the viewer */
+    list.forEach(function (i) {
+      var o = holeAt(i, y);
+      sv('path', { d: 'M' + (o.cx - o.rx) + ' ' + o.cy + 'a' + o.rx + ' ' +
+                      o.ry + ' 0 0 0 ' + (o.rx * 2) + ' 0',
+                   'class': 'hs-hole-l' }, g);
+    });
+    return g;
+  }
+
+  function cube(parent) {
+    var g = sv('g', { 'class': 'hs-tok' }, parent);
+    var k = TOK.k, sx = TOK.sx, sy = TOK.sy;
+    sv('ellipse', { cx: (k + sx) / 2, cy: k + sy / 2, rx: k * 0.66,
+                    ry: k * 0.21, 'class': 'tk-sh' }, g);
+    poly(g, [[0, 0], [sx, sy], [k + sx, sy], [k, 0]], 'tk-t');
+    poly(g, [[k, 0], [k + sx, sy], [k + sx, k + sy], [k, k]], 'tk-s');
+    sv('rect', { x: 0, y: 0, width: k, height: k, 'class': 'tk-f' }, g);
+    sv('path', { d: 'M0 0H' + k, 'class': 'tk-e' }, g);
+    return g;
+  }
+
+  function heroDefs(svg, uid) {
+    var d = sv('defs', null, svg);
+
+    function grad(id, stops) {
+      var g = sv('linearGradient', { id: uid + '-' + id, x1: 0, y1: 0,
+                                     x2: 1, y2: 0 }, d);
+      stops.forEach(function (s) {
+        sv('stop', { offset: s[0], 'stop-color': s[1] }, g);
+      });
+    }
+    /* two steps above --ground, same hue: the plates have to read as part of the
+       page, not as a panel dropped on it */
+    grad('pf', [[0, '#414855'], [0.5, '#3a4150'], [1, '#333a47']]);
+    grad('sf', [[0, '#474e5c'], [0.5, '#404757'], [1, '#39404e']]);
+
+    /* both of these must reach offset 1 inside the viewBox. A radius that runs
+       past it gets cut by the SVG edge while still opaque, and the straight edge
+       that leaves is exactly what makes a figure look pasted on. */
+    var glow = sv('radialGradient', { id: uid + '-g' }, d);
+    sv('stop', { offset: 0, 'stop-color': '#a3aef0', 'stop-opacity': 0.09 }, glow);
+    sv('stop', { offset: 0.55, 'stop-color': '#6b7ad8', 'stop-opacity': 0.03 }, glow);
+    sv('stop', { offset: 1, 'stop-color': '#6b7ad8', 'stop-opacity': 0 }, glow);
+
+    var seat = sv('radialGradient', { id: uid + '-seat' }, d);
+    sv('stop', { offset: 0, 'stop-color': '#0d0f13', 'stop-opacity': 0.5 }, seat);
+    sv('stop', { offset: 0.6, 'stop-color': '#0d0f13', 'stop-opacity': 0.2 }, seat);
+    sv('stop', { offset: 1, 'stop-color': '#0d0f13', 'stop-opacity': 0 }, seat);
+    return { u: function (n) { return 'url(#' + uid + '-' + n + ')'; }, d: d };
+  }
+
+  function buildSieve(svg) {
+    var uid = 'hs' + (++sceneSeq);
+    svg.setAttribute('viewBox', '0 0 ' + S.W + ' ' + S.H);
+    svg.innerHTML = '';
+    var def = heroDefs(svg, uid), u = def.u;
+    var levels = S.plateY.concat([S.shelfY]);
+    var masks = levels.map(function (y, i) {
+      return holeMask(def.d, uid, y, HOLES[i] || []);
+    });
+
+    var cx = (S.x1 + S.x2) / 2 + S.dx / 2;
+    sv('ellipse', { cx: cx, cy: 366, rx: 272, ry: 262, fill: u('g') }, svg);
+    sv('ellipse', { cx: cx, cy: S.shelfY + 30, rx: 250, ry: 40,
+                    fill: u('seat') }, svg);
+
+    /* co-prime multipliers, or the modulus collapses the scatter into rows */
+    for (var m = 0; m < 30; m++) {
+      var mote = sv('circle', {
+        cx: S.x1 + 12 + (m * 149) % (S.x2 - S.x1 + S.dx - 24),
+        cy: 12 + (m * 71) % 123,
+        r: 1.4 + (m % 3) * 0.7, 'class': 'hs-mote'
+      }, svg);
+      mote.style.setProperty('--i', m);
+    }
+
+    levels.forEach(function (y, i) { voids(svg, y, HOLES[i] || []); });
+    levels.forEach(function (y, i) {
+      slabBack(svg, y, u, i === HOLES.length, masks[i]);
+    });
+
+    var stage = sv('g', null, svg);
+
+    levels.forEach(function (y, i) {
+      slabFront(svg, y, HOLES[i] || [], u, i === HOLES.length, masks[i]);
+    });
+
+    levels.forEach(function (y) {
+      sv('path', { d: 'M254 ' + midY(y) + 'H306', 'class': 'hs-lead' }, svg);
+    });
+
+    return stage;
+  }
+
+  /* nothing is drawn at a destination before a candidate has travelled there:
+     the verdict is the arrival, so no resting state may be built up front */
+  function initHero() {
+    var svg = document.getElementById('hs-svg');
+    var labs = document.getElementById('hs-labs');
+    if (!svg || !labs) return;
+
+    var stage = buildSieve(svg);
+
+    ['hero.lab.reg', 'hero.lab.proj', 'hero.lab.op', 'hero.lab.ok']
+      .forEach(function (key, i) {
+        var y = i < 3 ? S.plateY[i] : S.shelfY;
+        var p = el('p', 'hs-lab' + (i === 3 ? ' is-ok' : ''), str(key));
+        p.style.top = (y + S.dy / 2) / S.H * 100 + '%';
+        labs.appendChild(p);
+      });
+
+    var N = 9, deck = [], live = [];
 
     function draw() {
-      var next = narrow.matches ? TALL : WIDE;
-      if (next === at) return;
-      at = next;
-      buildScene(svg, { crop: at, spray: true });
+      if (!deck.length) {
+        for (var i = 0; i < S.lanes; i++) deck.push(i);
+        for (var j = deck.length - 1; j > 0; j--) {
+          var r = Math.floor(Math.random() * (j + 1)), sw = deck[j];
+          deck[j] = deck[r]; deck[r] = sw;
+        }
+      }
+      /* never two candidates in one lane: they would land on top of each other */
+      for (var k = 0; k < deck.length; k++) {
+        var taken = false;
+        live.forEach(function (c) { if (c.lane === deck[k]) taken = true; });
+        if (!taken) return deck.splice(k, 1)[0];
+      }
+      return deck.pop();
     }
-    draw();
-    if (narrow.addEventListener) narrow.addEventListener('change', draw);
-    else if (narrow.addListener) narrow.addListener(draw);
+
+    /* the drawn solid is k + sx wide, so centring the rect alone leaves it
+       sitting sx/2 right of its own hole */
+    function place(c) {
+      c.g.setAttribute('transform', 'translate(' +
+        (laneX(c.lane) + S.dx / 2 - (TOK.k + TOK.sx) / 2) + ' ' +
+        c.y.toFixed(1) + ')');
+    }
+
+    function reset(c, wait) {
+      c.lane = draw();
+      c.fate = fateOf(c.lane);
+      c.rest = restY(c.fate);
+      c.y = S.spawnY;
+      c.phase = 'wait';
+      c.t = wait;
+      c.g.setAttribute('class', 'hs-tok');
+      c.g.style.opacity = 0;
+      place(c);
+    }
+
+    /* seeded mid-fall, never at rest: a staggered wait leaves the figure empty
+       for six seconds on arrival, and pre-placing a landing would give the
+       verdict away before anything had travelled */
+    for (var n = 0; n < N; n++) {
+      live.push({ g: cube(stage) });
+      reset(live[n], 0);
+      live[n].phase = 'fall';
+      live[n].y = 150 - n * 74;
+    }
+
+    function verdict(c) {
+      c.g.setAttribute('class', 'hs-tok ' +
+        (c.fate < HOLES.length ? 'is-fail' : 'is-pass'));
+    }
+
+    function step(c, dt) {
+      if (c.phase === 'wait') {
+        c.t -= dt;
+        if (c.t <= 0) { c.phase = 'fall'; c.t = 0; }
+        return;
+      }
+      if (c.phase === 'fall') {
+        c.y += S.speed * dt;
+        c.g.style.opacity = Math.min(1, (c.y - S.spawnY) / 54);
+        if (c.y >= c.rest) {
+          c.y = c.rest;
+          c.phase = 'settle';
+          c.t = 0;
+          verdict(c);
+        }
+        place(c);
+        return;
+      }
+      if (c.phase === 'settle') {
+        c.t += dt;
+        var p = clamp(c.t / S.settle);
+        c.y = c.rest + Math.sin(p * Math.PI) * 2.4;
+        place(c);
+        if (p >= 1) { c.phase = 'hold'; c.t = 0; c.y = c.rest; place(c); }
+        return;
+      }
+      if (c.phase === 'hold') {
+        c.t += dt;
+        if (c.t >= S.hold) { c.phase = 'fade'; c.t = 0; }
+        return;
+      }
+      c.t += dt;
+      var q = clamp(c.t / S.fade);
+      c.g.style.opacity = 1 - q;
+      c.y = c.rest - q * 9;
+      place(c);
+      if (q >= 1) reset(c, WAIT.min + Math.random() * WAIT.jitter);
+    }
+
+    /* the still frame is one instant of the same figure, verdicts already made */
+    if (reduced) {
+      [2, 5, 1, 3, 0, 4, 7].forEach(function (lane, i) {
+        var c = live[i];
+        c.lane = lane;
+        c.fate = fateOf(lane);
+        c.rest = restY(c.fate);
+        c.y = c.rest;
+        c.g.style.opacity = 1;
+        verdict(c);
+        place(c);
+      });
+      [[6, 58], [8, 262]].forEach(function (spec, i) {
+        var c = live[7 + i];
+        c.lane = spec[0];
+        c.y = spec[1];
+        c.g.style.opacity = 0.95;
+        place(c);
+      });
+      return;
+    }
+
+    var last = 0, raf = 0;
+
+    function frame(ts) {
+      /* clamp: a tab that parked rAF must not teleport every candidate to its
+         destination on the first frame back */
+      var dt = last ? Math.min((ts - last) / 1000, 0.05) : 0;
+      last = ts;
+      live.forEach(function (c) { step(c, dt); });
+      raf = requestAnimationFrame(frame);
+    }
+
+    function run(on) {
+      if (on && !raf) { last = 0; raf = requestAnimationFrame(frame); }
+      if (!on && raf) { cancelAnimationFrame(raf); raf = 0; }
+    }
+
+    /* run first, observe second: an IntersectionObserver that never delivers a
+       first callback would otherwise leave the figure blank forever. The
+       observer only ever parks a loop that is already alive. Gate on the band
+       the visitor can see, never on the drawing alone. */
+    run(true);
+    var band = svg.parentNode && svg.parentNode.parentNode;
+    if (window.IntersectionObserver && band) {
+      new IntersectionObserver(function (es) {
+        run(es[0].isIntersecting);
+      }, { threshold: 0 }).observe(band);
+    }
   }
 
   function start() {
-    initHeroArt();
+    initHero();
     initRig();
   }
 
