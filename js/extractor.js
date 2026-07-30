@@ -682,6 +682,265 @@
     resume();
   }
 
+  /* --- written by hand ---------------------------------------------------------- */
+
+  /* One open path per stroke of the pen, on a baseline of 20, with `a` the
+     advance to the next glyph. Open on purpose: a loop that meets itself
+     exactly reads as a typeface. */
+  var PEN = {
+    '0': { a: 14.5, s: ['M8.4 2.6C4.6 2.6 1.9 6.6 1.9 11.4C1.9 16.4 4.2 20.3 7.2 20.3C10.6 20.3 12.7 16.2 12.7 11.2C12.7 6.4 11.2 3.1 7.9 2.4'] },
+    '1': { a: 10,   s: ['M2.6 6.8C4.8 5.6 6.4 3.6 7.2 2.2L6.6 20.2'] },
+    '2': { a: 14.5, s: ['M2 5.8C3.2 2.6 7 1.2 9.9 2.6C12.8 4 12.2 8 9 11.2C6.4 13.8 3.4 16.8 2 20L12.8 19.2'] },
+    '3': { a: 14.5, s: ['M2.2 4.6C4.4 2 8.8 1.6 10.8 4.2C12.4 6.4 10.6 9.6 6.8 10.8C10.9 10.5 13.2 13 12.4 16.4C11.6 19.8 6.6 21.4 2.4 19'] },
+    '4': { a: 14.5, s: ['M9.8 2.4L1.6 14.8L12.9 14.3', 'M9.8 6.2L8.8 20.4'] },
+    '5': { a: 14.5, s: ['M11.6 2.9L4.3 3.3L3.1 10.3C6.6 8.3 12 9.7 12.2 14C12.4 18.6 7.4 21.3 2.4 19.3'] },
+    '6': { a: 14.5, s: ['M11.2 3C7 4.2 3 7.6 2 12.6C1.2 17 3.4 20.4 7.1 20.4C10.5 20.4 12.6 17.6 12.1 14.7C11.6 11.5 8 10 5 11.3C3.5 11.9 2.5 13.1 2.1 14.2'] },
+    '7': { a: 13.5, s: ['M1.9 3.3L12.6 2.9L5.4 20.5'] },
+    '8': { a: 14.5, s: ['M8.8 2.3C5.5 2 3 4.1 3.3 6.7C3.5 9.5 6.7 10.8 9.1 11.8C11.7 12.9 12.9 15.2 12 17.8C11.1 20.6 6.6 21.5 3.6 19.7C1 18.1 1.5 14.7 4.1 12.7C6.8 10.6 10 9 10.6 6.3C11 4.1 10 2.5 8.8 2.3'] },
+    '9': { a: 14.5, s: ['M11.5 9.2C8.7 11.2 4.4 11 3 8.4C1.6 5.7 3.7 2.5 7.1 2.3C10.5 2.1 12.5 4.8 12.1 9.2C11.7 13.8 9 17.6 5 20.5'] },
+    ',': { a: 6.5,  s: ['M4.2 17.6C5.6 19.2 5 21.8 2.8 23.6'] },
+    '.': { a: 6.5,  s: ['M3.2 19.4C3.9 19.3 4.5 19.7 4.3 20.4'] },
+    '-': { a: 12.5, s: ['M1.6 11.8L10.8 10.8'] },
+    '/': { a: 12.5, s: ['M11.2 2.5L2.2 20.7'] },
+    ' ': { a: 6.5,  s: [] },
+    'L': { a: 15,   s: ['M3.4 2.5L2.8 19.4L13.2 18.3'] },
+    'R': { a: 15,   s: ['M2.8 20.4L3.2 2.5C7.8 1.7 12.2 3.3 11.6 7.1C11.1 10.3 7 11.5 3.6 11.3', 'M5.8 11.5C8.6 13.5 11 16.9 12.8 20.3'] },
+    'V': { a: 14.5, s: ['M1.8 2.7L6.8 19.7L12.8 2.3'] }
+  };
+  var TICK = 'M1.6 9.6C3.4 11 5 13.2 6.2 15.8C8.8 10.6 12.8 5.2 18.2 1.4';
+  var STRIKE = 'M1 12.6C24 9.4 52 14.6 74 10C86 7.5 94 8.6 99 10.6';
+
+  /* deterministic: the same page must not shuffle its own handwriting between
+     loads, and a hand that is regular in one place and wild in another is worse
+     than no wobble at all */
+  function wob(n) {
+    var x = Math.sin(n * 12.9898) * 43758.5453;
+    return x - Math.floor(x);
+  }
+
+  function penMark(mark) {
+    var NS = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('class', 'ink');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.setAttribute('focusable', 'false');
+
+    function add(d, i, tf, w) {
+      var p = document.createElementNS(NS, 'path');
+      p.setAttribute('d', d);
+      p.setAttribute('stroke-width', w.toFixed(2));
+      if (tf) p.setAttribute('transform', tf);
+      p.style.setProperty('--i', i);
+      svg.appendChild(p);
+      setWire(p, d);
+    }
+
+    if (mark.kind === 'strike') {
+      svg.setAttribute('viewBox', '0 0 100 20');
+      svg.setAttribute('preserveAspectRatio', 'none');
+      svg.style.width = '100%';
+      svg.style.height = '100%';
+      add(STRIKE, 0, null, 1.7);
+      return svg;
+    }
+
+    if (mark.kind === 'tick') {
+      svg.setAttribute('viewBox', '0 0 20 18');
+      svg.style.height = mark.em + 'em';
+      svg.style.width = (mark.em * 20 / 18).toFixed(3) + 'em';
+      add(TICK, 0, null, 2.2);
+      return svg;
+    }
+
+    var x = 0, i = 0;
+    mark.text.split('').forEach(function (c, n) {
+      var g = PEN[c];
+      if (!g) { x += 6.5; return; }
+      var seed = mark.text.charCodeAt(n) + n * 17;
+      var tf = 'translate(' + x.toFixed(2) + ' ' +
+               ((wob(seed) - 0.5) * 1.5).toFixed(2) + ') rotate(' +
+               ((wob(seed + 7) - 0.5) * 4.4).toFixed(2) + ' 7 12) skewX(-9)';
+      g.s.forEach(function (d) { add(d, i++, tf, 1.5 + wob(seed + 3) * 0.55); });
+      x += g.a + (wob(seed + 11) - 0.5) * 1.4;
+    });
+
+    /* the glyph box is 19 tall, the viewBox 30: `em` is the height of the
+       writing, not of the box it needed */
+    var sc = mark.em / 19;
+    svg.setAttribute('viewBox', '-5 -3 ' + (x + 8).toFixed(1) + ' 30');
+    svg.style.height = (30 * sc).toFixed(3) + 'em';
+    svg.style.width = ((x + 8) * sc).toFixed(3) + 'em';
+    return svg;
+  }
+
+  var SRC_MARK = {
+    print: 'M1 3.2H12M1 6.5H12M1 9.8H8',
+    pen: 'M1.6 11.4L2.7 8.4L9.2 1.9L11.1 3.8L4.6 10.3ZM8.4 2.7L10.3 4.6'
+  };
+
+  function srcMark(src) {
+    var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('class', 'rec-mark');
+    svg.setAttribute('viewBox', '0 0 13 13');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.setAttribute('focusable', 'false');
+    var p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    p.setAttribute('d', SRC_MARK[src]);
+    svg.appendChild(p);
+    return svg;
+  }
+
+  function initHand() {
+    var body = document.getElementById('hand-body');
+    var sheet = document.getElementById('hand-paper');
+    var recBox = document.getElementById('hand-rec');
+    var key = document.getElementById('hand-key');
+    if (!body || !sheet || !recBox || typeof HAND === 'undefined') return;
+
+    var ink = [];
+    HAND.ink.forEach(function (mark) {
+      var slot = document.getElementById(mark.at);
+      if (!slot) return;
+      slot.appendChild(penMark(mark));
+      ink.push({ slot: slot, step: mark.step });
+    });
+
+    ['print', 'pen'].forEach(function (src) {
+      var item = el('span', 'hand-key-i');
+      item.setAttribute('data-src', src);
+      item.appendChild(srcMark(src));
+      item.appendChild(document.createTextNode(str('hand.key.' + src)));
+      if (key) key.appendChild(item);
+    });
+
+    var head = el('div', 'rec-head');
+    head.appendChild(el('span', 'rec-count', ''));
+    recBox.appendChild(head);
+    var count = head.lastChild;
+
+    /* the row is a button: picking a value on the record is how you get sent
+       back to the place on the page it was read from */
+    var rows = HAND.rows.map(function (f, i) {
+      var row = el('button', 'rec-row hand-row');
+      row.type = 'button';
+      row.setAttribute('data-src', f.src);
+      row.appendChild(srcMark(f.src));
+      row.appendChild(el('span', 'rec-k', tx(f.field)));
+
+      var val = el('span', 'rec-val');
+      var was = el('span', 'rec-was', f.printed ? dec(f.printed) : '');
+      was.hidden = true;
+      val.appendChild(was);
+      val.appendChild(el('span', 'rec-v', f.printed ? dec(f.printed)
+        : typeof f.value === 'string' ? dec(f.value) : tx(f.value)));
+      if (f.unit) val.appendChild(el('span', 'rec-u', f.unit));
+      row.appendChild(val);
+
+      row.addEventListener('pointerenter', function () { hold(i); });
+      row.addEventListener('focus', function () { hold(i); });
+      row.addEventListener('click', function () { hold(i); });
+
+      recBox.appendChild(row);
+      return row;
+    });
+
+    /* the whole printed line is the target, not the value inside it: a hit area
+       the size of a number is not one anybody finds */
+    HAND.rows.forEach(function (f, i) {
+      var line = sheet.querySelector('[data-hand="' + f.id + '"]');
+      if (!line) return;
+      line.addEventListener('pointerenter', function () { hold(i); });
+    });
+
+    function lit(i, on) {
+      var f = HAND.rows[i];
+      var line = sheet.querySelector('[data-hand="' + f.id + '"]');
+      if (line) line.classList.toggle('is-lit', on);
+      f.lit.forEach(function (id) {
+        var n = document.getElementById(id);
+        if (n) n.classList.toggle(n.classList.contains('hand-ink') ? 'is-lit' : 'is-on', on);
+      });
+    }
+
+    var at = -1, timer = null, held = false, ready = false;
+
+    function show(i) {
+      if (!ready) return;
+      if (at >= 0) lit(at, false);
+      at = i;
+      rows.forEach(function (row, n) { row.classList.toggle('is-lit', n === i); });
+      lit(i, true);
+    }
+
+    function advance() { show((at + 1) % rows.length); }
+
+    /* every pause path schedules its own resume */
+    function resume() {
+      if (timer) clearInterval(timer);
+      if (reduced) return;
+      timer = setInterval(function () { if (!held) advance(); }, 2800);
+    }
+    function hold(i) {
+      held = true;
+      show(i);
+      resume();
+      clearTimeout(hold.out);
+      hold.out = setTimeout(function () { held = false; }, 5000);
+    }
+    body.addEventListener('pointerleave', function () { held = false; });
+
+    var filled = 0;
+    function land(i) {
+      rows[i].classList.add('is-on');
+      filled++;
+      count.textContent = filled + '/' + rows.length;
+    }
+
+    /* the record is already standing when the pen arrives: the value changes
+       under it, which is the whole argument in one move */
+    function turn(i) {
+      var f = HAND.rows[i];
+      var v = rows[i].querySelector('.rec-v');
+      var was = rows[i].querySelector('.rec-was');
+      was.hidden = false;
+      v.textContent = typeof f.value === 'string' ? dec(f.value) : tx(f.value);
+      rows[i].classList.remove('is-turning');
+      void rows[i].getBoundingClientRect();
+      rows[i].classList.add('is-turning');
+    }
+
+    var STEP = 1000;
+    function play() {
+      ink.forEach(function (m) {
+        setTimeout(function () { m.slot.classList.add('is-writ'); }, 400 + m.step * STEP);
+      });
+      HAND.rows.forEach(function (f, i) {
+        setTimeout(function () { land(i); }, 300 + f.step * STEP + i * 130);
+        if (f.turns != null) {
+          setTimeout(function () { turn(i); }, 400 + f.turns * STEP + 620);
+        }
+      });
+      setTimeout(function () { ready = true; show(0); resume(); },
+                 400 + 4 * STEP + 900);
+    }
+
+    function settle() {
+      ink.forEach(function (m) { m.slot.classList.add('is-writ'); });
+      rows.forEach(function (row, i) {
+        land(i);
+        if (HAND.rows[i].turns != null) turn(i);
+      });
+      ready = true;
+    }
+
+    if (reduced || !('IntersectionObserver' in window)) { settle(); return; }
+    new IntersectionObserver(function (e, io) {
+      if (!e[0].isIntersecting) return;
+      io.disconnect();
+      play();
+    }, { threshold: 0.2 }).observe(body);
+  }
+
   /* --- one product, four documents ---------------------------------------------- */
 
   function initDocs() {
@@ -1179,6 +1438,7 @@
     initHero();
     initPipe();
     initComp();
+    initHand();
     initDocs();
     initSchema();
     initWork();

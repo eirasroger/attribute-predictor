@@ -161,6 +161,15 @@
         check(s2.note,  'SOURCES.' + s2.id + '.note');
       });
     }
+    if (typeof HAND !== 'undefined') {
+      HAND.rows.forEach(function (r, i) {
+        check(r.field, 'HAND.rows[' + i + '].field');
+        check(r.where, 'HAND.rows[' + i + '].where');
+        if (r.value && typeof r.value === 'object') {
+          check(r.value, 'HAND.rows[' + i + '].value');
+        }
+      });
+    }
     if (typeof CATALOGUE !== 'undefined') {
       CATALOGUE.filters.forEach(function (f) {
         check(f.label, 'CATALOGUE.filters.' + f.id);

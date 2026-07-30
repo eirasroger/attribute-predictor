@@ -214,6 +214,45 @@ I18N.add({
         'entero deja de cuadrar sin que nadie se dé cuenta.'
   },
 
+  /* --- written by hand ---------------------------------------------------- */
+
+  'hand.head': {
+    en: 'Not everything on a page was typed.',
+    ca: 'No tot el que hi ha en una pàgina s\'ha teclejat.',
+    es: 'No todo lo que hay en una página se ha tecleado.'
+  },
+  'hand.lede': {
+    en: 'A page rarely holds still. Values get crossed out, boxes get ticked, ' +
+        'blanks get filled in by whoever had the pen. Print and handwriting ' +
+        'are read together, in one pass, into one record.',
+    ca: 'Una pàgina poques vegades es queda quieta. Hi ha valors ratllats, ' +
+        'caselles marcades, buits omplerts per qui tenia el bolígraf. La ' +
+        'impressió i l\'escriptura a mà es llegeixen alhora, d\'una sola ' +
+        'passada, cap a un únic registre.',
+    es: 'Una página pocas veces se queda quieta. Hay valores tachados, ' +
+        'casillas marcadas, huecos rellenados por quien tenía el bolígrafo. Lo ' +
+        'impreso y lo escrito a mano se leen a la vez, de una sola pasada, ' +
+        'hacia un único registro.'
+  },
+  'hand.doc.kind': { en: 'Delivery note', ca: 'Albarà', es: 'Albarán' },
+  'hand.doc.sub': {
+    en: '1200 × 600, ventilated façade',
+    ca: '1200 × 600, façana ventilada',
+    es: '1200 × 600, fachada ventilada'
+  },
+  'hand.key.print': { en: 'printed', ca: 'imprès', es: 'impreso' },
+  'hand.key.pen': { en: 'handwritten', ca: 'manuscrit', es: 'manuscrito' },
+  'hand.pick': {
+    en: 'Follow a value back to the page',
+    ca: 'Segueix un valor fins a la pàgina',
+    es: 'Sigue un valor hasta la página'
+  },
+  'hand.note': {
+    en: 'Whatever was added last is rarely the part that was printed.',
+    ca: 'El que s\'hi ha afegit darrer poques vegades és la part impresa.',
+    es: 'Lo último que se ha añadido pocas veces es la parte impresa.'
+  },
+
   /* --- four documents ----------------------------------------------------- */
 
   'docs.head': {

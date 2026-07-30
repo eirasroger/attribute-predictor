@@ -247,7 +247,98 @@
     </p>
   </section>
 
-  <!-- 6 ▸ one product, four documents ---------------------------------------- -->
+  <!-- 6 ▸ written by hand ------------------------------------------------------ -->
+  <section class="hand" id="hand" aria-labelledby="hand-heading">
+    <div class="hand-intro">
+      <h2 id="hand-heading" class="section-head reveal" data-i18n="hand.head">
+        Not everything on a page was typed.
+      </h2>
+      <p class="reveal" data-i18n="hand.lede">
+        A page rarely holds still. Values get crossed out, boxes get ticked,
+        blanks get filled in by whoever had the pen. Print and handwriting are
+        read together, in one pass, into one record.
+      </p>
+    </div>
+
+    <div class="hand-body" id="hand-body">
+      <div class="hand-fig">
+        <article class="paper paper-hand" id="hand-paper">
+          <header class="pp-head">
+            <p class="pp-maker" data-i18n="pipe.doc.maker">Manufacturer</p>
+            <p class="pp-kind" data-i18n="hand.doc.kind">Delivery note</p>
+            <h3 class="pp-title" data-i18n="pipe.doc.title">Mineral wool board</h3>
+            <p class="pp-sub" data-i18n="hand.doc.sub">1200 × 600, ventilated façade</p>
+          </header>
+
+          <table class="pp-tbl">
+            <tbody>
+              <tr data-hand="thick">
+                <td>Thickness</td>
+                <td class="num">
+                  <span class="pp-hit pp-was" id="p-thick">140
+                    <span class="hand-ink hand-strike" id="hand-strike"></span>
+                    <span class="hand-ink hand-above" id="hand-ink-thick"></span>
+                  </span>
+                </td>
+                <td>mm</td>
+              </tr>
+              <tr data-hand="rho">
+                <td>Nominal density</td>
+                <td class="num"><span class="pp-hit" id="p-rho">40</span></td>
+                <td>kg/m³</td>
+              </tr>
+              <tr data-hand="fire">
+                <td>Reaction to fire</td>
+                <td class="num"><span class="pp-hit" id="p-fire">A1</span></td>
+                <td>EN 13501-1</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h4 class="pp-h">Facing</h4>
+          <ul class="pp-opts">
+            <li><span class="pp-box"></span>Unfaced</li>
+            <li data-hand="face">
+              <span class="pp-box">
+                <span class="hand-ink hand-tick" id="hand-ink-face"></span>
+              </span>Black glass tissue
+            </li>
+          </ul>
+
+          <table class="pp-tbl">
+            <tbody>
+              <tr data-hand="batch">
+                <td>Lot</td>
+                <td class="pp-blank">
+                  <span class="hand-ink hand-fill" id="hand-ink-batch"></span>
+                </td>
+                <td>6 pallets</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <p class="pp-sign">
+            <span>Checked</span>
+            <span class="hand-ink hand-sign" id="hand-ink-sign"></span>
+          </p>
+        </article>
+      </div>
+
+      <div class="hand-out">
+        <div class="rec" id="hand-rec"
+             data-i18n-attr="aria-label:hand.pick" aria-label="Follow a value back to the page"></div>
+        <p class="hand-key" id="hand-key"></p>
+      </div>
+    </div>
+
+    <p class="hand-note reveal">
+      <span data-i18n="hand.note">
+        Whatever was added last is rarely the part that was printed.
+      </span>
+    </p>
+  </section>
+
+  <!-- 7 ▸ one product, four documents ---------------------------------------- -->
   <section class="docs" aria-labelledby="docs-heading">
     <div class="docs-intro">
       <h2 id="docs-heading" class="section-head reveal" data-i18n="docs.head">
@@ -270,7 +361,7 @@
     </p>
   </section>
 
-  <!-- 7 ▸ the schema --------------------------------------------------------- -->
+  <!-- 8 ▸ the schema --------------------------------------------------------- -->
   <section class="schema" aria-labelledby="schema-heading">
     <div class="schema-intro">
       <h2 id="schema-heading" class="section-head reveal" data-i18n="schema.head">
@@ -297,7 +388,7 @@
     </div>
   </section>
 
-  <!-- 8 ▸ trust --------------------------------------------------------------- -->
+  <!-- 9 ▸ trust --------------------------------------------------------------- -->
   <div class="duo">
     <section class="prose">
       <h2 class="section-head reveal" data-i18n="trust.head">Every value points back.</h2>
@@ -318,7 +409,7 @@
     </section>
   </div>
 
-  <!-- 9 ▸ the catalogue -------------------------------------------------------- -->
+  <!-- 10 ▸ the catalogue -------------------------------------------------------- -->
   <section class="work" aria-labelledby="work-heading">
     <div class="work-intro">
       <h2 id="work-heading" class="section-head reveal" data-i18n="work.head">
@@ -360,7 +451,7 @@
     </div>
   </section>
 
-  <!-- 10 ▸ it feeds the rest ---------------------------------------------------- -->
+  <!-- 11 ▸ it feeds the rest ---------------------------------------------------- -->
   <section class="feeds" aria-labelledby="feeds-heading">
     <h2 id="feeds-heading" class="section-head reveal" data-i18n="feeds.head">
       And it feeds the rest.
@@ -373,7 +464,7 @@
     <ul class="feed-list reveal" id="feed-list"></ul>
   </section>
 
-  <!-- 11 ▸ call to action ------------------------------------------------------- -->
+  <!-- 12 ▸ call to action ------------------------------------------------------- -->
   <section class="cta">
     <div class="cta-inner reveal">
       <h2 class="cta-head" data-i18n="cta.head">Point it at your folder.</h2>
@@ -389,7 +480,7 @@
     </div>
   </section>
 
-  <!-- 12 ▸ close ----------------------------------------------------------------- -->
+  <!-- 13 ▸ close ----------------------------------------------------------------- -->
   <section class="statement statement-close">
     <p class="reveal" data-i18n-html="close.statement">
       The reading is done.<br>

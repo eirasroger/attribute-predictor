@@ -251,6 +251,52 @@ var SOURCES = [
   }
 ];
 
+/* One page, printed and written on. `ink` is drawn into the empty spans in
+   extractor/index.html; `step` is the beat a thing happens on, so the record is
+   already standing when the pen arrives and the thickness changes under it.
+   `lit` is what lights on the sheet when a row is picked. The signature is
+   drawn and belongs to no row: not everything on a page is a field. */
+var HAND = {
+  ink: [
+    { at: 'hand-strike',    kind: 'strike',                        step: 1 },
+    { at: 'hand-ink-thick', kind: 'text', text: '160',     em: 2,   step: 1 },
+    { at: 'hand-ink-face',  kind: 'tick',                  em: 1.5, step: 2 },
+    { at: 'hand-ink-batch', kind: 'text', text: 'L-4471',  em: 1.6, step: 3 },
+    { at: 'hand-ink-sign',  kind: 'text', text: 'R.V. 14/03', em: 1.4, step: 4 }
+  ],
+  rows: [
+    {
+      id: 'thick', src: 'pen', step: 0, turns: 1,
+      lit: ['p-thick', 'hand-ink-thick'],
+      field: { en: 'Thickness', ca: 'Gruix', es: 'Espesor' },
+      printed: '140', value: '160', unit: 'mm'
+    },
+    {
+      id: 'rho', src: 'print', step: 0, lit: ['p-rho'],
+      field: { en: 'Density', ca: 'Densitat', es: 'Densidad' },
+      value: '40', unit: 'kg/m³'
+    },
+    {
+      id: 'fire', src: 'print', step: 0, lit: ['p-fire'],
+      field: { en: 'Reaction to fire', ca: 'Reacció al foc',
+               es: 'Reacción al fuego' },
+      value: 'A1', unit: 'EN 13501-1'
+    },
+    {
+      id: 'face', src: 'pen', step: 2, lit: ['hand-ink-face'],
+      field: { en: 'Facing', ca: 'Revestiment', es: 'Revestimiento' },
+      value: { en: 'Black glass tissue', ca: 'Vel de vidre negre',
+               es: 'Velo de vidrio negro' },
+      unit: ''
+    },
+    {
+      id: 'batch', src: 'pen', step: 3, lit: ['hand-ink-batch'],
+      field: { en: 'Lot', ca: 'Lot', es: 'Lote' },
+      value: 'L-4471', unit: ''
+    }
+  ]
+};
+
 /* `lines` is what the sheet shows, `record` what that sheet alone contributes */
 var DOCS = [
   {

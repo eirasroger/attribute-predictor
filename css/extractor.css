@@ -18,6 +18,8 @@
   --paper-ink:   #24201a;
   --paper-dim:   #6d6558;
   --paper-line:  #ddd4c4;
+  /* ink lives on paper and nowhere else: the dark side of the page stays amber */
+  --pen:         #2b4179;
 
   --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
   --slower: 0.72s;
@@ -614,6 +616,22 @@
 .rec-row.is-empty .rec-v { color: var(--ink-faint); font-weight: 400; }
 .rec-src { grid-column: 1 / -1; font-size: 0.64rem; color: var(--ink-faint); }
 
+.rec-was {
+  font-family: var(--mono); font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-faint);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+  text-decoration-color: color-mix(in srgb, var(--accent-deep) 80%, transparent);
+}
+.rec-mark {
+  display: block; width: 0.78rem; height: auto;
+  fill: none; stroke: currentColor; stroke-width: 1.25;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+[data-src="print"] .rec-mark { color: var(--ink-faint); }
+[data-src="pen"] .rec-mark { color: var(--accent); }
+
 .rec-group {
   padding: 0.55rem 0.85rem 0.7rem;
   background: color-mix(in srgb, var(--accent-deep) 5%, transparent);
@@ -748,6 +766,178 @@
   margin: 3.2rem auto 0; padding: 0 var(--pad);
   color: var(--ink-dim);
 }
+
+/* --- written by hand ------------------------------------------------------------ */
+
+.hand { padding: 3rem 0 5rem; }
+
+/* the heading and the deck run the full width of the section, not the
+   --measure column every other section uses */
+.hand-intro, .hand-body {
+  max-width: calc(78rem + var(--pad) * 2);
+  margin-inline: auto; padding: 0 var(--pad);
+}
+.hand-intro .section-head { margin-bottom: 1.5rem; }
+.hand-intro p {
+  margin: 0; max-width: none;
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  color: var(--ink-dim);
+}
+
+.hand-body {
+  position: relative; margin-top: 3.4rem;
+  display: grid; gap: 2.8rem;
+}
+@media (min-width: 66rem) {
+  .hand-body {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.94fr);
+    gap: clamp(2.5rem, 7vw, 7rem);
+    align-items: center;
+  }
+}
+
+.hand-fig { position: relative; }
+.paper-hand {
+  position: relative;
+  max-width: 29rem; margin-inline: auto;
+  /* the sheet has been printed, carried and scanned back: it is not square to
+     the page. Anything measured off it tolerates this; a larger angle does not. */
+  transform: rotate(-0.5deg);
+}
+
+/* the fold it came back folded along */
+.paper-hand::after {
+  content: '';
+  position: absolute; inset: 0 auto 0 60%; width: 1.6rem;
+  background: linear-gradient(90deg,
+    rgba(36, 32, 26, 0.05), rgba(36, 32, 26, 0) 26%,
+    rgba(255, 255, 255, 0.4) 42%, rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
+}
+
+.paper .pp-opts {
+  list-style: none; margin: 0.25rem 0 0; padding: 0;
+  display: grid; gap: 0.32rem;
+  font-size: 0.72rem;
+}
+.paper .pp-opts li { display: flex; align-items: center; gap: 0.55rem; }
+.paper .pp-opts + .pp-tbl { margin-top: 1.1rem; }
+.pp-box {
+  position: relative; flex: none;
+  width: 0.9em; height: 0.9em;
+  border: 1px solid var(--paper-dim); border-radius: 0.06em;
+}
+
+/* the ink hangs off the printed value itself, never off the cell: the cell has
+   padding and the strike would sit above the number it is meant to cross */
+.pp-was { position: relative; display: inline-block; }
+.pp-tbl td.pp-blank { position: relative; min-width: 7em; }
+
+.paper .pp-sign {
+  position: relative;
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 1rem; margin: 1.6rem 0 0; padding-top: 0.5rem;
+  border-top: 1px dashed var(--paper-line);
+  font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--paper-dim);
+}
+
+/* --- ink ------------------------------------------------------------------ */
+
+.hand-ink { position: absolute; z-index: 2; pointer-events: none; }
+.hand-ink svg { display: block; overflow: visible; }
+
+.hand-above  { right: -0.55em; bottom: 1.15em; }
+.hand-strike { left: -0.45em; right: -0.45em; top: -0.1em; bottom: -0.1em; }
+.hand-tick   { left: -0.42em; top: -0.62em; }
+.hand-fill   { left: 0.3em; bottom: 0.1em; }
+.hand-sign   { right: 0; bottom: -0.1em; }
+
+/* --len is the measured stroke length: the dash is the whole stroke, so moving
+   the offset writes it. --i is the stroke's place in the mark. */
+.ink path {
+  fill: none;
+  stroke: var(--pen);
+  stroke-linecap: round; stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: var(--len, 0) var(--len, 0);
+  stroke-dashoffset: var(--len, 0);
+  transition: stroke-dashoffset 0.4s linear;
+  transition-delay: calc(var(--i, 0) * 95ms);
+}
+.hand-ink.is-writ .ink path { stroke-dashoffset: 0; }
+
+/* picked: the pen lifts off the page rather than changing colour, which is what
+   a highlighter would do to something that is already ink */
+.hand-ink .ink { transition: filter 0.4s var(--ease); }
+.hand-ink.is-lit .ink { filter: drop-shadow(0 0.1rem 0.35rem rgba(43, 65, 121, 0.55)); }
+.hand-ink.is-lit .ink path { stroke: #1d3168; }
+
+/* after the rule above on purpose: the sheet is centred while it is the only
+   thing in the column, and starts at the column edge once the record is beside it */
+@media (min-width: 66rem) {
+  .paper-hand { margin-inline: 0; }
+}
+
+/* the printed line and the record row light together: that is the whole
+   connection, and it is why this section has no leader lines */
+.paper [data-hand] { cursor: default; }
+.paper [data-hand] td, .paper [data-hand] {
+  transition: background-color 0.4s var(--ease);
+}
+.paper tr[data-hand].is-lit td,
+.paper li[data-hand].is-lit { background-color: rgba(201, 130, 38, 0.12); }
+.paper li[data-hand] { border-radius: 0.15rem; margin: -0.1rem -0.3rem; padding: 0.1rem 0.3rem; }
+
+/* the record names nothing: a mono id at the top of it was a title that
+   answered a question nobody asked */
+.hand-out .rec-head { justify-content: flex-end; }
+
+.hand-row {
+  grid-template-columns: 1rem minmax(0, 1fr) auto;
+  align-items: center; gap: 0 0.8rem;
+  width: 100%; padding: 0.62rem 0.85rem;
+  border: 0; background: none; cursor: pointer;
+  font: inherit; color: inherit; text-align: left;
+}
+.hand-row:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.hand-row.is-lit { background: color-mix(in srgb, var(--accent-deep) 12%, transparent); }
+.hand-row.is-lit .rec-k { color: var(--ink); }
+
+/* the same rule the workbench draws on a surviving row */
+.hand-row { position: relative; }
+.hand-row::before {
+  content: '';
+  position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
+  background: var(--accent);
+  transform: scaleY(0); transform-origin: 50% 50%;
+  transition: transform 0.45s var(--ease);
+}
+.hand-row.is-lit::before { transform: scaleY(1); }
+
+/* the value changes under you when the pen arrives */
+.rec-row.is-turning .rec-v,
+.rec-row.is-turning .rec-was { animation: turn-v 0.52s var(--ease) both; }
+.rec-row.is-turning .rec-was { animation-delay: 0.12s; }
+@keyframes turn-v {
+  from { opacity: 0; transform: translateY(-0.4rem); }
+  to   { opacity: 1; transform: none; }
+}
+
+.hand-key {
+  display: flex; gap: 1.4rem; margin: 1rem 0 0;
+  font-size: 0.64rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.hand-key-i { display: inline-flex; align-items: center; gap: 0.42rem; }
+
+.hand-note {
+  max-width: calc(78rem + var(--pad) * 2);
+  margin: 3.4rem auto 0; padding: 0 var(--pad);
+  font-size: clamp(1.05rem, 2vw, 1.35rem);
+  color: var(--ink-dim);
+}
+.hand-note span { display: block; max-width: 40rem; }
 
 /* --- one product, four documents ---------------------------------------------- */
 
@@ -1190,6 +1380,7 @@ th.num .wb-sort { flex-direction: row-reverse; }
   .pp-hit, .hx-wires path, .pipe-wires path, .hx-item::before, .hx-v {
     transition: none;
   }
+  .ink path { transition: none; transition-delay: 0s; }
   .hx-wires path.hx-spark { display: none; }
   .hx-v { clip-path: none; }
   .hx-node { opacity: 1; }
