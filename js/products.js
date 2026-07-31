@@ -68,7 +68,7 @@ var PRODUCTS = [
         es: 'Evalúa el rendimiento al final de vida estimando el potencial de recuperación de materiales ' +
         'y las fracciones de residuos derivadas de las características del producto.',
           },
-    ready: false
+    ready: true
   },
   {
     id: 'compliance',

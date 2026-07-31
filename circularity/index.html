@@ -3,18 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Circularity Forecaster</title>
-<meta name="description" content="Forecasts end-of-life circularity from material composition.">
-<meta name="color-scheme" content="light">
-<meta name="theme-color" content="#fbfbfd">
+<title>Circularity Forecaster: what a product becomes at the end of its life</title>
+<meta name="description" data-i18n-attr="content:meta.description"
+      content="How much of a product comes back depends largely on what it is made of and how it is put together. This estimates where it ends up, from composition alone, while both can still change.">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#101f26">
 <link rel="canonical" href="https://eirasroger.github.io/attribute-predictor/circularity/">
 
 <!-- crawlers do not run JS, so these stay English -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Company">
 <meta property="og:url" content="https://eirasroger.github.io/attribute-predictor/circularity/">
-<meta property="og:title" content="Circularity Forecaster">
-<meta property="og:description" content="Forecasts end-of-life circularity from material composition.">
+<meta property="og:title" content="Circularity Forecaster: everything you build comes apart">
+<meta property="og:description"
+      content="How much of a product comes back depends largely on what it is made of and how it is put together. This estimates where it ends up, from composition alone, while both can still change.">
 <meta property="og:locale" content="en">
 <meta name="twitter:card" content="summary">
 
@@ -22,47 +24,74 @@
 <link rel="apple-touch-icon" href="../assets/logo.png">
 <script src="../js/boot.js"></script>
 <link rel="stylesheet" href="../css/base.css">
-<link rel="stylesheet" href="../css/product.css">
+<link rel="stylesheet" href="../css/circularity.css">
 </head>
-<body data-base="../" data-page="circularity" data-tint="circularity">
+<body data-base="../" data-page="circularity" data-tint="circularity"
+      data-tag="topbar.tag" data-note="footer.note" data-topbar-hold="hero">
 
 <header class="topbar" id="topbar"></header>
 
 <main>
-  <section class="stub">
-    <div class="stub-art">
-      <img class="stub-mark" id="p-mark" src="../assets/marks/circularity.svg"
-           alt="" width="200" height="150">
+
+  <!-- 1 ▸ hero: one mass, four destinations -------------------------------- -->
+  <section class="hero" id="hero">
+    <div class="hero-mast hero-fade">
+      <p class="eyebrow">Circularity Forecaster</p>
     </div>
 
-    <p class="stub-status" data-i18n="status.soon">In development</p>
+    <div class="hero-inner">
+      <h1 class="display" data-i18n-html="hero.head">
+        Everything you build<br><span class="accent">comes apart</span>.
+      </h1>
+      <p class="lede hero-fade hero-fade-2" data-i18n="hero.lede">
+        How much of a product comes back depends largely on what it is made of
+        and how it is put together. This estimates where it ends up, from
+        composition alone, while both can still change.
+      </p>
+    </div>
 
-    <h1 class="stub-name" id="p-name">Circularity Forecaster</h1>
-    <p class="stub-tag" id="p-tag">Forecasts end-of-life circularity from material composition.</p>
-    <p class="stub-body" id="p-body">Estimates what becomes of a product once it leaves the building: what can be recovered, what is lost, and how much of that was decided the day it was assembled.</p>
+    <div class="hero-side hero-fade hero-fade-3">
+      <div class="cy-holder">
+        <div class="cy">
+          <svg class="cy-svg" id="cy-svg" focusable="false" aria-hidden="true"></svg>
+          <div class="cy-labs" id="cy-labs"></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <p class="stub-note" data-i18n="status.note">
-      This one is being built. There is nothing to download yet.
+  <!-- 2 ▸ the honest line --------------------------------------------------- -->
+  <section class="statement">
+    <p class="reveal" data-i18n-html="close.statement">
+      Most of this is decided before anything is built.<br>
+      <span class="dim">Taking it apart carefully decides the rest.</span>
     </p>
+  </section>
 
-    <div class="stub-links">
-      <a class="stub-link" href="mailto:roger.verges.eiras@gmail.com?subject=Circularity%20Forecaster">
-        <span data-i18n="status.ask">Ask about it</span>
+  <!-- 3 ▸ call to action ---------------------------------------------------- -->
+  <section class="cta">
+    <div class="cta-inner reveal">
+      <h2 class="cta-head" data-i18n="cta.head">Ask it what a product becomes.</h2>
+      <p class="cta-body" data-i18n="cta.body">
+        Send us a composition. We will show you where it ends up.
+      </p>
+      <a class="cta-btn" href="mailto:roger.verges.eiras@gmail.com?subject=Circularity%20Forecaster">
+        <span data-i18n="cta.btn">Get in touch</span>
         <svg viewBox="0 0 12 10" fill="none" stroke="currentColor"
              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
              aria-hidden="true" focusable="false"><path d="M1 5h9M6.8 1.2 10.6 5l-3.8 3.8"/></svg>
       </a>
-      <a class="stub-link stub-link-quiet" href="../#products"
-         data-i18n="nav.products">Products</a>
     </div>
   </section>
+
 </main>
 
 <footer id="sitefooter"></footer>
 
 <script src="../js/i18n.js"></script>
+<script src="../js/copy.circularity.js"></script>
 <script src="../js/products.js"></script>
 <script src="../js/shell.js"></script>
-<script src="../js/product.js"></script>
+<script src="../js/circular.js"></script>
 </body>
 </html>

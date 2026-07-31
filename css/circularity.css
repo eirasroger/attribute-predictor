@@ -1,0 +1,142 @@
+:root {
+  --ground:      #101f26;
+  --ground-up:   #16292f;
+  --ground-in:   #0c191f;
+  --ink:         #e9f1f3;
+  --ink-dim:     #b3c7cc;
+  --ink-faint:   #87a0a7;
+  --line:        #22383f;
+  --accent:      #6bdcd2;
+  --accent-deep: #1f7f7c;
+
+  --pi: #6bdcd2;
+
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+}
+
+/* --- hero ------------------------------------------------------------------ */
+
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 6rem var(--pad) 4rem;
+  overflow: hidden;
+}
+
+.hero-mast { margin: 0 0 2rem; }
+.hero-mast .eyebrow { margin: 0; font-size: 0.8rem; letter-spacing: 0.3em; }
+.hero-inner { max-width: 38rem; }
+.hero-inner .lede { max-width: 29rem; }
+.hero-side { margin-top: 3rem; }
+
+.hero .display .accent { color: var(--accent); }
+
+@media (min-width: 68rem) {
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+    grid-template-rows: auto 1fr;
+    align-items: center;
+    column-gap: clamp(2rem, 5vw, 5rem);
+    row-gap: 1.2rem;
+    padding-top: 6rem; padding-bottom: 3.4rem;
+  }
+  .hero-mast { grid-column: 1 / -1; margin-bottom: 0; }
+  .hero .display { font-size: clamp(2.7rem, 4.4vw, 4.4rem); }
+  .hero .lede { margin-top: 2.2rem; }
+  .hero-side { margin-top: 0; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-fade {
+    opacity: 0;
+    animation: fade-up 1.15s var(--ease) both;
+    animation-delay: 0.1s;
+  }
+  .hero-fade-2 { animation-delay: 0.55s; }
+  .hero-fade-3 { animation-delay: 0.8s; }
+  .hero .display { animation: fade-up 1.2s var(--ease) both; animation-delay: 0.28s; }
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(1.4rem); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* --- the hero figure ------------------------------------------------------- */
+
+.cy-holder { width: 100%; max-width: 36rem; margin-inline: auto; }
+
+.cy { position: relative; }
+.cy-svg { display: block; width: 100%; height: auto; }
+
+.cy-labs { position: absolute; inset: 0; pointer-events: none; }
+.cy-lab {
+  position: absolute;
+  margin: 0;
+  padding-top: 0.6rem;
+  text-align: center; text-wrap: balance;
+  font-size: 0.62rem; font-weight: 600;
+  letter-spacing: 0.09em; text-transform: uppercase; line-height: 1.35;
+  color: var(--ink-faint);
+}
+.cy-lab.is-r { color: var(--accent); }
+
+.cy-gnd  { stroke: #2c4750; stroke-width: 1; fill: none; }
+.cy-base { stroke: #486a72; stroke-width: 1.6; fill: none; }
+.cy-base.is-r { stroke: var(--accent); opacity: 0.8; }
+
+.cy-b-w { fill: #16262c; }
+.cy-b-e { stroke: #eef3ef; stroke-width: 1.1; fill: none; opacity: 0.55; }
+
+.cy-chip .ck-f { fill: var(--f); transition: fill 0.55s var(--ease); }
+.cy-chip .ck-t { fill: var(--t); opacity: var(--o); transition: fill 0.55s var(--ease); }
+
+
+.cy-chip.is-r .ck-f { fill: #6bdcd2; }
+.cy-chip.is-r .ck-t { fill: #a6ece5; }
+.cy-chip.is-i .ck-f { fill: #93a0a5; }
+.cy-chip.is-i .ck-t { fill: #bac3c6; }
+.cy-chip.is-n .ck-f { fill: #a08a70; }
+.cy-chip.is-n .ck-t { fill: #c0ad95; }
+.cy-chip.is-h .ck-f { fill: #b57784; }
+.cy-chip.is-h .ck-t { fill: #cf9aa4; }
+
+/* --- statement ------------------------------------------------------------- */
+
+.statement p { max-width: 20em; }
+
+/* --- call to action -------------------------------------------------------- */
+
+.cta {
+  padding: 9rem var(--pad) 10rem;
+  border-top: 1px solid var(--line);
+}
+.cta-inner { max-width: 46rem; }
+.cta-head {
+  margin: 0;
+  font-size: clamp(1.9rem, 4.2vw, 3rem);
+  line-height: 1.08; letter-spacing: -0.032em; font-weight: 600;
+}
+.cta-body { margin: 1.2rem 0 2.6rem; max-width: 30rem; color: var(--ink-dim); }
+
+.cta-btn {
+  display: inline-flex; align-items: center; gap: 0.7rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--accent-deep);
+  color: var(--accent); font-size: 1.05rem; font-weight: 500;
+  transition: border-color 0.35s var(--ease), gap 0.35s var(--ease);
+}
+.cta-btn:hover { text-decoration: none; border-bottom-color: var(--accent); gap: 1.1rem; }
+.cta-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
+.cta-btn svg { width: 0.72rem; height: auto; }
+
+
+@media (max-width: 67.99rem) {
+  .hero { padding-top: 4.6rem; padding-bottom: 2.5rem; }
+  .hero-side { margin-top: 2rem; }
+}
+@media (max-width: 30rem) {
+  .cy-holder { max-width: 20rem; }
+  .cy-lab { font-size: 0.55rem; letter-spacing: 0.03em; }
+}
