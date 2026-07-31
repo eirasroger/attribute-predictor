@@ -118,6 +118,6 @@ var PRODUCTS = [
       'y resultados al final de vida. Un modelo adaptativo aprende cómo un proyecto equilibra esos ' +
       'criterios dentro de sus restricciones y reproduce esa lógica de decisión.',
     },
-    ready: false
+    ready: true
   }
 ];

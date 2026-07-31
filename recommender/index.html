@@ -3,18 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Decision Engine</title>
-<meta name="description" content="Automates the trade-off between cost, performance, impact and circularity.">
+<title>Decision Engine: nothing scores on its own</title>
+<meta name="description" data-i18n-attr="content:meta.description"
+      content="Change who is asking, what it is for, or what it is standing next to, and the order changes. This weighs cost, performance, impact and end of life together, under the priorities the project is actually working to.">
 <meta name="color-scheme" content="light">
-<meta name="theme-color" content="#fbfbfd">
+<meta name="theme-color" content="#f6f4f0">
 <link rel="canonical" href="https://eirasroger.github.io/attribute-predictor/recommender/">
 
 <!-- crawlers do not run JS, so these stay English -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Company">
 <meta property="og:url" content="https://eirasroger.github.io/attribute-predictor/recommender/">
-<meta property="og:title" content="Decision Engine">
-<meta property="og:description" content="Automates the trade-off between cost, performance, impact and circularity.">
+<meta property="og:title" content="Decision Engine: nothing scores on its own">
+<meta property="og:description"
+      content="Change who is asking, what it is for, or what it is standing next to, and the order changes. This weighs cost, performance, impact and end of life together, under the priorities the project is actually working to.">
 <meta property="og:locale" content="en">
 <meta name="twitter:card" content="summary">
 
@@ -22,47 +24,77 @@
 <link rel="apple-touch-icon" href="../assets/logo.png">
 <script src="../js/boot.js"></script>
 <link rel="stylesheet" href="../css/base.css">
-<link rel="stylesheet" href="../css/product.css">
+<link rel="stylesheet" href="../css/recommender.css">
 </head>
-<body data-base="../" data-page="recommender" data-tint="recommender">
+<body data-base="../" data-page="recommender" data-tint="recommender"
+      data-tag="topbar.tag" data-note="footer.note" data-topbar-hold="hero">
 
 <header class="topbar" id="topbar"></header>
 
 <main>
-  <section class="stub">
-    <div class="stub-art">
-      <img class="stub-mark" id="p-mark" src="../assets/marks/recommender.svg"
-           alt="" width="200" height="150">
+
+  <!-- 1 ▸ hero: one order, and what moves it ------------------------------- -->
+  <section class="hero" id="hero">
+    <div class="hero-inner">
+      <p class="eyebrow hero-fade">Decision Engine</p>
+      <h1 class="display" data-i18n-html="hero.head">
+        Nothing scores<br><span class="accent">on its own</span>.
+      </h1>
     </div>
 
-    <p class="stub-status" data-i18n="status.soon">In development</p>
+    <div class="hero-side hero-fade hero-fade-2">
+      <div class="dc-holder">
+        <div class="dc">
+          <svg class="dc-svg" id="dc-svg" focusable="false" aria-hidden="true"></svg>
+          <div class="dc-labs" id="dc-labs"></div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <h1 class="stub-name" id="p-name">Decision Engine</h1>
-    <p class="stub-tag" id="p-tag">Automates the trade-off between cost, performance, impact and circularity.</p>
-    <p class="stub-body" id="p-body">Complex product choices come down to four things pulling against each other: what it costs, how it performs, what it does to the environment, and what becomes of it afterwards. An adaptive model weighs all four, learns how a project settles those trade-offs, and makes the call.</p>
-
-    <p class="stub-note" data-i18n="status.note">
-      This one is being built. There is nothing to download yet.
+  <!-- 2 ▸ what the figure was doing ----------------------------------------- -->
+  <section class="intro">
+    <p class="lede reveal" data-i18n="hero.lede">
+      Change who is asking, what it is for, or what it is standing next to,
+      and the order changes. This weighs cost, performance, impact and end of
+      life together, under the priorities the project is actually working to.
     </p>
+  </section>
 
-    <div class="stub-links">
-      <a class="stub-link" href="mailto:roger.verges.eiras@gmail.com?subject=Decision%20Engine">
-        <span data-i18n="status.ask">Ask about it</span>
+  <!-- 3 ▸ the honest line --------------------------------------------------- -->
+  <section class="statement">
+    <p class="reveal" data-i18n-html="close.statement">
+      The same catalogue answers two projects differently.<br>
+      <span class="dim">Both answers are right.</span>
+    </p>
+  </section>
+
+  <!-- 4 ▸ call to action ---------------------------------------------------- -->
+  <section class="cta">
+    <div class="cta-inner reveal">
+      <h2 class="cta-head" data-i18n="cta.head">Show it what you are choosing between.</h2>
+      <p class="cta-body" data-i18n="cta.body">
+        Send us the candidates and what the project values. We will show you
+        the order that comes back.
+      </p>
+      <a class="cta-btn" href="mailto:roger.verges.eiras@gmail.com?subject=Decision%20Engine">
+        <span data-i18n="cta.btn">Get in touch</span>
         <svg viewBox="0 0 12 10" fill="none" stroke="currentColor"
              stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
              aria-hidden="true" focusable="false"><path d="M1 5h9M6.8 1.2 10.6 5l-3.8 3.8"/></svg>
       </a>
-      <a class="stub-link stub-link-quiet" href="../#products"
-         data-i18n="nav.products">Products</a>
     </div>
   </section>
+
 </main>
 
 <footer id="sitefooter"></footer>
 
 <script src="../js/i18n.js"></script>
+<script src="../js/copy.recommender.js"></script>
 <script src="../js/products.js"></script>
 <script src="../js/shell.js"></script>
-<script src="../js/product.js"></script>
+<script src="../js/decide.data.js"></script>
+<script src="../js/decide.js"></script>
 </body>
 </html>

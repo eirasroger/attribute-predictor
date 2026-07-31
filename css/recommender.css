@@ -1,0 +1,178 @@
+:root {
+  --ground:      #f6f4f0;
+  --ground-up:   #efece5;
+  --ground-in:   #e8e4db;
+  /* contrast-checked on --ground: 16.3:1 / 8.2:1 / 5.1:1 / 6.0:1 */
+  --ink:         #1a1714;
+  --ink-dim:     #4f4842;
+  --ink-faint:   #6f665e;
+  --line:        #ddd8d0;
+  --accent:      #9a3d5c;
+  --accent-soft: #c78ba0;
+
+  --bk-f: #4b463f;
+  --bk-t: #6d675d;
+  --bk-s: #37332d;
+  --bk-e: #8f887c;
+
+  --ac-f: #9a3d5c;
+  --ac-t: #bd6784;
+  --ac-s: #7a2c47;
+}
+
+/* --- hero ------------------------------------------------------------------ */
+
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 5.5rem var(--pad) 3rem;
+}
+
+.hero-inner { max-width: 44rem; }
+.hero-inner .eyebrow { margin: 0 0 1.6rem; font-size: 0.8rem; letter-spacing: 0.3em; }
+.hero .display { font-size: clamp(2.4rem, 6.2vw, 4.4rem); }
+.hero .display .accent { color: var(--accent); }
+
+.hero-side { margin-top: clamp(2rem, 5vh, 3.2rem); }
+
+@media (min-width: 64rem) {
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
+    align-items: center;
+    column-gap: clamp(2.5rem, 5vw, 5rem);
+    padding-bottom: 4rem;
+  }
+  .hero .display { font-size: clamp(2.6rem, 4.3vw, 4.5rem); }
+  .hero-side { margin-top: 0; }
+}
+
+/* --- the lede, on its own beat under the hero ------------------------------ */
+
+.intro { padding: 1rem var(--pad) 9rem; }
+.intro .lede {
+  margin: 0;
+  max-width: 42rem;
+  font-size: clamp(1.15rem, 2.1vw, 1.6rem);
+  line-height: 1.5;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-fade {
+    opacity: 0;
+    animation: fade-up 1.15s var(--ease) both;
+    animation-delay: 0.1s;
+  }
+  .hero-fade-2 { animation-delay: 0.55s; }
+  .hero-fade-3 { animation-delay: 0.85s; }
+  .hero .display { animation: fade-up 1.2s var(--ease) both; animation-delay: 0.28s; }
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(1.4rem); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* --- the rail -------------------------------------------------------------- */
+
+/* the svh cap is what keeps the figure inside one screen beside the headline,
+   and it is tied to the viewBox aspect in decide.js; change one, change both */
+.dc-holder { width: 100%; max-width: min(42rem, 92svh); }
+
+.dc { position: relative; }
+.dc-svg { display: block; width: 100%; height: auto; }
+
+.dc-labs {
+  position: absolute;
+  display: flex; justify-content: space-between; gap: 1rem;
+  pointer-events: none;
+}
+.dc-lab {
+  margin: 0;
+  padding-top: 0.55rem;
+  font-size: 0.62rem; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase; line-height: 1.3;
+  color: var(--ink-faint);
+}
+.dc-lab.is-hi { color: var(--accent); }
+
+.dc-row { stroke-width: 1; fill: none; transition: opacity 0.7s var(--ease); }
+.dc-row.is-out { stroke-dasharray: 2 6; opacity: 0.55; }
+
+.dc-rl-in { stop-color: #d5cec3; }
+.dc-rl-out { stop-color: #d5cec3; stop-opacity: 0; }
+
+.dc-axis { stroke-width: 2; fill: none; }
+.dc-tick { stroke: #a79e91; stroke-width: 1.5; fill: none; }
+.dc-tick.is-hi { stroke: var(--accent); }
+
+.dc-ax-lo { stop-color: #b4aca0; }
+.dc-ax-hi { stop-color: var(--accent); }
+
+.dc-sh-in  { stop-color: #332c25; stop-opacity: 0.5; }
+.dc-sh-mid { stop-color: #332c25; stop-opacity: 0.2; }
+.dc-sh-out { stop-color: #332c25; stop-opacity: 0; }
+
+/* face tone transitions; the gradient overlays over them never change */
+.dc-lite { stop-color: #ffffff; stop-opacity: 0.13; }
+.dc-none { stop-color: #ffffff; stop-opacity: 0; }
+.dc-dark { stop-color: #000000; stop-opacity: 0.17; }
+
+.dc-blk .bf { fill: var(--bk-f); }
+.dc-blk .bt { fill: var(--bk-t); }
+.dc-blk .bs { fill: var(--bk-s); }
+.dc-blk .be { stroke: var(--bk-e); stroke-width: 1; fill: none; }
+
+.dc-blk .bf, .dc-blk .bt, .dc-blk .bs, .dc-blk .be {
+  transition: fill 0.6s var(--ease), stroke 0.6s var(--ease);
+}
+
+.dc-blk.is-top .bf { fill: var(--ac-f); }
+.dc-blk.is-top .bt { fill: var(--ac-t); }
+.dc-blk.is-top .bs { fill: var(--ac-s); }
+.dc-blk.is-top .be { stroke: #dfa9ba; }
+
+/* lifted out: it keeps its edges and loses its material, which reads as set
+   aside; fading it out instead just looks like a rendering fault on a light
+   ground */
+.dc-blk.is-out .bf { fill: #d9d3c9; }
+.dc-blk.is-out .bt { fill: #e7e2d9; }
+.dc-blk.is-out .bs { fill: #cbc4b9; }
+.dc-blk.is-out .be { stroke: #f2eee7; }
+
+/* --- statement ------------------------------------------------------------- */
+
+.statement p { max-width: 18em; }
+
+/* --- call to action -------------------------------------------------------- */
+
+.cta {
+  padding: 9rem var(--pad) 10rem;
+  border-top: 1px solid var(--line);
+}
+.cta-inner { max-width: 46rem; }
+.cta-head {
+  margin: 0;
+  font-size: clamp(1.9rem, 4.2vw, 3rem);
+  line-height: 1.08; letter-spacing: -0.032em; font-weight: 600;
+}
+.cta-body { margin: 1.2rem 0 2.6rem; max-width: 30rem; color: var(--ink-dim); }
+
+.cta-btn {
+  display: inline-flex; align-items: center; gap: 0.7rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--accent-soft);
+  color: var(--accent); font-size: 1.05rem; font-weight: 500;
+  transition: border-color 0.35s var(--ease), gap 0.35s var(--ease);
+}
+.cta-btn:hover { text-decoration: none; border-bottom-color: var(--accent); gap: 1.1rem; }
+.cta-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
+.cta-btn svg { width: 0.72rem; height: auto; }
+
+@media (max-width: 63.99rem) {
+  .hero { padding-top: 5rem; }
+  .dc-holder { max-width: min(26rem, 62svh); margin-inline: auto; }
+}
+@media (max-width: 30rem) {
+  .dc-lab { font-size: 0.55rem; letter-spacing: 0.06em; }
+}
